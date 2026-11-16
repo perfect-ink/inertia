@@ -7,18 +7,20 @@ struct TaskFileView: View {
     @State private var view = "Workboard"
     @State private var sprintFilter = "all"
     @State private var epicFilter = "all"
-    @State private var milestoneFilter = "all"
+    @State private var eventFilter = "all"
     @State private var taskDraft: TaskRecord?
     @State private var sprintDraft: Sprint?
     @State private var editingColumns = false
     @State private var editingUsers = false
     @State private var error: String?
 
+    // Top-down through the planning hierarchy (Milestone > Initiative > Epic), then the calendar's Events.
+    private static let views = ["Workboard", "List", "Sprints", "Milestones", "Initiatives", "Epics", "Events"]
     private var visibleTasks: [TaskRecord] {
         document.board.tasks.filter {
             (sprintFilter == "all" || (sprintFilter == "unassigned" ? $0.sprintID == nil : $0.sprintID.map(String.init) == sprintFilter)) &&
             (epicFilter == "all" || (epicFilter == "unassigned" ? $0.epicID == nil : $0.epicID.map(String.init) == epicFilter)) &&
-            (milestoneFilter == "all" || (milestoneFilter == "unassigned" ? document.board.eventIDs(for: $0.id).isEmpty : document.board.eventIDs(for: $0.id).contains(Int(milestoneFilter) ?? 0)))
+            (eventFilter == "all" || (eventFilter == "unassigned" ? document.board.eventIDs(for: $0.id).isEmpty : document.board.eventIDs(for: $0.id).contains(Int(eventFilter) ?? 0)))
         }
     }
     var body: some View {
@@ -27,12 +29,8 @@ struct TaskFileView: View {
                 TextField("Project name", text: $document.board.title).voltaFont(.xl, weight: .semibold).foregroundStyle(Volta.foreground)
                     .textFieldStyle(InertiaTextFieldStyle(showsBorder: false))
                 Picker("View", selection: $view) {
-                    Text("Workboard").tag("Workboard")
-                    Text("List").tag("List")
-                    Text("Sprints").tag("Sprints")
-                    Text("Epics").tag("Epics")
-                    Text("Events").tag("Events")
-                }.pickerStyle(.segmented).frame(width: 430)
+                    ForEach(Self.views, id: \.self) { Text($0).tag($0) }
+                }.pickerStyle(.segmented).frame(width: 640)
             }.padding()
             if view == "Workboard" || view == "List" {
                 HStack {
@@ -40,7 +38,7 @@ struct TaskFileView: View {
                                 options: SelectChoices.filter(all: "All tasks", unassigned: "Unassigned", document.board.sprints, id: \.id, label: \.title)).frame(maxWidth: 220)
                     VoltaSelect("Epic", selection: $epicFilter,
                                 options: SelectChoices.filter(all: "All epics", unassigned: "Unassigned", document.board.epics, id: \.id, label: \.title)).frame(maxWidth: 220)
-                    VoltaSelect("Event", selection: $milestoneFilter,
+                    VoltaSelect("Event", selection: $eventFilter,
                                 options: SelectChoices.filter(all: "All events", unassigned: "Unassigned", document.board.events, id: \.id, label: \.title)).frame(maxWidth: 220)
                     Spacer()
                     Text("\(visibleTasks.count) tasks").voltaMuted()
@@ -50,13 +48,15 @@ struct TaskFileView: View {
             if view == "Workboard" { board }
             else if view == "List" { taskList }
             else if view == "Sprints" { sprints }
+            else if view == "Milestones" { MilestoneList(board: $document.board) }
+            else if view == "Initiatives" { InitiativeList(board: $document.board) }
             else if view == "Epics" {
                 EpicList(board: $document.board) { id in
-                    epicFilter = String(id); sprintFilter = "all"; milestoneFilter = "all"; view = "Workboard"
+                    epicFilter = String(id); sprintFilter = "all"; eventFilter = "all"; view = "Workboard"
                 }
             } else {
-                MilestoneList(board: $document.board) { id in
-                    milestoneFilter = String(id); sprintFilter = "all"; epicFilter = "all"; view = "Workboard"
+                EventList(board: $document.board) { id in
+                    eventFilter = String(id); sprintFilter = "all"; epicFilter = "all"; view = "Workboard"
                 }
             }
         }
@@ -64,9 +64,9 @@ struct TaskFileView: View {
             if let selected = Int( epicFilter), !ids.contains(selected) { epicFilter = "all" }
         }
         .onChange(of: document.board.events.map(\.id)) { _, ids in
-            if let selected = Int( milestoneFilter), !ids.contains(selected) { milestoneFilter = "all" }
+            if let selected = Int( eventFilter), !ids.contains(selected) { eventFilter = "all" }
         }
-        .frame(minWidth: 850, minHeight: 550)
+        .frame(minWidth: 960, minHeight: 550)
         .voltaWindow()
         .toolbar {
             Button("New Task", systemImage: "plus") { newTask() }
@@ -76,7 +76,7 @@ struct TaskFileView: View {
             Button("Online Space", systemImage: "network") { openWindow(id: "workspace") }
         }
         .sheet(item: $taskDraft) { draft in
-            TaskEditor(draft: draft, eventIDs: Set(document.board.eventIDs(for: draft.id) + (Int(milestoneFilter).map { [$0] } ?? [])), board: document.board) { task, eventIDs in
+            TaskEditor(draft: draft, eventIDs: Set(document.board.eventIDs(for: draft.id) + (Int(eventFilter).map { [$0] } ?? [])), board: document.board) { task, eventIDs in
                 var next = document.board
                 if let index = next.tasks.firstIndex(where: { $0.id == task.id }) { next.tasks[index] = task }
                 else { next.tasks.append(task) }
@@ -174,7 +174,7 @@ struct TaskFileView: View {
                     HStack {
                         Button(sprint.title) { sprintDraft = sprint }.buttonStyle(.voltaLink(.title))
                         Spacer()
-                        Button("View Tasks") { sprintFilter = String(sprint.id); epicFilter = "all"; milestoneFilter = "all"; view = "Workboard" }
+                        Button("View Tasks") { sprintFilter = String(sprint.id); epicFilter = "all"; eventFilter = "all"; view = "Workboard" }
                             .buttonStyle(.volta(.secondary))
                     }
                     if !sprint.goal.isEmpty { Text(sprint.goal).voltaMuted() }

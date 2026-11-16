@@ -197,4 +197,10 @@ public enum SelectChoices {
     public static func filter<Record>(all: String, unassigned: String, _ records: [Record], id: KeyPath<Record, Int>, label: KeyPath<Record, String>) -> [SelectOption<String>] {
         [SelectOption("all", all), SelectOption("unassigned", unassigned)] + records.map { SelectOption(String($0[keyPath: id]), $0[keyPath: label]) }
     }
+
+    /// The lifecycle of a Milestone or Initiative.
+    public static let planningStatuses = PlanningStatus.allCases.map { SelectOption($0, $0.label) }
+    /// Roadmap horizons, or none.
+    public static let horizons = [SelectOption<Horizon?>(nil, "None")] + Horizon.allCases.map { SelectOption(Optional($0), $0.label) }
+    public static let eventTypes = EventType.allCases.map { SelectOption($0, $0.label) }
 }

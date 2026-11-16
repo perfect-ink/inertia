@@ -14,7 +14,11 @@ public enum TaskStatus: String, Codable, CaseIterable {
         }
     }
 }
-public enum EventType: String, Codable, CaseIterable { case deadline, milestone }
+public enum EventType: String, Codable, CaseIterable {
+    case deadline, milestone
+    // "Milestone date", so a calendar event is not mistaken for the planning Milestone.
+    public var label: String { self == .milestone ? "Milestone date" : "Deadline" }
+}
 // Lifecycle shared by the planning levels Milestone and Initiative (Rails `PlanningItem`).
 public enum PlanningStatus: String, Codable, CaseIterable {
     case planned, active, done

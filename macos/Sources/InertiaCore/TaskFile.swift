@@ -192,12 +192,41 @@ public struct TaskFile: Codable, Equatable {
         for index in epics.indices where epics[index].milestoneID == id { epics[index].milestoneID = nil }
         for index in tasks.indices where tasks[index].milestoneID == id { tasks[index].milestoneID = nil }
     }
+    public func initiative(id: Int?) -> InitiativeRecord? { id.flatMap { id in initiativeList.first { $0.id == id } } }
+    public func milestone(id: Int?) -> MilestoneRecord? { id.flatMap { id in milestoneList.first { $0.id == id } } }
+    /// Saves an edited record in place, or appends it when it is new (what an editor sheet's Save does).
+    public mutating func save(_ epic: EpicRecord) {
+        if let index = epics.firstIndex(where: { $0.id == epic.id }) { epics[index] = epic } else { epics.append(epic) }
+    }
+    public mutating func save(_ initiative: InitiativeRecord) {
+        if var list = initiatives, let index = list.firstIndex(where: { $0.id == initiative.id }) { list[index] = initiative; initiatives = list }
+        else { addInitiative(initiative) }
+    }
+    public mutating func save(_ milestone: MilestoneRecord) {
+        if var list = milestones, let index = list.firstIndex(where: { $0.id == milestone.id }) { list[index] = milestone; milestones = list }
+        else { addMilestone(milestone) }
+    }
     /// A task's own milestone, else its epic's, else its epic's initiative's.
     public func effectiveMilestoneID(of task: TaskRecord) -> Int? {
-        if let own = task.milestoneID { return own }
-        guard let epic = epics.first(where: { $0.id == task.epicID }) else { return nil }
-        if let milestone = epic.milestoneID { return milestone }
-        return initiativeList.first { $0.id == epic.initiativeID }?.milestoneID
+        task.milestoneID ?? inheritedMilestoneID(epicID: task.epicID)
+    }
+    /// An epic's own milestone, else its initiative's.
+    public func effectiveMilestoneID(of epic: EpicRecord) -> Int? {
+        epic.milestoneID ?? inheritedMilestoneID(initiativeID: epic.initiativeID)
+    }
+    /// The milestone a task in this epic gets when the task sets none.
+    public func inheritedMilestoneID(epicID: Int?) -> Int? {
+        epics.first { $0.id == epicID }.flatMap { effectiveMilestoneID(of: $0) }
+    }
+    /// The milestone an epic in this initiative gets when the epic sets none.
+    public func inheritedMilestoneID(initiativeID: Int?) -> Int? { initiative(id: initiativeID)?.milestoneID }
+    /// Options for a milestone select. Choosing nothing inherits `inherited`, which the empty option names.
+    public func milestoneChoices(inherited: Int? = nil) -> [SelectOption<Int?>] {
+        let none = milestone(id: inherited).map { "Inherited: \($0.title)" } ?? "None"
+        return SelectChoices.optional(none: none, milestoneList, id: \.id, label: \.title)
+    }
+    public func initiativeChoices() -> [SelectOption<Int?>] {
+        SelectChoices.optional(none: "None", initiativeList, id: \.id, label: \.title)
     }
     /// Tasks under a milestone (directly or by inheritance) and how many are done.
     public func progress(milestoneID: Int) -> (done: Int, total: Int) {

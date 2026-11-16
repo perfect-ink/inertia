@@ -18,7 +18,11 @@ struct TaskEditor: View {
                         VoltaSelect("Column", selection: $draft.columnID, options: SelectChoices.records(board.columns, id: \.id, label: \.title))
                         VoltaSelect("Sprint", selection: $draft.sprintID, options: SelectChoices.optional(none: "Unassigned", board.sprints, id: \.id, label: \.title))
                         VoltaSelect("Epic", selection: $draft.epicID, options: SelectChoices.optional(none: "Unassigned", board.epics, id: \.id, label: \.title))
-                        VoltaPanel("Events and milestones") {
+                        if !board.milestoneList.isEmpty {
+                            VoltaSelect("Milestone", selection: $draft.milestoneID,
+                                        options: board.milestoneChoices(inherited: board.inheritedMilestoneID(epicID: draft.epicID)))
+                        }
+                        VoltaPanel("Events") {
                             ForEach(board.events) { event in
                                 Toggle(event.title, isOn: Binding(get: { eventIDs.contains(event.id) }, set: { selected in
                                     if selected { eventIDs.insert(event.id) } else { eventIDs.remove(event.id) }

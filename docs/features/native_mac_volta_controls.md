@@ -8,7 +8,7 @@ What people see:
 - **Text fields and text areas** are at least 40pt tall (the sign-in fields stay at 52pt), with a quiet border that firms up on hover and turns accent, with a ring, on focus. A field with a bad value (a date that is not `YYYY-MM-DD`) turns its border danger red and shows the message under it; the message is also announced to VoiceOver, so the error is not shown by color alone.
 - **Selects** replace pop-up `Picker`s: a bordered field with a chevron that opens the system menu, so keyboard and VoiceOver behavior stay native.
 - **Checkboxes and radios** are 16pt boxes that fill with the accent color and show a white check or dot.
-- **Cards and panels**: task cards on the board are clickable cards (the border firms up under the cursor), columns are muted panels, the "Events and milestones" group is a card panel, dividers use the border color.
+- **Cards and panels**: task cards on the board are clickable cards (the border firms up under the cursor), columns are muted panels, the task editor's "Events" group is a card panel, dividers use the border color.
 - **Links**: row titles open their editor and turn accent on hover; "Already have an account? Sign in" is a quiet underlined link.
 - **Sign-in card**: the logo, title, providers and form sit on a card (32pt padding, 4pt corners) over the muted page color, as on the web.
 
@@ -22,7 +22,7 @@ What people see:
   - `VoltaButtonStyle.swift`: `.buttonStyle(.volta(.primary | .secondary | .ghost | .destructive, fullWidth:))`, `.voltaLink` / `.voltaLink(.title)` and `.voltaCard`.
   - `VoltaField.swift` (`VoltaFieldFrame`, `VoltaTextArea`, `.voltaInvalid()`), `TextFieldStyle.swift` (`InertiaTextFieldStyle`, now the Volta field), `VoltaSelect.swift`, `VoltaCheckable.swift` (`VoltaCheckboxToggleStyle`, `VoltaRadioGroup`), `VoltaPanel.swift` (`VoltaPanel`, `VoltaDivider`).
   - The existing shared components use them: `EditorSheet`, `EditorActions`, `DoneButton`, `RefreshButton`, `OptionalTextField` (with a `FieldRule`, today `.isoDate`), `NotesEditor`, `ValidationMessage`, `CompletionProgress`, `ProviderSignInButton`, `AuthDivider`, `TaskCommentsView`.
-- Screens converted: `Screens/LoginView.swift`, `TaskFileView.swift` (header, filters, board, list, sprints), `PlanningViews.swift` (epics, events), `FileUsersView.swift`; editors `TaskEditor`, `SprintEditor`, `ColumnEditor`, `EpicEditor`, `MilestoneEditor`, `FileUserEditor`.
+- Screens converted: `Screens/LoginView.swift`, `TaskFileView.swift` (header, filters, board, list, sprints), `PlanningViews.swift` (milestones, initiatives, epics, events), `FileUsersView.swift`; editors `TaskEditor`, `SprintEditor`, `ColumnEditor`, `EpicEditor`, `MilestoneEditor` and `InitiativeEditor` (the planning levels), `EventEditor`, `FileUserEditor`.
 - Keep the palette in step with the web theme: `VoltaControlsTests.testPaletteMatchesTheWebThemeStylesheet` reads `_theme.scss` and fails when a token differs.
 
 ## Who can view and change

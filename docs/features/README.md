@@ -82,7 +82,7 @@ One file per implemented feature, written from the code (see `docs/rules/feature
 | Native macOS Volta controls: Mac screens use the web theme, buttons, fields, selects and checkboxes | [native_mac_volta_controls.md](native_mac_volta_controls.md) |
 | Links to other documents: `[[` or `@` picker, live titles | [document_links.md](document_links.md) |
 | One lint command: ESLint, Stylelint, RuboCop, Swift warnings | [lint_entry_point.md](lint_entry_point.md) |
-| Local task file: initiatives and milestones | [local_task_file_planning.md](local_task_file_planning.md) |
+| Local task file: initiatives and milestones, with Mac screens to edit them | [local_task_file_planning.md](local_task_file_planning.md) |
 | Component gallery: every shared control in its states, in a light and a dark panel, at `/styleguide` in development (Volta parity audit in [../volta_parity.md](../volta_parity.md)) | [component_gallery.md](component_gallery.md) |
 | Lookup (mirror) fields: a Collection shows a field of the record a relation links to | [connect_and_mirror_fields.md](connect_and_mirror_fields.md) |
 | Project features: each project chooses which pages it shows | [project_features.md](project_features.md) |
