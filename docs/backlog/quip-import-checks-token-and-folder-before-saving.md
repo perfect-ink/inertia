@@ -2,6 +2,8 @@
 priority: p3
 depends_on: []
 components: [backend]
+branch: backlog/quip-import-checks-token-and-folder-before-saving
+status: incomplete
 ---
 # A Quip import without a token leaves a pending import behind
 
@@ -23,3 +25,19 @@ components: [backend]
 ## Acceptance criteria
 
 - In `quip_imports_controller_test.rb`: a request without a token creates no `QuipImport` and queues no job; a `destination_folder_id` from another Space is refused and creates no import.
+
+## Unverified
+
+Built: `QuipImportsController#create` reads `params.require(:token)` and looks `destination_folder_id` up through `current_workspace.folders.find` before `quip_imports.create!`. A missing or blank token answers 400 and a folder outside the Space answers 404 (the convention of the neighbouring controllers; the 422 option was not used). Nothing else changed: the web dialog sends only `token` and `domain`, so valid requests behave as before. New self-contained test `backend/test/controllers/quip_imports_scoping_test.rb` (no token, blank token, other Space's folder, valid request, own folder); feature doc `docs/features/quip_import.md`.
+
+Ran: `ruby -c` on the controller and the test.
+
+Not run (no Rails, database or gems in the environment): the Rails tests and RuboCop. To verify:
+
+```bash
+cd backend && bin/rails test test/controllers/quip_imports_scoping_test.rb test/models/quip_import_test.rb
+cd backend && bundle exec rubocop app/controllers/api/v1/quip_imports_controller.rb test/controllers/quip_imports_scoping_test.rb
+make test
+```
+
+Merge note: `backlog/request-tests-for-untested-controllers` also writes `quip_imports_controller_test.rb` and edits `docs/features/rules_compliance.md`; its test asserts the status codes only and should then assert the row count and job as the acceptance criteria say.
