@@ -26,6 +26,7 @@ export const SECTION_GROUPS: { heading: string | null; sections: Section[] }[] =
     { label: 'Pivot', feature: 'pivot', path: '/pivot' },
     { label: 'Calendar', feature: 'calendar', path: '/calendar' },
     { label: 'Events', feature: 'events', path: '/events?view=list' },
+    { label: 'Forms', feature: 'forms', path: '/forms' },
   ] },
   { heading: 'Planning', sections: [
     { label: 'Roadmap', feature: 'roadmap', path: '/roadmap' },

@@ -87,7 +87,7 @@ test('the other pages sit under Views at the bottom, folded away until opened', 
   expect(within(views).queryByRole('link')).toBeNull()
   fireEvent.click(within(views).getByRole('button', { name: 'Views' }))
   const labels = within(views).getAllByRole('link').map((a) => a.textContent)
-  expect(labels).toEqual(expect.arrayContaining(['My work', 'Task table', 'Roadmap', 'Sprints', 'OKRs', 'Workload']))
+  expect(labels).toEqual(expect.arrayContaining(['My work', 'Task table', 'Forms', 'Roadmap', 'Sprints', 'OKRs', 'Workload']))
   expect(labels).not.toContain('Tasks')
   fireEvent.click(within(views).getByRole('link', { name: 'Sprints' }))
   expect(screen.getByTestId('where')).toHaveTextContent('/sprints')

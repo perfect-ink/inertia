@@ -263,6 +263,15 @@ class SpaceTransferTest < ActiveSupport::TestCase
     assert_equal @source, @source_folder.reload.workspace
   end
 
+  test "a folder that a task form files its tasks in is not moved" do
+    @source.task_forms.create!(title: "Report a bug", folder: @source_folder)
+
+    error = assert_raises(SpaceTransfer::Error) { transfer_into(@team_root).move_folder(@source_folder) }
+
+    assert_match(/forms/, error.message)
+    assert_equal @source, @source_folder.reload.workspace
+  end
+
   test "a failed move leaves both Spaces as they were" do
     document = @source_folder.documents.create!(title: "Plan", created_by: @user)
     task = @source.tasks.create!(title: "Keep", document: document)

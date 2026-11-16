@@ -29,7 +29,7 @@ POST /api/v1/folders/:id/move     { target_folder_id }   # 200 { workspace_id, f
 GET  /api/v1/workspaces/:id/folders                       # one Space's active folders, flat, with `root` and `parent_id`
 ```
 
-`workspace_id` is the Space the item is now in. Errors: 400 without `target_folder_id`, 403 for a destination or source the user may not write in, 404 for a folder or Space the user does not belong to, 422 with `errors` when the rules above refuse it (moving into the Space the item is already in, an archived destination folder, the Root folder, a Collection link, or a folder that still has tasks, events, epics or milestones attached to it directly). Moving within one Space is still the existing `PATCH` of `folder_id` or `parent_id`; the move endpoint rejects the same Space.
+`workspace_id` is the Space the item is now in. Errors: 400 without `target_folder_id`, 403 for a destination or source the user may not write in, 404 for a folder or Space the user does not belong to, 422 with `errors` when the rules above refuse it (moving into the Space the item is already in, an archived destination folder, the Root folder, a Collection link, or a folder that still has tasks, events, epics, milestones or task forms attached to it directly). Moving within one Space is still the existing `PATCH` of `folder_id` or `parent_id`; the move endpoint rejects the same Space.
 
 Frontend: `useSpaceFolders` and `useTransfer` in `frontend/src/api/transfer.ts`; the failed call is shown inside the dialog (the request is `silent` for the global notice). Pure rules and wording are in `frontend/src/data/transfer.ts`, `data/workspace.ts` (`transferTargets`, the role checks, moved here from `api/workspaces.ts`, which re-exports them) and `data/folder.ts` (`folderChoices`).
 
@@ -45,7 +45,7 @@ The user needs the `member` role or above in the Space the item leaves or is cop
 - `frontend/src/data/transfer.test.ts`, `data/workspace.test.ts`, `data/folder.test.ts` (`folderChoices`), `components/workspace/TransferDialog.test.tsx`.
 
 ## Known limits
-- A folder with tasks, events, epics or milestones attached to it directly (not through a document) cannot be moved; it can be copied, but those items are not copied (`docs/backlog/move-folder-attached-records-between-spaces.md`).
+- A folder with tasks, events, epics, milestones or task forms ([task_forms.md](task_forms.md)) attached to it directly (not through a document) cannot be moved; it can be copied, but those items are not copied (`docs/backlog/move-folder-attached-records-between-spaces.md`).
 - AI runs of a moved task are deleted; dependencies and event links of moved tasks are removed. Copies start without them.
 - Copying a very large Collection runs in one request and creates its values one at a time.
 - A Collection that is moved (not copied) keeps a person field's people even when they cannot open the new Space; the cell shows "Member #id".

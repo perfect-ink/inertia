@@ -3,7 +3,7 @@
 ## What it does
 A project turns on the pages it needs, and the sidebar under that project shows only those. The project's files (documents, sheets, Collections, uploaded files), its Overview and All files always show.
 - **Choosing**: open the project dropdown at the top of the sidebar and pick **Choose pages...**, or open the project page and press **Pages** in its header. A dialog lists the pages in the rail's groups (General, Tasks, Planning, Goals, Delivery) with a checkbox each; Save stores the list. Only members who can write in the Space (member role and above) see the entry; viewers don't.
-- **The pages**: My work; Tasks, Task table, Pivot, Calendar, Events; Roadmap, Timeline, Milestones, Initiatives, Epics, Sprints, Hierarchy; OKRs, Objectives map, Ideas; Resources, Workload. (My work and Workload show only in a shared Space, as before.)
+- **The pages**: My work; Tasks, Task table, Pivot, Calendar, Events, Forms ([task_forms.md](task_forms.md)); Roadmap, Timeline, Milestones, Initiatives, Epics, Sprints, Hierarchy; OKRs, Objectives map, Ideas; Resources, Workload. (My work and Workload show only in a shared Space, as before.)
 - **Sidebar**: the project sidebar (`file-manager/ProjectSidebar.tsx`) leaves out turned-off pages: Tasks goes when it is off, and Views lists only the pages that are on (and goes when none is). The project's documents are unchanged.
 - **Quick add** (`file-manager/Sidebar.tsx`, the Account menu, the rail's plus or ⌘K): with a project open, the Task tab is left out when Tasks is off and the Event tab when Events is off. With both off the Quick add menu item is hidden and ⌘K does nothing. With no project open it offers everything.
 - **Project page Overview** (`view/folder_detail/FolderDetailScreen.tsx`): the Tasks, Epics and Upcoming Events sections are hidden when that feature is off; folders and documents always show.
@@ -13,7 +13,7 @@ A project turns on the pages it needs, and the sidebar under that project shows 
 
 ## API and models
 - `folders.features` (JSON, nullable; migration `20261110120001_add_features_to_folders`). NULL means every page; otherwise an array of page keys. Only a project can be given a list.
-- `Folder::PROJECT_FEATURES` is the list of keys in the rail's order: `my_work tasks task_table pivot calendar events roadmap timeline milestones initiatives epics sprints hierarchy okrs objectives_map ideas resources workload`. `Folder#enabled_features` returns the saved list in that order, or all of them. Validation rejects an unknown key, a value that is not an array, and a list on a plain folder (a project made a plain folder again keeps its list).
+- `Folder::PROJECT_FEATURES` is the list of keys in the rail's order: `my_work tasks task_table pivot calendar events forms roadmap timeline milestones initiatives epics sprints hierarchy okrs objectives_map ideas resources workload`. `Folder#enabled_features` returns the saved list in that order, or all of them. Validation rejects an unknown key, a value that is not an array, and a list on a plain folder (a project made a plain folder again keeps its list).
 - `PATCH /api/v1/folders/:id` with `folder: { features: [...] }` (an empty array turns everything off). Member role and above; a viewer gets 403. `FolderBlueprint` returns `features` (the enabled list) on a project and `null` on a plain folder.
 - Frontend: `frontend/src/data/projectFeature.ts` holds the keys, labels and groups and the helpers `projectFeatureOn`, `enabledProjectFeatures`, `toggleProjectFeature` and `quickAddTypesOf`; each page in `components/file-manager/projectSections.ts` names its `feature` (a test keeps the two lists in step). `Folder.features` is in `types/index.ts`; `FolderFields.features` in `api/folders.ts`.
 
@@ -27,6 +27,7 @@ Anyone in the Space sees the result; members who can write change it. A failed s
 ## Known limits
 - The folder page's Board, List, Cards, Calendar and Gantt tabs are not switched off; only the Overview sections are. ⌘T and ⌘E still go to their pages.
 - A direct link to a hidden page opens it, and the API still returns that project's records for it.
+- Forms was added to the list after products could save their own list: a product that already saved a list does not show Forms until someone ticks it in **Choose pages...** (products with no saved list show it).
 - Moving or copying a project to another Space does not carry its list.
 - Only the page-level on/off is stored; there is no per-person choice.
 

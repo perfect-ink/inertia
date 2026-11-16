@@ -24,7 +24,7 @@ module Slug
     space workspace documents folders
     tasks events epics initiatives milestones sprints roadmap okrs hierarchy projects
     my-work portfolio calendar timeline inbox ideas workload pivot resources
-    task-table sprint-board project-requests plan objectives-map
+    task-table sprint-board project-requests plan objectives-map forms f
     features pricing about robots sitemap
     settings search dashboard dashboards notifications teams reports files new styleguide
   ].freeze

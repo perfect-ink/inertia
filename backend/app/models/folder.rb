@@ -22,6 +22,7 @@ class Folder < ApplicationRecord
   has_many :ideas, dependent: :nullify
   has_many :io_nodes, dependent: :nullify
   has_many :objectives, dependent: :nullify
+  has_many :task_forms, dependent: :nullify
   has_many :baselines, dependent: :destroy
 
   # A project is a folder of docs shown on the Projects screen; a feature
@@ -33,7 +34,7 @@ class Folder < ApplicationRecord
   # the rail's order. Overview, the Tasks page's files and All files are always
   # on. Mirrors PROJECT_FEATURES in frontend/src/data/projectFeature.ts.
   PROJECT_FEATURES = %w[
-    my_work tasks task_table pivot calendar events
+    my_work tasks task_table pivot calendar events forms
     roadmap timeline milestones initiatives epics sprints hierarchy
     okrs objectives_map ideas resources workload
   ].freeze

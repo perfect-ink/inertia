@@ -5,7 +5,7 @@ import type { Folder } from '@/types'
 // and All files are always on. The rail and the sidebar find each page's
 // feature through `feature` in components/file-manager/projectSections.ts.
 export type ProjectFeature =
-  | 'my_work' | 'tasks' | 'task_table' | 'pivot' | 'calendar' | 'events'
+  | 'my_work' | 'tasks' | 'task_table' | 'pivot' | 'calendar' | 'events' | 'forms'
   | 'roadmap' | 'timeline' | 'milestones' | 'initiatives' | 'epics' | 'sprints' | 'hierarchy'
   | 'okrs' | 'objectives_map' | 'ideas' | 'resources' | 'workload'
 
@@ -29,6 +29,7 @@ export const PROJECT_FEATURE_GROUPS: ProjectFeatureGroup[] = [
     { key: 'pivot', label: 'Pivot' },
     { key: 'calendar', label: 'Calendar' },
     { key: 'events', label: 'Events' },
+    { key: 'forms', label: 'Forms' },
   ] },
   { heading: 'Planning', features: [
     { key: 'roadmap', label: 'Roadmap' },

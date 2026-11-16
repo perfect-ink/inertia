@@ -269,16 +269,17 @@ class SpaceTransfer
     moved.where.not(assignee_id: @workspace.memberships.select(:user_id)).update_all(assignee_id: nil)
   end
 
-  # Tasks, events, epics and milestones can hang directly off a folder (not
-  # through a document). They belong to the old Space and have nowhere to go,
-  # so a folder that has any is not moved.
+  # Tasks, events, epics, milestones and task forms can hang directly off a
+  # folder (not through a document). They belong to the old Space and have
+  # nowhere to go, so a folder that has any is not moved.
   def reject_attached_records!(folder_ids, documents)
     document_task_ids = Task.unscoped.where(document_id: documents.map(&:id)).select(:id)
     attached = {
       "tasks" => Task.unscoped.where(folder_id: folder_ids).where.not(id: document_task_ids),
       "events" => Event.where(folder_id: folder_ids),
       "epics" => Epic.where(folder_id: folder_ids),
-      "milestones" => Milestone.where(folder_id: folder_ids)
+      "milestones" => Milestone.where(folder_id: folder_ids),
+      "forms" => TaskForm.where(folder_id: folder_ids)
     }.select { |_name, records| records.exists? }.keys
     return if attached.empty?
 

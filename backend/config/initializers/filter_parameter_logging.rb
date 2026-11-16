@@ -7,5 +7,7 @@ Rails.application.config.filter_parameters += [
   :passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn,
   :code, :state, :nonce,
   # Agent calls carry document text (POST /mcp, POST /api/v1/agent/tools/:name).
-  :markdown, :arguments
+  :markdown, :arguments,
+  # Form answers are free text from anyone, including people with no account.
+  :answers
 ]

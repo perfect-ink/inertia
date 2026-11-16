@@ -38,7 +38,7 @@ class SlugTest < ActiveSupport::TestCase
   end
 
   test "every top-level app route is reserved" do
-    %w[login signup shared space documents folders tasks events epics initiatives milestones sprints roadmap okrs hierarchy projects api features pricing about].each do |segment|
+    %w[login signup shared space documents folders tasks events epics initiatives milestones sprints roadmap okrs hierarchy projects forms f api features pricing about].each do |segment|
       assert_includes Slug::RESERVED, segment
     end
   end
