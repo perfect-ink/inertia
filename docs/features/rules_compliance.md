@@ -37,7 +37,7 @@ Met. `docs/project/settings.md` exists in the required shape. The Capacitor iOS 
 | Migrations compatible with rollback | Not met, two files | `20260611051106_add_workspace_id_to_tasks` and `20261021000001_create_task_participants` backfill with a bare `execute` in `change`, so they cannot be rolled back. The earlier agent had edited them; those edits were reverted because shipped migrations are never edited. Recovery is documented in `docs/deployment.md` (Rollback). |
 | Initializers (env parsed at start-up only) | Not met | `ENV` is read in `application_controller.rb`, `marketing_controller.rb`, `auth/social_sign_in.rb` and `quip/importer.rb`. Task: `parse-env-in-initializers` (it also asks for `BYPASS_AUTH` to be ignored in production). |
 | Routes without file extensions | Met | |
-| API: serializers and request tests | Partly met | Blueprinter everywhere. No request test for events, event tasks, shares, Quip imports, sign-up and sign-in, team members. Task: `request-tests-for-untested-controllers`. |
+| API: serializers and request tests | Partly met | Blueprinter everywhere. Request tests now exist for the controllers that had none: events, event tasks, shares (and the public `/shared/:token`), Quip imports, sign-in and sign-out (`sessions_controller_test.rb`) and team members; sign-up was already covered by `signup_api_test.rb`. They were written without being run (no gems or database here), so `rails test` must confirm them before this row is Met. Task: `request-tests-for-untested-controllers` (kept until they pass). Two bugs found on the way are in `fix-document-share-lookup-across-spaces` and `quip-import-checks-token-and-folder-before-saving`. |
 
 ### `backlog.md`
 Met. 98 task files in `docs/backlog/` (before this audit's five), all kebab-case with frontmatter and a `priority`; every `depends_on` names a file that exists; there is no shared `docs/backlog.md`. Completed work has feature docs (see `feature-docs.md`).
@@ -144,6 +144,8 @@ Rule text that disagrees with itself, another rule, or this repo. None were chan
 
 ## Tests
 
+Backend request tests added 2026-11-16 (not run here): `backend/test/controllers/events_controller_test.rb`, `event_tasks_controller_test.rb`, `shares_controller_test.rb`, `quip_imports_controller_test.rb`, `sessions_controller_test.rb` and `team_members_controller_test.rb`, with the shared sign-in helper `backend/test/support/request_auth.rb`.
+
 `frontend/src/api/auth.test.ts` (new), and added cases in `frontend/src/data/document.test.ts`, `project.test.ts`, `task.test.ts` and the new `shortcut.test.ts`. The existing component tests for the changed components cover the date, file-URL and error-message changes.
 
 ## Known limits
@@ -154,6 +156,7 @@ Rule text that disagrees with itself, another rule, or this repo. None were chan
 ## History
 
 - Implemented 2026-11-09 on branch `backlog/strictly-follow-all-docs-rules`. Not merged, not deployed.
+- 2026-11-16: request tests for the controllers listed in the API row, on branch `backlog/request-tests-for-untested-controllers`. Not merged, not deployed; `rails test` has not run (no gems or database in that session), only `ruby -c`.
 - An earlier session was cut off by the daily API cost limit and saved its edits as one commit. This one rebased it onto `origin/main`, reviewed every change, and reverted the edits to two shipped migrations and two redundant "Deployment" lines in feature docs. The CI concurrency, Makefile, `.gitignore` (and removing a tracked `.sass-cache` file), README, architecture, `api_layer.md` and code edits were kept after review.
 - Ran offline: the pure unit tests (all pass except `util/shortcuts.test.ts`, which needs a browser `window`); the Jest stand-in for the changed components (all pass except `data/task.test.ts` and `api/documents.test.tsx`, which fail the same way on `origin/main` in the stand-in; `EpicPlanScreen` and `HierarchyScreen` tests were skipped for lack of `@dnd-kit/core`); `make help` and `make -n`.
 - Not run (no network, `node_modules`, database or Docker): `npm run lint`, `tsc -b`, the real Jest run, `rails test`, RuboCop, the Swift build, the Docker-based `make` targets, and any browser check at 375px and desktop in light and dark.

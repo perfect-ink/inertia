@@ -2,6 +2,8 @@
 priority: p2
 depends_on: []
 components: [backend]
+branch: backlog/request-tests-for-untested-controllers
+status: incomplete
 ---
 # Request tests for the controllers that have none
 
@@ -31,3 +33,35 @@ Others are covered only under another test's name (for example documents, folder
 
 - `rails test` passes with a request test for each controller listed.
 - `docs/features/rules_compliance.md` (backend.md API row) is updated.
+
+## Unverified
+
+Done on the branch (Minitest request tests only, no behaviour change), each copying the sign-in and Space setup of `teams_controller_test.rb`:
+
+- `backend/test/controllers/events_controller_test.rb` (list, project scoping, create, update, delete, signed out, viewer, outsider, another Space's event)
+- `backend/test/controllers/event_tasks_controller_test.rb` (link, link twice, foreign task or event, unlink, signed out, viewer, outsider)
+- `backend/test/controllers/shares_controller_test.rb` (create for a document and a folder, show, the public `/api/v1/shared/:token`, a deleted share or document stops working, signed out, viewer, outsider)
+- `backend/test/controllers/quip_imports_controller_test.rb` (start with the token only going to `QuipImportJob`, domain check, list, show, signed out, viewer, outsider)
+- `backend/test/controllers/team_members_controller_test.rb` (add, remove, who may manage, signed out, outsider, another team or Space)
+- `backend/test/controllers/sessions_controller_test.rb` (sign-in, wrong password, unknown email, sign-out revokes the token)
+- `backend/test/support/request_auth.rb` (shared `api_headers` and `create_person`)
+
+`Auth::RegistrationsController` already has `signup_api_test.rb` (201 with a token, 422 messages), so no second file was added. Sign-in's development shortcut stays in `development_login_test.rb`.
+
+Ran: `ruby -c` on every new file, and the offline runner's static pass. Not run (no gems, no database here): `rails test`, RuboCop. The tests were written from reading the controllers, routes, models and blueprints; the least certain ones are the ones that lean on Rails and Devise internals (a missing `share` or `token` param is a 400, an invalid Quip domain is a 422 through `create!`, sign-out revokes the JWT and answers 200 even without a token). If one of those fails, fix the test, not the controller.
+
+Verify on a machine with the gems and a database:
+
+```sh
+cd backend
+rails test test/controllers/events_controller_test.rb
+rails test test/controllers/event_tasks_controller_test.rb
+rails test test/controllers/shares_controller_test.rb
+rails test test/controllers/quip_imports_controller_test.rb
+rails test test/controllers/team_members_controller_test.rb
+rails test test/controllers/sessions_controller_test.rb
+rails test
+bundle exec rubocop test/controllers test/support
+```
+
+Bugs found while reading (not fixed, not tested): `fix-document-share-lookup-across-spaces` and `quip-import-checks-token-and-folder-before-saving` in `docs/backlog/`. The `docs/features/rules_compliance.md` API row is updated; once the tests pass, delete this file and mark that row Met.
