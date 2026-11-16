@@ -2,8 +2,8 @@ module Api
   module V1
     class SharesController < ApplicationController
       include WorkspaceScoped
-      # Shares are found by id across the user's workspaces; the role is checked
-      # against the shared item's own workspace.
+      # Shares are found by id across the user's workspaces (never another
+      # Space's); the role is checked against the shared item's own workspace.
       skip_before_action :require_current_workspace_write!
       skip_before_action :authenticate_user!, only: [ :access ]
       before_action :set_share, only: [ :show, :destroy ]
@@ -36,10 +36,10 @@ module Api
 
       private
 
+      # Only through the shareable's own Space (Share.in_workspaces), so a
+      # share in a Space the user cannot reach is a 404.
       def set_share
-        @share = Share.joins("JOIN folders ON (shares.shareable_type = 'Folder' AND shares.shareable_id = folders.id) OR (shares.shareable_type = 'Document')")
-          .where("(shares.shareable_type = 'Folder' AND folders.workspace_id IN (?)) OR (shares.shareable_type = 'Document')", accessible_workspace_ids)
-          .find(params[:id])
+        @share = Share.in_workspaces(accessible_workspace_ids).find(params[:id])
       end
 
       def find_shareable
@@ -55,7 +55,7 @@ module Api
       end
 
       def share_params
-        params.require(:share).permit(:permission, :folder_id, :document_id)
+        params.require(:share).permit(:permission)
       end
     end
   end

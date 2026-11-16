@@ -2,6 +2,8 @@
 priority: p1
 depends_on: []
 components: [backend]
+branch: backlog/fix-document-share-lookup-across-spaces
+status: incomplete
 ---
 # Document shares can be read by id from any Space, and bad share input ends in a 500
 
@@ -25,3 +27,24 @@ components: [backend]
 
 - In `shares_controller_test.rb`: a stranger's `GET /api/v1/shares/:id` of a document share is 404, a share with `permission: "bogus"` is 422 and creates nothing, and a `share` that carries `folder_id` is ignored or refused, never a 500.
 - The existing tests in that file and in `roadmap_shares_controller_test.rb` still pass.
+
+## Unverified
+
+Built (see [share_links.md](../features/share_links.md)):
+- `Share.in_workspaces(ids)` (model scope): folder shares through `folders.workspace_id`, document shares through the document's folder; `SharesController#set_share` uses it, so a share in another Space is a 404. Roadmap (`Workspace`) shares stay out of `GET /api/v1/shares/:id` exactly as before and keep working through `RoadmapSharesController`.
+- `enum :permission, ..., validate: true`: an unknown permission is a 422 with `errors`. `share_params` permits only `permission`.
+- New `backend/test/controllers/shares_scoping_test.rb` (self-contained, no shared helper). It overlaps in topic with `backend/test/controllers/shares_controller_test.rb` on branch `backlog/request-tests-for-untested-controllers`; whichever merges second may want the two folded together (no file conflict, different names).
+
+Security note for Alex: until this fix, any signed-in person could read the token of any document share by id (and open the document with it). Nothing was rotated or revoked here. Decide whether existing document share links need rotating; there is no UI that creates folder or document shares, so any were made through the API.
+
+Ran: `ruby -c` on the model, controller and test file only. Not run (no Rails, database, network here): the Rails tests, RuboCop, and a real request against a database.
+
+To verify:
+
+```sh
+cd backend && rails test test/controllers/shares_scoping_test.rb test/controllers/roadmap_shares_controller_test.rb
+cd backend && rails test
+cd backend && bundle exec rubocop app/models/share.rb app/controllers/api/v1/shares_controller.rb test/controllers/shares_scoping_test.rb
+```
+
+If `backlog/request-tests-for-untested-controllers` is merged first, also run `rails test test/controllers/shares_controller_test.rb`; that file's cases should still pass.
