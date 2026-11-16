@@ -52,6 +52,7 @@ Anyone can resolve a path in any Space they can open (member, viewer or through 
 - Archived folders are not in the Space tree, so they open through the server lookup.
 - Saving a title makes one alias row per rename; they are removed with the item and are never pruned otherwise.
 - Heading links and the editor's internal links still point at id paths (`docs/features/heading_links.md`); they open and are then rewritten.
+- A link pasted as a path (copied from the address bar after the page rewrites itself) counts as a backlink: `DocumentLink.refresh!` looks each distinct path up with `PathResolver.find` in the document's own Space, old paths included (`docs/features/document_backlinks.md`).
 
 ## History
 - Implemented 2026-11-08 on branch `backlog/hierarchical-urls`, not merged or deployed.
