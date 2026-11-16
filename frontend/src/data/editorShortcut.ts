@@ -38,10 +38,9 @@ export interface EditorShortcut {
 
 // The keystrokes EditorShortcuts binds, in the order the doc and the cheat sheet
 // list them. The code block takes Notes' own ⌘⇧M ("Monospaced"): the Monospace
-// paragraph style and the code block are the same thing (Alex, 2026-11-09, backlog
-// task code-blocks-with-language-and-syntax-highlighting). The paragraph-style
-// keys (paragraph-style-shortcuts) bind ⌘⇧M too; when that branch merges, the
-// Monospace style must BE the code block, not a second thing on the same key.
+// paragraph style and the code block are the same thing (Alex, 2026-11-09), so the
+// Style menu's Monospace makes a code block and shows this key
+// (data/paragraphStyleShortcut.ts, keysOfStyle), and the row is labelled with both names.
 // TipTap's own ⌘⌥C is the browsers' inspector, so it is dropped (REPLACED_DEFAULTS).
 // ⌘K and ⌥⌘T are also global shortcuts: inside the document the editor wins
 // (GLOBAL_CLASHES below).
@@ -60,7 +59,7 @@ export const EDITOR_SHORTCUTS: EditorShortcut[] = [
   // move-paragraph keys stand in.
   { action: 'moveUp', label: 'Move list item up', keys: '⌃⌘↑', tiptap: 'Ctrl-Meta-ArrowUp', win: { keys: 'Ctrl+Shift+↑', tiptap: 'Mod-Shift-ArrowUp' } },
   { action: 'moveDown', label: 'Move list item down', keys: '⌃⌘↓', tiptap: 'Ctrl-Meta-ArrowDown', win: { keys: 'Ctrl+Shift+↓', tiptap: 'Mod-Shift-ArrowDown' } },
-  { action: 'codeBlock', label: 'Code block', keys: '⌘⇧M', tiptap: 'Mod-Shift-m' },
+  { action: 'codeBlock', label: 'Code block (Monospace)', keys: '⌘⇧M', tiptap: 'Mod-Shift-m' },
   { action: 'link', label: 'Insert link', keys: '⌘K', tiptap: 'Mod-k' },
   // Ctrl+Alt+T opens a terminal on many Linux desktops and is AltGr+T on European Windows
   // layouts, so Windows and Linux have the toolbar button only.

@@ -12,7 +12,7 @@ import {
 } from '@/data/customParagraphStyle'
 import { applyCustomParagraphStyle } from '@/util/customParagraphStyleCommand'
 import { applyParagraphStyle } from '@/util/paragraphStyleCommand'
-import { shortcutOfStyle } from '@/data/paragraphStyleShortcut'
+import { keysOfStyle } from '@/data/paragraphStyleShortcut'
 import { shortcutLabel } from '@/util/shortcuts'
 
 // The options that open the style forms; they are commands, not styles.
@@ -26,8 +26,8 @@ function currentBlock(editor: Editor) {
   return { type: parent.type.name, attrs: parent.attrs as BlockAttrs }
 }
 
-// The style of the block the cursor is in: a built-in style's id, a custom
-// style's key ("custom-<id>"), or '' for a block that has none.
+// The style of the block the cursor is in: a built-in style's id (a code block is
+// Monospace), a custom style's key ("custom-<id>"), or '' for a block that has none.
 function currentStyle(editor: Editor): string {
   const { type, attrs } = currentBlock(editor)
   if (type === 'paragraph' && customStyleIdOfKey(attrs.style) !== null) return attrs.style as string
@@ -91,7 +91,7 @@ export default function ParagraphStylePicker({ editor }: { editor: Editor }) {
         {shown === '' && <option value="">Style</option>}
         {isTheirs && <option value={value}>{copyName || 'Custom style'}</option>}
         {PARAGRAPH_STYLES.map((style) => {
-          const keys = shortcutOfStyle(style.id)?.keys
+          const keys = keysOfStyle(style.id)
           return <option key={style.id} value={style.id} data-hint={keys && shortcutLabel(keys)}>{style.label}</option>
         })}
         {customStyles.length > 0 && (

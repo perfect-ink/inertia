@@ -1,3 +1,4 @@
+import { EDITOR_SHORTCUTS } from './editorShortcut'
 import { styleById, type ParagraphStyleId } from './paragraphStyle'
 
 // Keyboard shortcuts for the built-in paragraph styles, in one table. The editor
@@ -6,9 +7,10 @@ import { styleById, type ParagraphStyleId } from './paragraphStyle'
 // fails if the doc drifts. Headings are ⌘⌥ plus their level, 1 to 5 (TipTap's own
 // keys; the menu offers 1 to 3), and the other styles ⌘⌥ plus a digit, like
 // Google Docs: browsers keep ⌘⌥N/T/W for themselves, and ⌃⌘1 to ⌃⌘9 are left free
-// for styles people assign themselves (paragraph-style-keystrokes). Monospace is
-// keyless here: ⌘⇧M is the code block (Alex, 2026-11-09: Monospace and the code block
-// are to become one thing, code-blocks-with-language-and-syntax-highlighting).
+// for styles people assign themselves (paragraph-style-keystrokes). Monospace is not in
+// this table: it is the code block (Alex, 2026-11-09), whose ⌘⇧M is in the editor's
+// shortcut table (data/editorShortcut.ts); `keysOfStyle` reads it from there, so the
+// key is bound, and listed in the ⌘/ sheet, once.
 export interface ParagraphStyleShortcut {
   style: ParagraphStyleId
   // The Mac keystroke as shown to people (⌘ is Ctrl on Windows and Linux).
@@ -39,6 +41,13 @@ export const OTHER_HEADING_SHORTCUTS: { label: string; keys: string }[] = [4, 5]
 // The shortcut a style has, if any.
 export function shortcutOfStyle(style: ParagraphStyleId, shortcuts: ParagraphStyleShortcut[] = PARAGRAPH_STYLE_SHORTCUTS): ParagraphStyleShortcut | undefined {
   return shortcuts.find((s) => s.style === style)
+}
+
+// The keys shown beside a style in the Style menu: its own, or for Monospace the code
+// block's. Undefined when it has none.
+export function keysOfStyle(style: ParagraphStyleId): string | undefined {
+  if (styleById(style).codeBlock) return EDITOR_SHORTCUTS.find((s) => s.action === 'codeBlock')?.keys
+  return shortcutOfStyle(style)?.keys
 }
 
 // Keystrokes that appear more than once (should be none).

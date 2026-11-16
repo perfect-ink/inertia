@@ -68,6 +68,13 @@ test('the code block takes Notes\' ⌘⇧M, the Monospace style\'s key, and the 
   expect(titleWithShortcut('Code block', 'codeBlock', true)).toBe('Code block (⌘⇧M)')
 })
 
+test('the code block and the Monospace style are one row on the sheet, on ⌘⇧M', () => {
+  const rows = documentShortcutRows(true).filter((r) => r.keys === '⌘⇧M')
+  expect(rows).toEqual([{ label: 'Code block (Monospace)', keys: '⌘⇧M' }])
+  expect(documentShortcutRows(false).filter((r) => r.keys === 'Ctrl+Shift+M')).toEqual([{ label: 'Code block (Monospace)', keys: 'Ctrl+Shift+M' }])
+  expect(formatMenuItems().find((i) => i.action === 'codeBlock')?.label).toBe('Code block (Monospace)')
+})
+
 test('the paragraph-style keys other tasks bind are left free', () => {
   const bound = EDITOR_SHORTCUTS.map((s) => s.tiptap)
   for (const reserved of RESERVED_KEYS) expect(bound).not.toContain(reserved.tiptap)

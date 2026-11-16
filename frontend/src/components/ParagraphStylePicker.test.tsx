@@ -48,6 +48,7 @@ function fakeEditor(parent: { type: { name: string }; attrs: Record<string, unkn
     focus: () => chain,
     setHeading: (arg) => { calls.push(`heading:${(arg as { level: number }).level}`); return chain },
     setParagraph: () => { calls.push('paragraph'); return chain },
+    setCodeBlock: () => { calls.push('codeBlock'); return chain },
     updateAttributes: (_type, attrs) => { calls.push(`style:${(attrs as { style: string }).style}`); attributes.push(attrs as Record<string, unknown>); return chain },
     run: () => true,
   }
@@ -73,10 +74,29 @@ test('shows the style of the block under the cursor', () => {
   expect(screen.getByLabelText('Paragraph style')).toHaveValue('quote')
 })
 
-test('a block that is not a styled paragraph or heading 1-3 shows a placeholder', () => {
-  const { editor } = fakeEditor({ type: { name: 'codeBlock' }, attrs: {} })
+test('a block that is not a styled paragraph, heading 1-3 or code block shows a placeholder', () => {
+  const { editor } = fakeEditor({ type: { name: 'bulletList' }, attrs: {} })
   render(<ParagraphStylePicker editor={editor} />)
   expect(screen.getByLabelText('Paragraph style')).toHaveValue('')
+})
+
+test('a code block shows as Monospace, with or without a language', () => {
+  const { editor } = fakeEditor({ type: { name: 'codeBlock' }, attrs: { language: 'ruby' } })
+  const { unmount } = render(<ParagraphStylePicker editor={editor} />)
+  expect(screen.getByLabelText('Paragraph style')).toHaveValue('monospace')
+  unmount()
+  render(<ParagraphStylePicker editor={fakeEditor({ type: { name: 'codeBlock' }, attrs: {} }).editor} />)
+  expect(screen.getByLabelText('Paragraph style')).toHaveValue('monospace')
+})
+
+test('choosing Monospace makes a code block rather than setting a paragraph style, and another style takes it back', () => {
+  const { editor, calls, attributes } = fakeEditor({ type: { name: 'paragraph' }, attrs: { style: 'body' } })
+  render(<ParagraphStylePicker editor={editor} />)
+  fireEvent.change(screen.getByLabelText('Paragraph style'), { target: { value: 'monospace' } })
+  expect(calls).toEqual(['codeBlock'])
+  expect(attributes).toEqual([])
+  fireEvent.change(screen.getByLabelText('Paragraph style'), { target: { value: 'body' } })
+  expect(calls).toEqual(['codeBlock', 'paragraph', 'style:body'])
 })
 
 test('choosing a heading sets the level; choosing a named style sets a paragraph with that style and drops any custom copy', () => {
@@ -199,7 +219,7 @@ test('the Manage list closes without changing anything', () => {
   expect(calls).toEqual([])
 })
 
-test('each style that has a key shows it beside its name in the list, and Caption shows none', () => {
+test('each style that has a key shows it beside its name in the list, Monospace the code block\'s, and Caption none', () => {
   const { editor } = fakeEditor({ type: { name: 'paragraph' }, attrs: { style: 'body' } })
   const { container } = render(<ParagraphStylePicker editor={editor} />)
   fireEvent.click(container.querySelector('.ui-select') as HTMLElement)
@@ -207,6 +227,6 @@ test('each style that has a key shows it beside its name in the list, and Captio
   expect(hints('Title')).toBe('⌘⌥7')
   expect(hints('Heading 1')).toBe('⌘⌥1')
   expect(hints('Body')).toBe('⌘⌥0')
-  expect(hints('Monospace')).toBeUndefined()
+  expect(hints('Monospace')).toBe('⌘⇧M')
   expect(hints('Caption')).toBeUndefined()
 })

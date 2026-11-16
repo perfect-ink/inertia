@@ -17,7 +17,6 @@ import Underline from '@tiptap/extension-underline'
 import Strike from '@tiptap/extension-strike'
 import Code from '@tiptap/extension-code'
 import OrderedList from '@tiptap/extension-ordered-list'
-import CodeBlock from '@tiptap/extension-code-block'
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import { TextSelection } from '@tiptap/pm/state'
 import TiptapImage from '@tiptap/extension-image'
@@ -91,6 +90,7 @@ import { DashedList, StyledListItem } from '@/extensions/DashedList'
 import { WorkspaceTaskList } from '@/extensions/WorkspaceTaskList'
 import { DocumentLink } from '@/extensions/DocumentLink'
 import { WorkspaceTaskItem } from '@/extensions/WorkspaceTaskItem'
+import { CodeBlockLanguage } from '@/extensions/CodeBlockLanguage'
 import { EditorShortcuts } from '@/extensions/EditorShortcuts'
 import { withoutShortcuts } from '@/extensions/withoutShortcuts'
 import { replacedKeys, titleWithShortcut } from '@/data/editorShortcut'
@@ -106,6 +106,7 @@ import { usePageTitle } from '@/hooks/usePageTitle'
 import { idPath } from '@/data/path'
 import { useFollowDocumentLinks, useScrollToHeading } from '@/hooks/useHeadingLinks'
 import { relinkBrokenLink, removeBrokenLink, useBrokenLinks, type BrokenLink } from '@/hooks/useBrokenLinks'
+import { monospaceToCodeBlocks } from '@/data/codeBlock'
 import { extractTitle, buildInitialContent, selectionTaskTitle, taskListContent } from '@/data/document'
 import { attachmentContent, pastedFiles, uploadProblem } from '@/data/attachment'
 import { colorForUserId } from '@/util/color'
@@ -117,7 +118,7 @@ const ShortcutStrike = withoutShortcuts(Strike, replacedKeys('strike'))
 // dropped from it, so the key stays free for the dashed list (data/editorShortcut.ts).
 const ShortcutBulletList = withoutShortcuts(DashedList, replacedKeys('bulletList'))
 const ShortcutOrderedList = withoutShortcuts(OrderedList, replacedKeys('orderedList'))
-const ShortcutCodeBlock = withoutShortcuts(CodeBlock, replacedKeys('codeBlock'))
+const ShortcutCodeBlock = withoutShortcuts(CodeBlockLanguage, replacedKeys('codeBlock'))
 
 // Enforce: document always starts with a heading followed by body content
 const CustomDocument = TiptapDocument.extend({ content: 'heading block*' })
@@ -324,7 +325,8 @@ export default function DocumentScreen({ id }: { id?: number }) {
       return
     }
     if (doc.content) {
-      editor.commands.setContent(doc.content)
+      // Monospace paragraphs from before they were the code block open as code blocks.
+      editor.commands.setContent(monospaceToCodeBlocks(doc.content))
     } else {
       const initial = buildInitialContent(doc.title)
       editor.commands.setContent(initial)

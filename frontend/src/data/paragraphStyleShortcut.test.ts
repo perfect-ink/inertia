@@ -1,13 +1,14 @@
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import { PARAGRAPH_STYLES, styleById } from './paragraphStyle'
-import { OTHER_HEADING_SHORTCUTS, PARAGRAPH_STYLE_SHORTCUTS, duplicateStyleShortcuts, shortcutOfStyle, styleShortcutRows } from './paragraphStyleShortcut'
+import { EDITOR_SHORTCUTS } from './editorShortcut'
+import { OTHER_HEADING_SHORTCUTS, PARAGRAPH_STYLE_SHORTCUTS, duplicateStyleShortcuts, keysOfStyle, shortcutOfStyle, styleShortcutRows } from './paragraphStyleShortcut'
 
 // Keys the editor gives to something else (TipTap's defaults, and the Apple Notes
 // map in docs/keyboard-shortcuts.md that the editor is being moved to), so a
 // style never takes one of them. ⌘⌥1 to ⌘⌥5 are the headings, and ⌘⌥0 is Body. ⌘⇧M
-// is the code block, which Monospace is to become (Alex, 2026-11-09), so Monospace
-// has no key of its own.
+// is the code block, which Monospace is (Alex, 2026-11-09), so Monospace has no row
+// of its own and shows the code block's key.
 const KEYS_FOR_OTHER_THINGS = [
   'Mod-Alt-4', 'Mod-Alt-5', // Heading 4 and 5
   'Mod-Shift-m', // code block
@@ -32,8 +33,12 @@ test('every shortcut is for a built-in style and is Cmd+Opt plus a digit, so nev
   }
 })
 
-test('Monospace has no key while Cmd+Shift+M is the code block', () => {
+test('Monospace is the code block: no row of its own, and the Style menu shows the code block\'s Cmd+Shift+M', () => {
   expect(shortcutOfStyle('monospace')).toBeUndefined()
+  expect(keysOfStyle('monospace')).toBe('⌘⇧M')
+  expect(keysOfStyle('monospace')).toBe(EDITOR_SHORTCUTS.find((s) => s.action === 'codeBlock')?.keys)
+  expect(keysOfStyle('title')).toBe('⌘⌥7')
+  expect(keysOfStyle('caption')).toBeUndefined()
 })
 
 test('headings keep their TipTap key, Mod-Alt plus the level', () => {
@@ -42,7 +47,7 @@ test('headings keep their TipTap key, Mod-Alt plus the level', () => {
   for (const shortcut of headings) expect(shortcut.tiptap).toBe(`Mod-Alt-${styleById(shortcut.style).heading}`)
 })
 
-test('Title, Subtitle, Body and Quote are bound here; Caption and Monospace have no key yet', () => {
+test('Title, Subtitle, Body and Quote are bound here; Caption has no key yet and Monospace is the code block', () => {
   const bound = PARAGRAPH_STYLE_SHORTCUTS.filter((s) => s.boundBy === 'styles')
   expect(bound.map((s) => [s.style, s.keys])).toEqual([['title', '⌘⌥7'], ['subtitle', '⌘⌥8'], ['body', '⌘⌥0'], ['quote', '⌘⌥9']])
   expect(shortcutOfStyle('caption')).toBeUndefined()

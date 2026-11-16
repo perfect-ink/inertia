@@ -134,6 +134,10 @@ const DocumentLink = Node.create({
   },
 });
 
+// CodeBlock is TipTap's own, with its `language` attribute. The editor's CodeBlockLanguage
+// (frontend/src/extensions/CodeBlockLanguage.ts) adds only a language menu and syntax
+// colors to it, no attribute, so nothing is mirrored here. (Monospace paragraphs becoming
+// code blocks is done on load, in codeBlock.ts.)
 export const schemaExtensions = [
   CustomDocument, Paragraph, Text, HardBreak,
   Bold, Italic, Underline, Strike, Code,

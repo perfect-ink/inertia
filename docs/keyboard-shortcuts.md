@@ -53,7 +53,7 @@ Keys the editor binds:
 | `⌘[` | `Ctrl+[` | Outdent list item (on a checklist line it takes the line out of the list, like Shift+Tab) |
 | `⌃⌘↑` | `Ctrl+Shift+↑` | Move list item up (bulleted, numbered or checklist; within its own list) |
 | `⌃⌘↓` | `Ctrl+Shift+↓` | Move list item down |
-| `⌘⇧M` | `Ctrl+Shift+M` | Code block (Apple Notes' Monospaced key; the Monospace paragraph style and the code block are one thing, see below) |
+| `⌘⇧M` | `Ctrl+Shift+M` | Code block (Monospace) (Apple Notes' Monospaced key; the Monospace paragraph style and the code block are one thing, see below) |
 | `⌘K` | `Ctrl+K` | Insert link (opens the link dialog; in a document the editor wins over the global quick-add) |
 | `⌥⌘T` | (none) | Insert table (Mac only; on Windows and Linux use the toolbar button, see below) |
 | `⌘\` | `Ctrl+\` | Clear formatting (drops bold, italic, links and the like, and turns the block back into plain text) |
@@ -76,7 +76,7 @@ Keys that already matched Apple Notes or Google Docs and are bound by TipTap's o
 
 Notes on the choices:
 
-- The code block is `⌘⇧M`, Apple Notes' own "Monospaced" key. Alex decided on 2026-11-09 that the code block and the Monospace paragraph style are the same thing, so they share the key (`paragraph-style-shortcuts` also binds `⌘⇧M` to the Monospace style, set on 2026-11-06). Until that branch merges, `⌘⇧M` makes a code block here and the Monospace style has no key. When it merges, the Monospace style must become the code block, with a language and syntax highlighting, so the key does one thing: that unification is the backlog task `code-blocks-with-language-and-syntax-highlighting`. In Chrome on a Mac, `⌘⇧M` is the browser's profile menu, so it may not reach the page there. TipTap's own `⌘⌥C` is the browsers' inspector and is dropped.
+- The code block is `⌘⇧M`, Apple Notes' own "Monospaced" key. Alex decided on 2026-11-09 that the code block and the Monospace paragraph style are the same thing, so they share the key: choosing Monospace in the Style menu makes a code block (the menu shows `⌘⇧M` beside it), and a code block shows as Monospace there. The sheet and the Format menu list it once, as "Code block (Monospace)". Each block has a language menu and syntax colors (`docs/features/code_blocks.md`). In Chrome on a Mac, `⌘⇧M` is the browser's profile menu, so it may not reach the page there. TipTap's own `⌘⌥C` is the browsers' inspector and is dropped.
 - Apple Notes' `⌘⇧T` / `⌘⇧H` / `⌘⇧J` / `⌘⇧B` (Title, Heading, Subheading, Body) are deliberately not bound. Title is a style of its own here, not Heading 1, and Alex's style keys are `⌘⌥` and a digit (`⌘⌥7` Title, `⌘⌥8` Subtitle, `⌘⌥9` Quote, `⌘⌥0` Body; `paragraph-style-shortcuts`). `⌘⇧T` and `⌘⇧J` would also fire the global New task and New idea, whose handler ignores Shift, and browsers keep `⌘⇧T`, `⌘⇧B`, `⌘⇧H` and `⌘⇧J` for themselves.
 - None of the table's keys is one the global handler matches (a test reads `Sidebar.tsx` for that). Browsers keep `⌘[` and `⌘]` for Back and Forward and Safari keeps `⌘⇧L` for its sidebar, so in the editor those depend on the page being allowed to take them first; see the feature doc's known limits.
 - `⌘⇧8` (Dashed list, held for the dashed list block's key) and `⌘⌥7`/`8`/`9` are reserved for the tasks that bind them (`RESERVED_KEYS` in the data file), and the table can't take them.
@@ -98,7 +98,7 @@ The built-in paragraph styles (see `docs/features/paragraph_styles.md`) have `�
 | `⌘⌥9` | Quote | the style table |
 | `⌘⌥4`, `⌘⌥5` | Heading 4, 5 | TipTap's Heading (these have no entry in the Style menu) |
 
-Caption and Monospace have no key. `⌘⇧M` stays the code block: Alex decided on 2026-11-09 that Monospace and the code block are one thing, and making them one is `code-blocks-with-language-and-syntax-highlighting`; until then the Monospace style is chosen from the menu. The editor allows headings 1 to 5. macOS Zoom, if switched on in System Settings, takes `⌥⌘8` before the page does.
+Caption has no key. Monospace is the code block, so it has `⌘⇧M` (Alex decided on 2026-11-09 that they are one thing; see `docs/features/code_blocks.md`), which the Style menu shows beside it. The editor allows headings 1 to 5. macOS Zoom, if switched on in System Settings, takes `⌥⌘8` before the page does.
 
 Task items (`frontend/src/extensions/WorkspaceTaskItem.tsx`):
 
@@ -140,7 +140,7 @@ The rest of the work is split into tasks in `docs/backlog/`: `editor-vs-global-s
 | --- | --- | --- | --- | --- |
 | Title / Heading / Subheading / Body | `⌘⇧T` / `⌘⇧H` / `⌘⇧J` / `⌘⇧B` | (none) | not bound: Alex's style keys `⌘⌥7`, `⌘⌥8`, `⌘⌥1`–`3`, `⌘⌥0` replace them (see the notes under Document editor) | `paragraph-style-shortcuts` |
 | Heading 6 | (none) | `⌘⌥6` | Docs key | the editor allows Headings 1 to 5 only, so `⌘⌥6` does nothing (`paragraph-style-shortcuts` enables level 6) |
-| Monospaced | `⌘⇧M` | (none) | `⌘⇧M`, the code block (Monospace and the code block are one thing, Alex 2026-11-09) | built as the code block; the Monospace style takes the same block when `paragraph-style-shortcuts` merges (`code-blocks-with-language-and-syntax-highlighting`) |
+| Monospaced | `⌘⇧M` | (none) | `⌘⇧M`, the code block (Monospace and the code block are one thing, Alex 2026-11-09) | built: the code block and the Monospace style are one thing on this key (`docs/features/code_blocks.md`) |
 | Dashed list | `⌘⇧8` | (bullets) | **`⌘⇧8`** dashed list (Notes wins) | `dashed-list-block` (`⌘⇧8` is free: the bullet list no longer takes it) |
 | Insert link | `⌘K` | `⌘K` | `⌘K` inside the editor | `editor-vs-global-shortcut-clashes` (`⌘K` is the global quick-add) |
 | Table | `⌥⌘T` | (none) | `⌥⌘T` | `editor-vs-global-shortcut-clashes`: in a browser `⌥⌘T` is the global New task, so it can't be bound until that is settled |

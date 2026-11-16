@@ -14,6 +14,7 @@
 import * as Y from "yjs";
 import { prosemirrorJSONToYDoc, yDocToProsemirrorJSON } from "y-prosemirror";
 import type { onLoadDocumentPayload, onStoreDocumentPayload } from "@hocuspocus/server";
+import { monospaceToCodeBlocks } from "./codeBlock.js";
 import { schema } from "./schema.js";
 import type { AuthContext } from "./auth.js";
 
@@ -32,8 +33,9 @@ export async function onLoadDocument({ document, context }: onLoadDocumentPayloa
   const fragment = document.getXmlFragment(FRAGMENT);
   if (fragment.length > 0) return; // already seeded by an earlier connection this process
 
+  // Monospace paragraphs from before they were the code block open as code blocks.
   const json = context.initialContent && Object.keys(context.initialContent).length
-    ? context.initialContent
+    ? monospaceToCodeBlocks(context.initialContent)
     : EMPTY_DOC_JSON;
 
   const seeded = prosemirrorJSONToYDoc(schema, json, FRAGMENT);

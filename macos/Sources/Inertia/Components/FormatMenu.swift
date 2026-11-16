@@ -53,7 +53,7 @@ enum FormatMenu {
             FormatItem("Heading 3", "heading3", "⌘⌥3"),
             FormatItem("Heading 4", "heading4", "⌘⌥4"),
             FormatItem("Heading 5", "heading5", "⌘⌥5"),
-            FormatItem("Code block", "codeBlock", "⌘⇧M"),
+            FormatItem("Code block (Monospace)", "codeBlock", "⌘⇧M"),
         ],
         [
             FormatItem("Bulleted list", "bulletList", "⌘⇧7"),

@@ -11,14 +11,14 @@ The document editor's formatting keystrokes follow Apple Notes, with Google Docs
 | `⌘⇧U` | Mark the checklist line done, or not done again |
 | `⌘]` / `⌘[` | Indent / outdent a list item (on a checklist line, `⌘[` takes it out of the list) |
 | `⌃⌘↑` / `⌃⌘↓` | Move a list item up / down within its list |
-| `⌘⇧M` | Code block (Notes' Monospaced key) |
+| `⌘⇧M` | Code block, which is also the Monospace style (Notes' Monospaced key) |
 | `⌘\` | Clear formatting (marks off, block back to plain text) |
 
 Already matching and left as they were: `⌘B` `⌘I` `⌘U`, `⌘Z` / `⌘⇧Z`, `⌘⌥1`–`5` headings, `⌘⌥0` normal text, `⌘E` inline code, `Shift+Enter`, `⌘⇧V` paste without formatting (ProseMirror), Tab and Shift+Tab in lists. The old TipTap defaults the table replaces (`⌘⇧S`, `⌘⇧8` bullets, `⌘⇧7` numbers, `⌥⌘C`) are removed so one keystroke does one thing. The `⌘/` sheet lists all of them under "In a document", and the toolbar tooltips show the key for strikethrough, lists, task list and code block. The full tables, and the rows not built, are in `docs/keyboard-shortcuts.md`.
 
 Choices made:
 - The code block is `⌘⇧M`, Notes' own key (Alex, 2026-11-09): the code block and the Monospace paragraph style are the same thing. `⌘⇧M` was held back for the Monospace style (`RESERVED_KEYS`); that guard is lifted for this one key, and `data/editorShortcut.test.ts` pins it. The temporary `⌘⌥⇧C` is gone.
-- Merge hazard: `backlog/paragraph-style-shortcuts` also binds `⌘⇧M`, to the Monospace style. When it merges, the Monospace style must BE the code block (choosing Monospace in the Style menu makes a code block, a code block shows as Monospace), not a second thing on the same key. That unification, plus a language menu and syntax highlighting, is the backlog task `code-blocks-with-language-and-syntax-highlighting` (already on `main`). Until then `⌘⇧M` makes a code block here and Monospace paragraphs are a separate style.
+- The Monospace style and the code block are one thing (done on `backlog/code-blocks-with-language-and-syntax-highlighting`, see [code_blocks.md](code_blocks.md)): the Style menu's Monospace makes a code block and shows `⌘⇧M`, a code block shows as Monospace, and the key is bound once (the `paragraph-style-shortcuts` task bound no key of its own to Monospace). The `⌘/` sheet and the Mac Format menu list the row as "Code block (Monospace)"; each block also has a language menu and syntax colors.
 - Notes' Title / Heading / Subheading / Body keys (`⌘⇧T` `⌘⇧H` `⌘⇧J` `⌘⇧B`) are not bound: Title is a style of its own here, Alex's style keys are `⌘⌥` plus a digit, `⌘⇧T` and `⌘⇧J` would also fire the global New task and New idea (the handler ignores Shift), and browsers keep all four.
 - Left to other backlog tasks, with their keys reserved: dashed list `⌘⇧8`, insert link `⌘K` and table `⌥⌘T` (both clash with global shortcuts), the paragraph-style keys `⌘⌥7`/`8`/`9` and `⌘⇧M`. Not built: alignment, superscript / subscript (each needs an extension, a stored attribute and the collab schema) and comment (`comments-on-documents`).
 
@@ -43,5 +43,6 @@ Anyone who can edit the document. No permission changes.
 
 ## History
 - Implemented 2026-11-09 on branch `backlog/rebind-editor-shortcuts-to-apple-notes-map` (rebuilt on current main from the 2026-10-19 branch and a cut-off attempt). Not merged or deployed.
-- Changed 2026-11-09 on Alex's decision: the code block takes Notes' `⌘⇧M`, replacing the temporary key it first shipped on. Not implemented: the Monospace style and the code block being one thing, a language per block and syntax highlighting (`code-blocks-with-language-and-syntax-highlighting`).
+- Changed 2026-11-09 on Alex's decision: the code block takes Notes' `⌘⇧M`, replacing the temporary key it first shipped on.
+- Changed 2026-11-16 on branch `backlog/code-blocks-with-language-and-syntax-highlighting` (not merged): the row is labelled "Code block (Monospace)" on the sheet, in the Mac Format menu and in `docs/keyboard-shortcuts.md`, and the Monospace style, a language per block and syntax colors exist (see [code_blocks.md](code_blocks.md)).
 - Not verified: lint, `tsc -b`, the real Jest suite (including `EditorShortcuts.test.ts`, which needs TipTap and was never run), and every keystroke in a browser at desktop and 375px, light and dark. The key table, commands, cheat sheet rows and doc test ran in an offline Jest stand-in.

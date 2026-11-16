@@ -1,0 +1,62 @@
+@use 'tokens' as *;
+
+// A code block in a document (CodeBlockView.tsx): a card with the language menu in a
+// bar above the code. The bar is part of the block, so the menu opening never moves
+// the text. The code's own box (`pre`) is styled with the rest of the document's
+// content in view/document/ProseMirror.scss.
+//
+// The token colors are the theme's status text colors, which follow light and dark and
+// are checked at 4.5:1 (WCAG AA) on the page, a card and a muted surface, which is what
+// a block sits on (docs/features/status_colors.md). CodeBlockView.test.tsx fails if a
+// token color is anything else. A token is a decoration, so these are the only styles
+// it needs.
+@layer app.components {
+  .code_block {
+    border-radius: radius('lg');
+    background: color(muted);
+
+    &-bar {
+      display: flex;
+      justify-content: flex-end;
+      padding: space(2) space(2) 0;
+      user-select: none;
+    }
+
+    // Compact on a pointer, touch-sized on a phone or tablet (design principle 1).
+    &-language {
+      min-height: space(8);
+
+      @media (pointer: coarse) {
+        min-height: space(10);
+      }
+    }
+  }
+
+  .code_token {
+    &--comment {
+      color: color(status-gray-text);
+      font-style: italic;
+    }
+
+    &--string {
+      color: color(status-green-text);
+    }
+
+    &--number,
+    &--literal {
+      color: color(status-orange-text);
+    }
+
+    &--keyword {
+      color: color(status-purple-text);
+    }
+
+    &--name {
+      color: color(status-blue-text);
+    }
+
+    &--attribute {
+      color: color(status-yellow-text);
+    }
+  }
+}

@@ -9,6 +9,16 @@ test('every style is a heading level or a paragraph style, not both', () => {
   for (const style of PARAGRAPH_STYLES) expect(Boolean(style.heading) !== Boolean(style.paragraphStyle)).toBe(true)
 })
 
+test('Monospace is the code block, and the only style that is', () => {
+  expect(PARAGRAPH_STYLES.filter((s) => s.codeBlock).map((s) => s.id)).toEqual(['monospace'])
+  expect(styleById('monospace').codeBlock).toBe(true)
+})
+
+test('a code block reads as Monospace, and so does a paragraph still styled monospace', () => {
+  expect(styleOfBlock('codeBlock', {})).toBe('monospace')
+  expect(styleOfBlock('paragraph', { style: 'monospace' })).toBe('monospace')
+})
+
 test('styleOfBlock reads headings 1-3 and paragraph styles, defaulting plain paragraphs to body', () => {
   expect(styleOfBlock('heading', { level: 2 })).toBe('heading2')
   expect(styleOfBlock('heading', { level: 5 })).toBeNull()

@@ -115,11 +115,16 @@
       font-size: 0.875em;
     }
 
+    // The code of a code block. The card around it, with the language menu in a bar above,
+    // is .code_block (components/editors/CodeBlockView.scss), so this has no background of
+    // its own. Monospace paragraphs and code blocks are one thing, so code has no other
+    // look. Long lines wrap (TipTap's node view sets pre-wrap), so a block does not scroll
+    // sideways on a phone.
     pre {
-      padding: space(4);
+      margin: 0;
+      padding: space(2) space(4) space(4);
       overflow-x: auto;
-      border-radius: radius('lg');
-      background: color(muted);
+      background: transparent;
 
       code {
         padding: 0;

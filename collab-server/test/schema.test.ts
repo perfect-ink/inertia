@@ -41,6 +41,12 @@ describe("schema", () => {
     expect(schema.nodeFromJSON({ type: "bulletList", content: [item] }).attrs).toEqual({ listStyle: "bullet" });
   });
 
+  it("keeps the language of a code block, and a block with none is plain text", () => {
+    const code = [{ type: "text", text: "puts 1" }];
+    expect(schema.nodeFromJSON({ type: "codeBlock", attrs: { language: "ruby" }, content: code }).attrs).toEqual({ language: "ruby" });
+    expect(schema.nodeFromJSON({ type: "codeBlock", content: code }).attrs).toEqual({ language: null });
+  });
+
   it("keeps the target of a document link inside a paragraph", () => {
     const paragraph = schema.nodeFromJSON({
       type: "paragraph",

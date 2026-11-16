@@ -7,6 +7,7 @@ function fakeEditor(result = true) {
     focus: () => chain,
     setHeading: (arg) => { calls.push(`heading:${(arg as { level: number }).level}`); return chain },
     setParagraph: () => { calls.push('paragraph'); return chain },
+    setCodeBlock: () => { calls.push('codeBlock'); return chain },
     updateAttributes: (type, attrs) => { calls.push(`${type}:${(attrs as { style: string }).style}`); return chain },
     run: () => result,
   }
@@ -23,6 +24,13 @@ test('a named style sets a plain paragraph, then its style', () => {
   const { editor, calls } = fakeEditor()
   expect(applyParagraphStyle(editor, 'quote')).toBe(true)
   expect(calls).toEqual(['paragraph', 'paragraph:quote'])
+})
+
+test('Monospace makes a code block, not a paragraph with a style, and has no key of its own here', () => {
+  const { editor, calls } = fakeEditor()
+  expect(applyParagraphStyle(editor, 'monospace')).toBe(true)
+  expect(calls).toEqual(['codeBlock'])
+  expect(Object.keys(paragraphStyleKeymap(editor))).not.toContain('Mod-Shift-m')
 })
 
 test('says so when the block cannot take the style', () => {
