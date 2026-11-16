@@ -6,6 +6,8 @@ import './Timeline.scss'
 import { classNames } from '@/components/ui'
 import { axisTicks, donePercent, shiftedRange, trackWidthPx, weekendSpans, type DragMode, type GanttZoom, type Scheduled } from '@/data/schedule'
 import { linkSides, type BarSide } from '@/data/dependency'
+import { placeStubs, type LinkStub } from '@/data/crossProjectLink'
+import { TimelineStubs } from './TimelineStubs'
 import type { DependencyKind } from '@/types'
 
 // Shared by EpicsPage, InitiativesPage, and FolderDetailPage's per-folder
@@ -138,11 +140,13 @@ function TimelineBar({ item, offsetPct, widthPct, totalDays, onReschedule, onLin
 // bars' month range are left off rather than stretching the axis.
 // `range` pins the axis (the roadmap stacks one Timeline per lane and needs
 // their months to line up); without it the axis fits this list's own dates.
-export function Timeline({ items, milestones = [], range, links = [], onReschedule, onLink, canLink, zoom = 'month', shadeWeekends = false }: {
+export function Timeline({ items, milestones = [], range, links = [], stubs = [], onReschedule, onLink, canLink, zoom = 'month', shadeWeekends = false }: {
   items: Scheduled[]
   milestones?: TimelineMilestone[]
   range?: { start: Date; end: Date }
   links?: TimelineLink[]
+  // Links to a task with no row here (in another project), drawn as arrows leaving or entering a bar.
+  stubs?: LinkStub[]
   // Makes bars draggable (move / resize); absent keeps the chart read-only.
   onReschedule?: TimelineReschedule
   // Shows link handles on each bar side; dropping on another bar's side calls this.
@@ -253,6 +257,7 @@ export function Timeline({ items, milestones = [], range, links = [], onReschedu
       pointsLeft: toX < turnX,
     }]
   })
+  const placedStubs = placeStubs(stubs, bars.map(({ item, offsetPct, widthPct }) => ({ key: item.key ?? String(item.id), offsetPct, widthPct })), ROW_PITCH_REM, ROW_HEIGHT_REM)
   const linksHeight = bars.length * ROW_PITCH_REM - (ROW_PITCH_REM - ROW_HEIGHT_REM)
 
   const today = new Date()
@@ -322,6 +327,7 @@ export function Timeline({ items, milestones = [], range, links = [], onReschedu
               ))}
             </div>
           )}
+          <TimelineStubs stubs={placedStubs} />
           {linking && (
             <svg className="timeline-linking" aria-hidden="true">
               <line x1={linking.x1} y1={linking.y1} x2={linking.x2} y2={linking.y2} className="timeline-linking-line" />

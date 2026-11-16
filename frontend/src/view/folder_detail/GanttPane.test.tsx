@@ -23,17 +23,17 @@ jest.mock('@/api/baselines', () => ({
   useCreateBaseline: () => mockCreateBaseline,
   useDeleteBaseline: () => ({ mutate: jest.fn() }),
 }))
+const defaultDependencies = [
+  { id: 9, predecessor_id: 1, successor_id: 2, kind: 'finish_to_start', created_at: '' },
+  {
+    id: 10, predecessor_id: 1, successor_id: 99, kind: 'finish_to_start', created_at: '',
+    predecessor: { id: 1, title: 'Design', status: 'todo', start_date: '2026-11-01', due_date: '2026-11-05', folder_id: 1 },
+    successor: { id: 99, title: 'Vendor contract', status: 'todo', start_date: null, due_date: '2026-11-03', folder_id: 3 },
+  },
+]
+let mockDependencies: unknown[] = defaultDependencies
 jest.mock('@/api/taskDependencies', () => ({
-  useTaskDependencies: () => ({
-    data: [
-      { id: 9, predecessor_id: 1, successor_id: 2, kind: 'finish_to_start', created_at: '' },
-      {
-        id: 10, predecessor_id: 1, successor_id: 99, kind: 'finish_to_start', created_at: '',
-        predecessor: { id: 1, title: 'Design', status: 'todo', start_date: '2026-11-01', due_date: '2026-11-05', folder_id: 1 },
-        successor: { id: 99, title: 'Vendor contract', status: 'todo', start_date: null, due_date: '2026-11-03', folder_id: 3 },
-      },
-    ],
-  }),
+  useTaskDependencies: () => ({ data: mockDependencies }),
   useCreateTaskDependency: () => mockCreate,
   useDeleteTaskDependency: () => mockDelete,
 }))
@@ -55,7 +55,13 @@ test('draws links between this folder\'s tasks, flags the driving path, and edit
   const items = screen.getAllByText(/waits on/, { selector: 'span.gantt_pane-item-text' })
   expect(items).toHaveLength(2)
   expect(items[0]).toHaveTextContent('Build waits on Design')
-  // The link to a task in another project is listed, with its project, but not drawn.
+  // The link to a task in another product is not an arrow between bars: it is a stub leaving
+  // Design's end, named with the other task and its product, and flagged because its dates break.
+  expect(container.querySelectorAll('.timeline-stub')).toHaveLength(1)
+  expect(container.querySelector('.timeline-stub')).toHaveClass('timeline-stub--end', 'timeline-stub--broken')
+  expect(screen.getByText('Needed by Vendor contract (Billing)')).toBeInTheDocument()
+  expect(screen.getByRole('img', { name: 'Dates break this link by 2 days' })).toBeInTheDocument()
+  // It is also listed, with its product.
   expect(screen.getByRole('heading', { name: 'Other products' })).toBeInTheDocument()
   expect(items[1]).toHaveTextContent('Vendor contract (Billing) waits on Design')
   expect(items[1]).toHaveTextContent('Dates break this link by 2 days')
@@ -73,6 +79,30 @@ test('draws links between this folder\'s tasks, flags the driving path, and edit
   fireEvent.change(screen.getByLabelText('Link type'), { target: { value: 'start_to_start' } })
   fireEvent.click(screen.getByRole('button', { name: 'Add' }))
   expect(mockCreate.mutate).toHaveBeenCalledWith({ predecessor_id: 2, successor_id: 1, kind: 'start_to_start' }, expect.anything())
+})
+
+test('the critical path follows a link to another product, by the other task\'s dates', () => {
+  const link = (id: number, title: string, start_date: string, due_date: string, folder_id: number) => ({ id, title, status: 'todo', start_date, due_date, folder_id })
+  mockDependencies = [{
+    id: 11, predecessor_id: 99, successor_id: 2, kind: 'finish_to_start', created_at: '',
+    predecessor: link(99, 'Vendor contract', '2026-11-01', '2026-11-05', 3),
+    successor: link(2, 'Build', '2026-11-06', '2026-11-20', 1),
+  }]
+  const { container } = render(
+    <QueryClientProvider client={new QueryClient()}>
+      <GanttPane folderId={1} dependencyMode="none" epics={[]} tasks={[tasks[1]]} milestones={[]} folders={folders} />
+    </QueryClientProvider>,
+  )
+  mockDependencies = defaultDependencies
+  // Build waits on the vendor's task, which finishes the day before it starts: the stub enters Build's start.
+  expect(screen.getByText('Waits on Vendor contract (Billing)')).toBeInTheDocument()
+  expect(container.querySelector('.timeline-stub')).toHaveClass('timeline-stub--start', 'timeline-stub--critical')
+  expect(container.querySelector('.timeline-stub')).not.toHaveClass('timeline-stub--broken')
+  expect(container.querySelectorAll('.timeline-bar--critical')).toHaveLength(1)
+
+  fireEvent.click(screen.getByLabelText('Highlight critical path'))
+  expect(container.querySelector('.timeline-stub')).not.toHaveClass('timeline-stub--critical')
+  expect(container.querySelectorAll('.timeline-bar--critical')).toHaveLength(0)
 })
 
 describe('drawing a link by dragging between bar sides', () => {

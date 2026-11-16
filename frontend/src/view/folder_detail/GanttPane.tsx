@@ -12,6 +12,7 @@ import { withBaseline } from '@/data/baseline'
 import { useCreateTaskDependency, useTaskDependencies } from '@/api/taskDependencies'
 import { GANTT_ZOOMS, GANTT_ZOOM_LABEL, ganttTaskKey, groupGanttRows, parseGanttConfig, type GanttGroups, type GanttZoom, type Scheduled } from '@/data/schedule'
 import { DEPENDENCY_MODES, DEPENDENCY_MODE_LABEL, drivingPath, kindFromSides, planReschedule, splitDependencies, type BarSide } from '@/data/dependency'
+import { externalTasks, linkedFolders, linkStubs, movedElsewhere, movedMessage, rescheduledOf } from '@/data/crossProjectLink'
 import { errorMessage } from '@/util/errorMessage'
 import { exportGanttPng } from '@/util/ganttCanvas'
 import { printGantt } from '@/util/printGantt'
@@ -23,6 +24,8 @@ import './GanttPane.scss'
 // milestones they belong to, dependency arrows between this folder's tasks
 // (PM-13), the driving path highlighted (PM-15), and a small editor for the
 // links underneath, which also lists the links to tasks in other projects.
+// Those links are drawn as stubs on the bar, and move the driving path by the
+// other task's dates; a move that shifts tasks in other projects says which.
 // `milestones` are the diamonds; `groups` are the Space's initiatives and
 // milestones, of which only those with an epic or task in this folder get a
 // row; `folders` is the Space's folder tree, to name the other projects.
@@ -45,6 +48,8 @@ export default function GanttPane({ folderId, dependencyMode, epics, tasks, mile
   const updateEpic = useUpdateEpic()
   const updateFolder = useUpdateFolder()
   const [moveError, setMoveError] = useState<string | null>(null)
+  // Tasks the server moved along with a dragged one (`rescheduled` in its response).
+  const [moved, setMoved] = useState<Task[]>([])
   const [exportError, setExportError] = useState<string | null>(null)
   const { data: baselines = [] } = useBaselines(folderId)
   const createBaseline = useCreateBaseline(folderId)
@@ -71,8 +76,10 @@ export default function GanttPane({ folderId, dependencyMode, epics, tasks, mile
     const options = {
       onSettled: () => qc.invalidateQueries({ queryKey: ['folder-contents'] }),
       onError: (error: unknown) => setMoveError(errorMessage(error)),
+      onSuccess: (response: unknown) => setMoved((current) => [...current, ...rescheduledOf(response)]),
     }
     setMoveError(null)
+    setMoved([])
     if (item.key?.startsWith('task-')) {
       const plan = planReschedule(tasks, dependencies, id, startDate, endDate, dependencyMode)
       if ('error' in plan) {
@@ -97,17 +104,23 @@ export default function GanttPane({ folderId, dependencyMode, epics, tasks, mile
   }
 
   const taskIds = useMemo(() => new Set(tasks.map((t) => t.id)), [tasks])
-  // Links with both ends in this folder are drawn; links to another project's
-  // task (one end here) are only listed under the chart. The rest belong to
-  // other charts.
+  // Links with both ends in this folder are drawn between the bars; links to
+  // another project's task (one end here) are drawn as stubs and listed under
+  // the chart. The rest belong to other charts.
   const { internal: dependencies, external: externalDependencies } = useMemo(
     () => splitDependencies(allDependencies, taskIds),
     [allDependencies, taskIds],
   )
+  // A link to another project's task counts on the driving path, by that task's dates.
   const critical = useMemo(
-    () => (showCritical ? drivingPath(tasks, dependencies) : new Set<number>()),
-    [showCritical, tasks, dependencies],
+    () => (showCritical ? drivingPath(tasks, [...dependencies, ...externalDependencies], externalTasks(externalDependencies, taskIds)) : new Set<number>()),
+    [showCritical, tasks, dependencies, externalDependencies, taskIds],
   )
+  const stubs = useMemo(
+    () => linkStubs(externalDependencies, new Map(tasks.map((t) => [t.id, t])), folders, critical),
+    [externalDependencies, tasks, folders, critical],
+  )
+  const movedNote = movedMessage(movedElsewhere(moved, taskIds, folders, linkedFolders(allDependencies)))
   const links = dependencies.map((d) => ({ from: ganttTaskKey(d.predecessor_id), to: ganttTaskKey(d.successor_id), kind: d.kind }))
 
   const rows = groupGanttRows(epics, tasks, critical, groups)
@@ -174,10 +187,12 @@ export default function GanttPane({ folderId, dependencyMode, epics, tasks, mile
         <Button variant="secondary" onClick={saveBaseline} disabled={!baselineName.trim() || createBaseline.isPending}>Save baseline</Button>
       </div>
       <FormError message={moveError} />
+      {movedNote && <p className="gantt_pane-notice" role="status">{movedNote}</p>}
       <Timeline
         milestones={milestones}
         items={withBaseline(rows, baseline)}
         links={links}
+        stubs={stubs}
         onReschedule={reschedule}
         onLink={linkTasks}
         canLink={(item) => Boolean(item.key?.startsWith('task-'))}

@@ -15,6 +15,53 @@
       }
     }
 
+    // Links between projects, under the table: stacked lines that wrap, so they read at 375px.
+    @at-root .portfolio-links {
+      display: flex;
+      flex-direction: column;
+      gap: space(2);
+      max-width: 56rem;
+      @include page-padding;
+    }
+
+    @at-root .portfolio-links-heading {
+      font-weight: 600;
+      @include text('sm');
+    }
+
+    @at-root .portfolio-links-list {
+      display: flex;
+      flex-direction: column;
+      gap: space(3);
+    }
+
+    @at-root .portfolio-link {
+      display: flex;
+      flex-direction: column;
+      gap: space(0.5);
+      min-width: 0;
+      overflow-wrap: anywhere;
+      @include text('sm');
+    }
+
+    @at-root .portfolio-link-muted {
+      color: color(muted-foreground);
+      @include text('xs');
+    }
+
+    @at-root .portfolio-link-warning {
+      display: flex;
+      align-items: center;
+      gap: space(1);
+      color: color(status-red-text);
+      @include text('xs');
+    }
+
+    @at-root .portfolio-link-icon {
+      flex: none;
+      @include icon-size(space(3.5));
+    }
+
     @at-root .portfolio-progress {
       display: flex;
       align-items: center;

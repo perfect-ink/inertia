@@ -52,10 +52,14 @@ type DatedTask = { id: number; start_date?: string | null; due_date: string | nu
 // until a task has no dated predecessor. Uses the dates as entered, so it
 // shows what is driving the plan today rather than re-scheduling anything.
 // Empty when the last task has no predecessors: one task is not a path.
-export function drivingPath(tasks: DatedTask[], dependencies: TaskDependency[]): Set<number> {
+// `others` are tasks that are not on the chart (in another project) but are
+// reached through a link: they can drive a task on the chart, by their dates as
+// the server sent them, and then show up in the path too, but never start it.
+export function drivingPath(tasks: DatedTask[], dependencies: TaskDependency[], others: DatedTask[] = []): Set<number> {
   const dated = new Map(tasks.filter((t) => t.due_date).map((t) => [t.id, t]))
   if (dated.size === 0 || dependencies.length === 0) return new Set()
   const last = [...dated.values()].reduce((a, b) => ((b.due_date as string) > (a.due_date as string) ? b : a))
+  const known = new Map([...others.filter((t) => t.due_date).map((t): [number, DatedTask] => [t.id, t]), ...dated])
 
   const path = new Set<number>([last.id])
   let current = last
@@ -64,7 +68,7 @@ export function drivingPath(tasks: DatedTask[], dependencies: TaskDependency[]):
     let driverDate = ''
     dependencies.forEach((dep) => {
       if (dep.successor_id !== current.id || path.has(dep.predecessor_id)) return
-      const pred = dated.get(dep.predecessor_id)
+      const pred = known.get(dep.predecessor_id)
       if (!pred) return
       const date = linkSides(dep.kind).from === 'end' ? (pred.due_date as string) : (pred.start_date ?? (pred.due_date as string))
       if (date > driverDate) {

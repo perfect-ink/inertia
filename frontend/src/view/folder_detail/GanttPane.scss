@@ -53,6 +53,12 @@
       color: color(status-red-text);
     }
 
+    // Tasks in other projects that a move shifted.
+    @at-root .gantt_pane-notice {
+      color: color(muted-foreground);
+      @include text('sm');
+    }
+
     @at-root .gantt_pane-list {
       display: flex;
       flex-direction: column;

@@ -25,6 +25,14 @@ test('no links, or a last task with no predecessors, is no path', () => {
   expect(drivingPath(tasks, [dep(2, 1)]).size).toBe(0)
 })
 
+test('a task not on the chart can drive one that is, by its own dates, but never starts the path', () => {
+  const tasks = [{ id: 1, start_date: '2026-11-01', due_date: '2026-11-05' }, { id: 2, start_date: '2026-11-06', due_date: '2026-11-10' }]
+  const vendor = { id: 9, start_date: '2026-10-20', due_date: '2026-11-04' }
+  expect([...drivingPath(tasks, [dep(1, 2), dep(9, 2)], [vendor])].sort()).toEqual([1, 2])
+  expect([...drivingPath(tasks, [dep(1, 2), dep(9, 2)], [{ ...vendor, due_date: '2026-11-08' }])].sort()).toEqual([2, 9])
+  expect(drivingPath(tasks, [dep(2, 9)], [{ ...vendor, due_date: '2026-12-31' }]).size).toBe(0)
+})
+
 describe('planReschedule', () => {
   const t = (id: number, start_date: string, due_date: string) => ({ id, title: `T${id}`, start_date, due_date })
   // 1 -> 2 -> 3, each finish-to-start, laid end to end.

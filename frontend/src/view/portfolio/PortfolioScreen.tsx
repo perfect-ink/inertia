@@ -9,6 +9,7 @@ import { usePortfolio } from '@/api/portfolio'
 import { PORTFOLIO_COLUMNS, projectStatusLabel, sortPortfolio, type PortfolioSortKey } from '@/data/project'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { usePaths } from '@/hooks/usePaths'
+import { CrossProjectLinks } from './CrossProjectLinks'
 import '../planning/PlanningScreen.scss'
 import './PortfolioScreen.scss'
 
@@ -75,6 +76,7 @@ export default function PortfolioScreen() {
               </tbody>
             </table>
           )}
+          {rows.length > 0 && <CrossProjectLinks />}
         </div>
       </div>
     </WorkspaceLayout>

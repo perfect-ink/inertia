@@ -8,6 +8,9 @@ jest.mock('react-router-dom', () => ({
 }))
 let mockRows: unknown[]
 jest.mock('@/api/portfolio', () => ({ usePortfolio: () => ({ data: mockRows, isLoading: false }) }))
+// The links between products have their own test (CrossProjectLinks.test.tsx); here there are none.
+jest.mock('@/api/taskDependencies', () => ({ useTaskDependencies: () => ({ data: [] }) }))
+jest.mock('@/api/workspace', () => ({ useWorkspace: () => ({ data: { folders: [] } }) }))
 
 const row = (id: number, name: string, extra = {}) => ({
   id, name, owner_id: null, owner_name: null, project_status: 'active', start_date: '2026-10-01', target_date: '2026-12-01',
@@ -41,4 +44,10 @@ test('with no products it explains how to make one', () => {
   mockRows = []
   render(<PortfolioScreen />)
   expect(screen.getByText(/No products yet/)).toBeInTheDocument()
+})
+
+test('without links between products there is no such section', () => {
+  mockRows = [row(1, 'Alpha')]
+  render(<PortfolioScreen />)
+  expect(screen.queryByRole('heading', { name: 'Links between products' })).not.toBeInTheDocument()
 })

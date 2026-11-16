@@ -5,14 +5,14 @@ import { Button, FormError, IconButton, Input, Select } from '@/components/ui'
 import { useCreateTaskDependency, useDeleteTaskDependency } from '@/api/taskDependencies'
 import { useTaskSearch } from '@/api/tasks'
 import { DEPENDENCY_KINDS, DEPENDENCY_LABEL, NO_PROJECT, externalEnd, linkCandidates, type LinkCandidates } from '@/data/dependency'
+import { brokenNote } from '@/data/crossProjectLink'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { errorMessage } from '@/util/errorMessage'
 import type { DependencyKind, Folder, Task, TaskDependency } from '@/types'
 
 // The links under a folder's Gantt chart: the ones between its own tasks, then
 // the ones to a task in another project (listed with that project and a note
-// when the dates break the link, but not drawn: the chart only has this
-// folder's tasks), and a form to add one. Either side of a new link can be a
+// when the dates break the link; the chart draws them as stubs), and a form to add one. Either side of a new link can be a
 // task found by searching the whole Space, as long as the other is on this
 // chart.
 export function DependencyEditor({ tasks, dependencies, externalDependencies, folders }: {
@@ -96,7 +96,7 @@ export function DependencyEditor({ tasks, dependencies, externalDependencies, fo
                   waitedOn={end.isPredecessor ? other : own}
                   removeLabel={`Remove dependency of ${waiting} on ${waitedOn}`}
                   detail={due ? `${otherTitle} due ${format(parseISO(due), 'MMM d')}` : null}
-                  warning={end.brokenByDays > 0 ? `Dates break this link by ${end.brokenByDays} ${end.brokenByDays === 1 ? 'day' : 'days'}` : null}
+                  warning={end.brokenByDays > 0 ? brokenNote(end.brokenByDays) : null}
                 />
               )
             })}

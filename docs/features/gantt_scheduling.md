@@ -40,7 +40,7 @@ Everything is scoped to the current Space. Task and epic updates need the member
 
 ## Known limits
 - Server enforcement uses the mode of the folder a task sits in directly. A folder's Gantt also lists tasks from its sub-folders and applies the viewed folder's mode in the browser, so set the same mode on a sub-folder if edits made elsewhere should obey it too. A sub-folder that is stricter than the folder being viewed can refuse part of a multi-task shift.
-- Links to tasks in other projects are read by the server too, under the mode of the folder the moved task sits in; the chart's browser-side check only sees its own tasks, so a refusal or a shift across projects comes from the server (see [task_dependencies.md](task_dependencies.md)).
+- Links to tasks in other projects are read by the server too, under the mode of the folder the moved task sits in; the chart's browser-side check only sees its own tasks, so a refusal or a shift across products comes from the server, and the chart names the tasks the server moved in other products after the drag (see [task_dependencies.md](task_dependencies.md)).
 - Pulling earlier only follows links that were exactly tight before the move. A gap (slack) between two tasks is never closed, and a successor of two predecessors stops at the later one.
 - Changing a task's folder, status or other fields does not re-run the schedule; only date changes do. Tasks created with dates, epic dates and edits to the links themselves are not checked either.
 The zoom and weekend choices are not remembered between visits. Weekends are not skipped, only shaded.
@@ -65,3 +65,4 @@ The zoom and weekend choices are not remembered between visits. Weekends are not
 - Baselines added 2026-10-19 on branch `backlog/baselines`, not merged. Tests: `baseline_test.rb`, `baselines_controller_test.rb`, `data/baseline.test.ts`, `GanttPane.test.tsx`. Not verified: migration, Rails tests, lint, type-check, frontend tests and the browser did not run (no database, no node_modules); `schema.rb` edited by hand. No slip numbers are shown yet (`slipDays` exists but is unused in the UI); epics and non-task rows have no baseline.
 
 - Merged to main 2026-11-05 after running, merged with main: `rails db:migrate` (schema diff clean), `rails test`, `npm run lint`, `tsc -b`, Jest, and the collab-server tests, all passing. Not checked in a browser.
+- 2026-11-16 (branch `backlog/draw-cross-project-links-on-the-gantt`, not merged): links to other products are drawn as stubs on the bar and a drag says which tasks in other products the server shifted; see [task_dependencies.md](task_dependencies.md).

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import GanttPane from './GanttPane'
-import type { DependencyMode, Task } from '@/types'
+import type { DependencyMode, Folder, Task } from '@/types'
 
 // Dragging a bar is Timeline's job (see its tests); a button per row stands in
 // for it and moves that row to 3-8 November.
@@ -37,10 +37,12 @@ const task = (id: number, title: string, start_date: string, due_date: string) =
 
 const tasks = [task(1, 'Design', '2026-11-01', '2026-11-05'), task(2, 'Build', '2026-11-06', '2026-11-20')]
 
+const folders = [{ id: 3, name: 'Billing', kind: 'project', children: [], documents: [], parent_id: null }] as unknown as Folder[]
+
 function renderPane(mode: DependencyMode) {
   render(
     <QueryClientProvider client={new QueryClient()}>
-      <GanttPane folderId={1} dependencyMode={mode} epics={[]} tasks={tasks} milestones={[]} />
+      <GanttPane folderId={1} dependencyMode={mode} epics={[]} tasks={tasks} milestones={[]} folders={folders} />
     </QueryClientProvider>,
   )
   fireEvent.click(screen.getByRole('button', { name: 'Move task-1' }))
@@ -69,4 +71,33 @@ test('shows the reason when the server refuses a move', () => {
   renderPane('none')
   expect(mockUpdateTask.mutate).toHaveBeenCalledWith({ id: 1, start_date: '2026-11-03', due_date: '2026-11-08' }, expect.anything())
   expect(screen.getByRole('alert')).toHaveTextContent('That would break the dependency of "Build" on "Design".')
+})
+
+describe('tasks the server moved in other products', () => {
+  // What the server answers when the dragged task has a link to another project (in shift mode).
+  const answer = (...rescheduled: unknown[]) => mockUpdateTask.mutate.mockImplementation((update, options) => {
+    if (update.id === 1) options.onSuccess({ ...update, rescheduled })
+  })
+  const vendor = { ...task(99, 'Vendor contract', '2026-11-10', '2026-11-14'), folder_id: 3 }
+
+  test('the chart says which ones moved, with their product and new dates', () => {
+    answer({ ...task(2, 'Build', '2026-11-08', '2026-11-22'), folder_id: 1 }, vendor)
+    renderPane('flexible')
+    expect(screen.getByText('Also moved in other products: Vendor contract (Billing) to Nov 10 - Nov 14')).toBeInTheDocument()
+    // Build is on this chart, so the chart already shows its move.
+    expect(screen.queryByText(/Build.*to Nov/)).not.toBeInTheDocument()
+  })
+
+  test('says nothing when only tasks on the chart moved, and clears the note on the next move', () => {
+    answer({ ...task(2, 'Build', '2026-11-08', '2026-11-22'), folder_id: 1 })
+    renderPane('flexible')
+    expect(screen.queryByText(/Also moved/)).not.toBeInTheDocument()
+
+    answer(vendor)
+    fireEvent.click(screen.getByRole('button', { name: 'Move task-1' }))
+    expect(screen.getByText(/Also moved in other products/)).toBeInTheDocument()
+    answer()
+    fireEvent.click(screen.getByRole('button', { name: 'Move task-1' }))
+    expect(screen.queryByText(/Also moved/)).not.toBeInTheDocument()
+  })
 })

@@ -11,7 +11,7 @@ One file per implemented feature, written from the code (see `docs/rules/feature
 | Milestones and their rollups (counts, percent, health) | [milestones_and_rollups.md](milestones_and_rollups.md) |
 | Hierarchy tree view: milestone to subtask with progress | [hierarchy_tree_view.md](hierarchy_tree_view.md) |
 | Sprints and the sprint filter on tasks | [sprints.md](sprints.md) |
-| Task dependencies, arrows on the Gantt and the critical path | [task_dependencies.md](task_dependencies.md) |
+| Task dependencies, arrows on the Gantt, stubs for links to other products and the critical path | [task_dependencies.md](task_dependencies.md) |
 | Roadmap: milestone lanes, Now/Next/Later board, initiative health | [roadmap.md](roadmap.md) |
 | OKRs: objectives and key results | [okrs.md](okrs.md) |
 | All files: every document, sheet and Collection in a Space | [all_files.md](all_files.md) |
@@ -67,7 +67,7 @@ One file per implemented feature, written from the code (see `docs/rules/feature
 | Folder home document: a folder opens on its home page; without one, the folder page lists the folders and documents directly inside it (one level) | [folder_home_document.md](folder_home_document.md) |
 | Paragraph styles: Title, Subtitle, Headings, Body, Quote, Caption, Monospace + picker | [paragraph_styles.md](paragraph_styles.md) |
 | Data files: filtering, sorting and API enums live in src/data | [data_files.md](data_files.md) |
-| Portfolio: all projects with owner, status, dates, progress, health | [portfolio.md](portfolio.md) |
+| Portfolio: all projects with owner, status, dates, progress, health, and the links between products (broken ones first) | [portfolio.md](portfolio.md) |
 | Notifications inbox: per-person inbox, unread badge, task assignment | [notifications_inbox.md](notifications_inbox.md) |
 | Task auto fields: item ID, creator, created and last updated in the task detail dialog only (not the task table) | [task_auto_fields.md](task_auto_fields.md) |
 | Agent access: MCP server and REST for outside agents, owner-made scoped tokens, every change attributed to the agent | [agent_access.md](agent_access.md) |

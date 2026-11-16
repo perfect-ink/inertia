@@ -1,0 +1,92 @@
+@use 'tokens' as *;
+
+@layer app.components {
+  // Overlay spanning the track column only, like .timeline-links.
+  .timeline-stubs {
+    position: absolute;
+    inset: 0 calc(#{space(14)} + #{space(3)}) 0 calc(#{space(36)} + #{space(3)});
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  // Starts at a bar's edge and runs away from it. --stub-room is the track
+  // left on that side; the title and count columns beside the track add some
+  // more, so a long label is cut short rather than running off the chart.
+  .timeline-stub {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+
+    &--end {
+      flex-direction: row;
+      max-width: calc(var(--stub-room) + #{space(14)});
+      transform: translateY(-50%);
+    }
+
+    &--start {
+      flex-direction: row-reverse;
+      max-width: calc(var(--stub-room) + #{space(36)});
+      transform: translate(-100%, -50%);
+    }
+
+    &-line {
+      flex: none;
+      width: space(5);
+      border-top: 1.5px solid color(muted-foreground);
+    }
+
+    &-head {
+      flex: none;
+      width: 0;
+      height: 0;
+      border-block: space(1.25) solid transparent;
+      border-left: space(2) solid color(muted-foreground);
+
+      &--left {
+        border-right: space(2) solid color(muted-foreground);
+        border-left: 0;
+      }
+    }
+
+    // Not clickable, so no hover state; it takes the pointer only for its tooltip.
+    &-label {
+      @include text('xs');
+      @include truncate;
+
+      min-width: 0;
+      padding-inline: space(1);
+      border-radius: radius('sm');
+      background: color(background, 0.85);
+      color: color(muted-foreground);
+      pointer-events: auto;
+    }
+
+    &-warning {
+      display: inline-flex;
+      margin-right: space(1);
+      vertical-align: text-bottom;
+    }
+
+    &-warning-icon {
+      @include icon-size(space(3));
+    }
+
+    // On the driving path: the same red as a critical bar.
+    &--critical &-line {
+      border-top-color: color(status-red);
+    }
+
+    &--critical &-head {
+      border-left-color: color(status-red);
+
+      &--left {
+        border-right-color: color(status-red);
+      }
+    }
+
+    &--broken &-label {
+      color: color(status-red-text);
+    }
+  }
+}
