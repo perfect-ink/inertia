@@ -5,7 +5,7 @@ The native Mac screens (sign-in and sign-up, the local task-file window and its 
 
 What people see:
 - **Buttons** in four variants: primary (accent, darker on hover), secondary (bordered card, one shade firmer on hover), ghost (compact, tinted on hover) and destructive. Primary, secondary and destructive are at least 40pt tall; a disabled button fades to half and ignores hover; a keyboard-focused button gets the accent ring.
-- **Text fields and text areas** are at least 40pt tall (the sign-in fields stay at 52pt), with a quiet border that firms up on hover and turns accent, with a ring, on focus. A field with a bad value (a date that is not `YYYY-MM-DD`) turns its border danger red and shows the message under it; the message is also announced to VoiceOver, so the error is not shown by color alone.
+- **Text fields and text areas** are at least 40pt tall (the sign-in fields stay at 52pt), with a quiet border that firms up on hover and turns accent, with a soft glow just inside the border, on focus; a click anywhere in the border focuses the field. A field with a bad value (a date that is not `YYYY-MM-DD`) turns its border danger red and shows the message under it; the message is also announced to VoiceOver, so the error is not shown by color alone.
 - **Selects** replace pop-up `Picker`s: a bordered field with a chevron that opens the system menu, so keyboard and VoiceOver behavior stay native.
 - **Checkboxes and radios** are 16pt boxes that fill with the accent color and show a white check or dot.
 - **Cards and panels**: task cards on the board are clickable cards (the border firms up under the cursor), columns are muted panels, the "Events and milestones" group is a card panel, dividers use the border color.

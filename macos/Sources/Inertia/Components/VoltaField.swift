@@ -40,6 +40,13 @@ struct VoltaFieldFrame<Content: View>: View {
         let spec = VoltaFieldSpec.make(kind, hovered: hovering, focused: focused, invalid: invalid,
                                        enabled: isEnabled, minimumHeight: minimumHeight)
         let shape = RoundedRectangle(cornerRadius: spec.cornerRadius)
+        // A clear resting background fades through dark translucent grays on its way to the hover
+        // color, which flashes. A text field always carries the hover color and fades its opacity.
+        let fadesIn = kind == .text
+        let fill = fadesIn
+            ? VoltaFieldSpec.make(kind, hovered: true, minimumHeight: spec.minimumHeight).background
+            : spec.background
+        let fillOpacity = fadesIn && spec.background == .clear ? 0.0 : 1.0
         if bordered {
             content
                 .voltaFont(spec.textSize)
@@ -47,14 +54,13 @@ struct VoltaFieldFrame<Content: View>: View {
                 .padding(.horizontal, padding.horizontal)
                 .padding(.vertical, padding.vertical)
                 .frame(minHeight: spec.minimumHeight)
-                .background(Volta.color(spec.background), in: shape)
+                .background(Volta.color(fill).opacity(fillOpacity), in: shape)
                 .overlay { shape.strokeBorder(Volta.color(spec.border), lineWidth: 1) }
-                .voltaFocusRing(spec.ring, cornerRadius: spec.cornerRadius)
+                .voltaFieldGlow(spec.ring, cornerRadius: spec.cornerRadius)
                 .opacity(spec.opacity)
                 .contentShape(shape)
                 .onHover { hovering = $0 }
-                .animation(Volta.animation, value: hovering)
-                .animation(Volta.animation, value: focused)
+                .animation(Volta.animation, value: spec)
         } else {
             content
                 .padding(.vertical, padding.vertical)
@@ -80,5 +86,7 @@ struct VoltaTextArea: View {
                 .scrollContentBackground(.hidden)
                 .accessibilityLabel(title)
         }
+        // Clicks in the padding and below the text focus the editor, like the single-line field.
+        .onTapGesture { focused = true }
     }
 }

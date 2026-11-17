@@ -36,7 +36,7 @@
     &:focus-within,
     &--open {
       border-color: color(primary);
-      @include focus-ring;
+      @include field-focus-ring;
     }
 
     &--disabled {

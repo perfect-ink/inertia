@@ -24,5 +24,8 @@ private struct VoltaTextFieldBody<Content: View>: View {
         VoltaFieldFrame(focused: focused, minimumHeight: minimumHeight, bordered: showsBorder) {
             content.focused($focused)
         }
+        // The field inside only hits on its own text line; a click anywhere else in the border
+        // (the padding and the minimum height) focuses it too, so the visible box is the click area.
+        .onTapGesture { focused = true }
     }
 }

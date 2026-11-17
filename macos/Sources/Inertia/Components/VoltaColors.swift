@@ -74,6 +74,20 @@ extension View {
         }
     }
 
+    /// The focus glow of a text field or select: a soft band of the accent just inside the border, so the
+    /// visible edge stays the click area (no ring outside the box, no second border).
+    func voltaFieldGlow(_ color: VoltaFill?, cornerRadius: Double = VoltaMetrics.cornerRadius) -> some View {
+        overlay {
+            if let color {
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .strokeBorder(Volta.color(color).opacity(0.45), lineWidth: 3)
+                    .blur(radius: 1.5)
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                    .allowsHitTesting(false)
+            }
+        }
+    }
+
     /// A panel: the card color with a quiet border (or the muted tint) and Volta's radius.
     func voltaSurface(_ spec: VoltaSurfaceSpec = .card) -> some View {
         background(Volta.color(spec.background), in: RoundedRectangle(cornerRadius: spec.cornerRadius))

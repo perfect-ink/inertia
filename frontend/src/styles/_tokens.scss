@@ -128,7 +128,7 @@ $breakpoints: (
 
   &:focus {
     border-color: color(primary);
-    @include focus-ring;
+    @include field-focus-ring;
   }
 }
 
@@ -186,6 +186,15 @@ $breakpoints: (
   &:focus-visible {
     @include focus-ring;
   }
+}
+
+// Focus state for text fields and selects: the border turns primary and a soft
+// glow fades in just inside it. It stays inside the box so the visible boundary
+// is exactly the area that hovers and clicks (design principle 10), and it is a
+// glow, not a second line, so the field never looks double-bordered.
+@mixin field-focus-ring {
+  outline: none;
+  box-shadow: inset 0 0 4px 1px color(primary, 0.45);
 }
 
 @mixin focus-ring {
