@@ -123,7 +123,7 @@ Met. 60 files in `docs/features/`, all snake_case, all indexed in `README.md` wi
 Only `make help` and `make -n` ran; the targets that need Docker (`running`, `up`, `test-collab`) did not.
 
 ### `native.md`
-Not met. Missing `close`, `install`, `uninstall`, `reinstall`, and `make open` opens the web app. Task: `native-mac-make-targets`. The native components folder layout matches `docs/project/ui-organization.md`.
+Mostly met (2026-11-17, agent-rules 1.4.0+18). The Mac app builds into `build/` (SwiftPM scratch path `build/swift`, ignored by git) and `close`, `install`, `install-open`, `uninstall` and `reinstall` exist. Still open: `make open` opens the web app, not the Mac app (task `native-mac-make-targets`). CI still runs on every push, not only on `v*` tags, because the Coolify deploy job lives in the same workflow; tag-only triggers would stop production deploys, so that is Alex's call. The native components folder layout matches `docs/project/ui-organization.md`.
 
 ### `versioning.md`
 Not applicable. There is no `VERSION` file at the root, and none was created.
@@ -157,3 +157,5 @@ Rule text that disagrees with itself, another rule, or this repo. None were chan
 - An earlier session was cut off by the daily API cost limit and saved its edits as one commit. This one rebased it onto `origin/main`, reviewed every change, and reverted the edits to two shipped migrations and two redundant "Deployment" lines in feature docs. The CI concurrency, Makefile, `.gitignore` (and removing a tracked `.sass-cache` file), README, architecture, `api_layer.md` and code edits were kept after review.
 - Ran offline: the pure unit tests (all pass except `util/shortcuts.test.ts`, which needs a browser `window`); the Jest stand-in for the changed components (all pass except `data/task.test.ts` and `api/documents.test.tsx`, which fail the same way on `origin/main` in the stand-in; `EpicPlanScreen` and `HierarchyScreen` tests were skipped for lack of `@dnd-kit/core`); `make help` and `make -n`.
 - Not run (no network, `node_modules`, database or Docker): `npm run lint`, `tsc -b`, the real Jest run, `rails test`, RuboCop, the Swift build, the Docker-based `make` targets, and any browser check at 375px and desktop in light and dark.
+
+- 2026-11-17: synced agent-rules 1.4.0+18. Added `/health` (`OK`) and `/status` (database check, 503 when down) in Rails and nginx (`HealthController`, `SystemStatus`, tested in `health_controller_test.rb`). Removed the emoji placeholder from the project icon dialog. Not run: `rails test` (no Ruby 3.3 or Docker here), the full Mac app build (SwiftPM sandbox), browser checks. The login field border height was reported but not reproduced from the CSS.

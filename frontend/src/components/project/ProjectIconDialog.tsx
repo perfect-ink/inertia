@@ -63,7 +63,6 @@ export default function ProjectIconDialog({ project, onClose }: { project: Folde
             Or type any emoji
             <Input
               maxLength={16}
-              placeholder="🙂"
               onKeyDown={(e) => {
                 const value = e.currentTarget.value.trim()
                 if (e.key === 'Enter' && value) save({ icon: value, image_url: null })

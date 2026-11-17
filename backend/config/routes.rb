@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
+  get "health", to: "health#show"
+  get "status", to: "health#status"
 
   # The only HTML this API renders: public marketing/SEO pages. nginx proxies
   # just these exact paths to Rails (see frontend/nginx/default.conf);

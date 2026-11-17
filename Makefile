@@ -87,7 +87,7 @@ build-coolify: ## Build the production images Coolify deploys (docker-compose.co
 build-frontend: ## Build the frontend for production (webpack bundle)
 	$(COMPOSE) run --rm frontend npm run build
 
-build-mac: mac-build ## Build the native Mac app (outputs to macos/dist/Inertia.app)
+build-mac: mac-build ## Build the native Mac app (outputs to build/Inertia.app)
 
 .PHONY: build-electron-mac
 build-electron-mac: ## Build the Electron Mac app (outputs to frontend/dist-electron)
@@ -95,7 +95,7 @@ build-electron-mac: ## Build the Electron Mac app (outputs to frontend/dist-elec
 
 clean: ## Remove containers, volumes, all build artifacts, and Docker build cache
 	$(COMPOSE) down -v --remove-orphans
-	rm -rf frontend/dist frontend/dist-electron macos/dist macos/.build
+	rm -rf frontend/dist frontend/dist-electron build macos/.build
 	docker builder prune -f
 
 clean-backend: ## Remove the backend container and its volume
@@ -110,8 +110,8 @@ clean-frontend: ## Remove the frontend container, node_modules volume, and webpa
 clean-electron: ## Remove the Electron build output
 	rm -rf frontend/dist-electron
 
-clean-mac: ## Remove the native Mac app's build output (macos/dist and macos/.build)
-	rm -rf macos/dist macos/.build
+clean-mac: ## Remove the native Mac app's build output (build and macos/.build)
+	rm -rf build macos/.build
 
 # ── Help ──────────────────────────────────────────────────────────────────────
 
@@ -241,15 +241,36 @@ nuke: ## Remove everything including built images (full reset)
 
 # ── Native Mac app ────────────────────────────────────────────────────────────
 
-.PHONY: mac-build dev-native-mac test-native-mac
-mac-build: ## Stop the running development Mac app and rebuild macos/dist/Inertia.app
+.PHONY: mac-build dev-native-mac test-native-mac close install install-open uninstall reinstall
+mac-build: ## Stop the running development Mac app and rebuild build/Inertia.app
 	bash scripts/build-native-mac.sh
 
+close: ## Stop the running dev Mac app (build/Inertia.app)
+	swift scripts/stop-native-mac.swift "$(CURDIR)/build/Inertia.app"
+
+install: ## Build the Mac app and copy it to /Applications (writes outside the repo)
+	bash scripts/build-native-mac.sh
+	rm -rf /Applications/Inertia.app
+	cp -R build/Inertia.app /Applications/Inertia.app
+
+install-open: ## Close the running Mac app, install it to /Applications, then open it (macOS only)
+	swift scripts/stop-native-mac.swift /Applications/Inertia.app
+	$(MAKE) install
+	open /Applications/Inertia.app
+
+uninstall: close ## Stop the Mac app and remove /Applications/Inertia.app
+	swift scripts/stop-native-mac.swift /Applications/Inertia.app
+	rm -rf /Applications/Inertia.app
+
+reinstall: ## Uninstall, then install the Mac app
+	$(MAKE) uninstall
+	$(MAKE) install
+
 dev-native-mac: mac-build ## Open the native SwiftUI macOS app
-	open macos/dist/Inertia.app
+	open build/Inertia.app
 
 test-native-mac: ## Run native API/model regression tests
-	swift test --package-path macos
+	swift test --package-path macos --scratch-path build/swift
 
 # ── Agent rules ───────────────────────────────────────────────────────────────
 

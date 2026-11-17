@@ -169,13 +169,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Native model and file-format tests
-        run: swift test --package-path macos
+        run: swift test --package-path macos --scratch-path build/swift
       - name: Build native app and file association
         run: bash scripts/build-native-mac.sh
       - name: Verify app bundle
         run: |
-          plutil -lint macos/dist/Inertia.app/Contents/Info.plist
-          codesign --verify --deep --strict macos/dist/Inertia.app
+          plutil -lint build/Inertia.app/Contents/Info.plist
+          codesign --verify --deep --strict build/Inertia.app
 
   # Production is Coolify (coolify.homecloud.one). Its GitHub App gives it the
   # repo, but Auto Deploy is off, so this job is the only thing that deploys,

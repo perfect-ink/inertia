@@ -53,7 +53,7 @@ make dev-all
 `make dev-all` also applies pending migrations. To rebuild only the Mac binary while services are running, use `make mac-build`, then quit Inertia and reopen the native bundle with local endpoints:
 
 ```sh
-open -n --env INERTIA_API_URL=http://localhost:3847 --env INERTIA_WEB_URL=http://localhost:5174 macos/dist/Inertia.app
+open -n --env INERTIA_API_URL=http://localhost:3847 --env INERTIA_WEB_URL=http://localhost:5174 build/Inertia.app
 ```
 
 Try signing in, canceling the provider browser, and signing in again after a relaunch. Successful sign-in opens Documents, Sheets & Tables. Sessions remain memory-only, as with password sign-in.

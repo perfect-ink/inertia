@@ -17,7 +17,7 @@ Two rule files disagree about `make all`: `docs/rules/make-files.md` says it is 
 
 ## Requirements / notes
 
-- `make close`: stop the running dev Mac app (`scripts/stop-native-mac.swift` already does it for `macos/dist/Inertia.app`).
+- `make close`: stop the running dev Mac app (`scripts/stop-native-mac.swift` already does it for `build/Inertia.app`).
 - `make install`: build the release app (`scripts/build-native-mac.sh` already builds with `-c release`) and copy it to `/Applications/Inertia.app`; `make uninstall`: close, then remove it; `make reinstall`: uninstall, then install. Writing to `/Applications` is the point of these targets, so they must say so in their help text and never run as a dependency of another target.
 - Decide with Alex what `make open` opens when both a web app and a Mac app exist (today the browser), for example `make open` for the web app and `make open-mac` for the Mac app.
 

@@ -38,7 +38,7 @@ fi
 
 if command -v swift >/dev/null 2>&1; then
   # shellcheck disable=SC2086
-  step "macos (Swift core, warnings as errors)" swift build --package-path macos --target InertiaCore -Xswiftc -warnings-as-errors ${SWIFTPM_FLAGS:-}
+  step "macos (Swift core, warnings as errors)" swift build --package-path macos --scratch-path build/swift --target InertiaCore -Xswiftc -warnings-as-errors ${SWIFTPM_FLAGS:-}
 else
   missing "macos (Swift)" swift
 fi

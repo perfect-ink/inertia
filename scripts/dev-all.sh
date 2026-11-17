@@ -45,4 +45,4 @@ trap 'exit 143' TERM
 open -n -W \
   --env INERTIA_API_URL=http://localhost:${API_PORT:-3847} \
   --env INERTIA_WEB_URL=http://localhost:5174 \
-  macos/dist/Inertia.app
+  build/Inertia.app

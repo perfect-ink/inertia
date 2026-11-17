@@ -1,4 +1,4 @@
-<!-- agent-rules:synced from agent-rules@1.2.0+2 (69c7ce1) sha256:4899fc1329d2. Edit agent-rules/docs/rules/backlog.md, then run `make rules`; local edits here are not kept. -->
+<!-- agent-rules:synced from agent-rules@1.4.0+18 (c706ec3) sha256:7effd1c7be41. Edit agent-rules/docs/rules/backlog.md, then run `make rules`; local edits here are not kept. -->
 ## Backlog Management
 
 The `/docs/backlog/` directory contains specifications for incomplete work. Each Markdown file represents an independently actionable task. The `/docs/features/` directory documents completed and implemented functionality.
@@ -12,11 +12,28 @@ The `/docs/backlog/` directory contains specifications for incomplete work. Each
 - Use YAML frontmatter for optional metadata such as `priority`, `depends_on`, and `components`.
 - Avoid modifying unrelated backlog files.
 
+### Priority
+
+Set `priority` in a task's frontmatter to one of six lowercase levels. Use no other values (no `high`/`low`, numbers, or uppercase `P1`).
+
+| Level | Meaning |
+| --- | --- |
+| `p0` | Critical: something is broken or blocking other work. Do it before anything else. |
+| `p1` | High: the next things to do. |
+| `p2` | Medium: important, but not next. |
+| `p3` | Normal: the default for ordinary work. |
+| `p4` | Low: nice to have. |
+| `p5` | Icebox: parked. Never picked up, groomed or listed one by one unless the user asks for that task by name. |
+
+A task with no `priority` is treated as `p3` when ordering, and is shown as `unset` so grooming can fill it in. Wherever tasks are taken in priority order, take `p0` first and `p4` last. Skip tasks whose `depends_on` files are still in `docs/backlog/`. Break ties by filename, alphabetically.
+
+`p5` tasks are not part of that order: leave them alone unless the user asks for a specific one.
+
 ### Picking Up Work
 
 1. Review `/docs/backlog/` for available tasks.
 2. Check task dependencies and any existing branches or pull requests to avoid duplicating work.
-3. Prefer high-priority tasks that can be completed independently.
+3. Prefer the highest-priority tasks (see Priority) that can be completed independently. Never pick up a `p5` (icebox) task unless the user asks for it.
 4. Before starting, identify files and components likely to be affected.
 5. Avoid working on tasks that overlap with another agent's active changes.
 6. Use a dedicated Git branch or worktree for each task.
@@ -43,7 +60,7 @@ The `/docs/backlog/` directory contains specifications for incomplete work. Each
 
 ### Creating Backlog Items
 
-- Create a new Markdown file in `/docs/backlog/` for each new task.
+- Create a new Markdown file in `/docs/backlog/` for each new task, with a `priority` (see Priority).
 - Use a unique, descriptive filename rather than a numerical identifier.
 - Check for existing backlog items to avoid duplicates.
 - Split large tasks into smaller, independently executable tasks when practical.

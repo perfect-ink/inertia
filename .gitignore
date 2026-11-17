@@ -22,8 +22,8 @@ frontend/node_modules
 frontend/dist
 
 # Native macOS
+/build/
 macos/.build/
-macos/dist/
 docs/backlog/.stop
 
 # Sass compiler cache

@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-swift scripts/stop-native-mac.swift "$PWD/macos/dist/Inertia.app"
-swift build --package-path macos -c release
-BIN_DIR=$(swift build --package-path macos -c release --show-bin-path)
-APP=macos/dist/Inertia.app
+swift scripts/stop-native-mac.swift "$PWD/build/Inertia.app"
+swift build --package-path macos --scratch-path build/swift -c release
+BIN_DIR=$(swift build --package-path macos --scratch-path build/swift -c release --show-bin-path)
+APP=build/Inertia.app
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/Inertia" "$APP/Contents/MacOS/Inertia"
 cp frontend/build/icon.icns "$APP/Contents/Resources/icon.icns"
