@@ -3,13 +3,14 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { SidebarRail } from './SidebarRail'
 import { SECTION_GROUPS } from './projectSections'
+import { useSidebarStore } from '@/store/sidebar'
 
 let mockShared = true
 jest.mock('@/api/notifications', () => ({ useNotifications: () => ({ data: { unread_count: 0, notifications: [] } }) }))
 jest.mock('@/api/workspace', () => ({ useWorkspace: () => ({ data: { shared: mockShared } }) }))
 let mockProject: { features?: string[] | null } | null = null
 jest.mock('@/hooks/useOpenProject', () => ({ useOpenProject: () => mockProject }))
-beforeEach(() => { mockShared = true; mockProject = null })
+beforeEach(() => { mockShared = true; mockProject = null; useSidebarStore.setState({ railExpanded: true }) })
 
 function renderAt(path: string, handlers = { onQuickAdd: jest.fn(), onShortcuts: jest.fn() }) {
   render(
@@ -76,8 +77,9 @@ test('the quick actions run the handlers they are given', () => {
   expect(onShortcuts).toHaveBeenCalledTimes(1)
 })
 
-test('every button names itself for people who cannot see the icon', () => {
+test('collapsed, every button names itself with a tooltip for people who cannot see the icon', () => {
   renderAt('/space')
+  fireEvent.click(screen.getByRole('button', { name: 'Collapse sidebar' }))
   const nav = screen.getByRole('navigation', { name: 'Pages' })
   for (const el of within(nav).getAllByRole('link')) expect(el).toHaveAttribute('title', el.getAttribute('aria-label'))
 })
@@ -88,4 +90,16 @@ test('the open project\'s turned-off pages are left out, and a project that neve
   const nav = screen.getByRole('navigation', { name: 'Pages' })
   const labels = within(nav).getAllByRole('link').map((a) => a.getAttribute('aria-label'))
   expect(labels).toEqual(['Projects', 'Tasks', 'Roadmap', 'Inbox'])
+})
+
+test('the rail is open by default, with each page name beside its icon, and the toggle collapses it', () => {
+  renderAt('/space')
+  const nav = screen.getByRole('navigation', { name: 'Pages' })
+  expect(within(nav).getByText('Tasks')).toBeInTheDocument()
+  expect(within(nav).getByText('Inbox')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toHaveAttribute('aria-expanded', 'true')
+  fireEvent.click(screen.getByRole('button', { name: 'Collapse sidebar' }))
+  expect(within(nav).queryByText('Tasks')).toBeNull()
+  fireEvent.click(screen.getByRole('button', { name: 'Expand sidebar' }))
+  expect(within(nav).getByText('Tasks')).toBeInTheDocument()
 })

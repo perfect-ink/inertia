@@ -86,5 +86,48 @@
       flex-shrink: 0;
       @include icon-size(space(5));
     }
+
+    &_label {
+      @include text('sm');
+      @include truncate;
+
+      min-width: 0;
+    }
+
+    // The toggle is for screens wide enough for the rail to widen; on a phone
+    // the rail shares the drawer with the panel and stays icons only.
+    &_toggle {
+      display: none;
+
+      @include up('md') {
+        display: flex;
+      }
+    }
+
+    // Expanded: each page's name beside its icon.
+    @include up('md') {
+      &--expanded {
+        align-items: stretch;
+        width: space(52);
+
+        .sidebar-rail_pages,
+        .sidebar-rail_group {
+          align-items: stretch;
+          padding-right: space(2);
+          padding-left: space(2);
+        }
+
+        .sidebar-rail_divider {
+          width: auto;
+        }
+
+        .sidebar-rail_button {
+          justify-content: flex-start;
+          gap: space(3);
+          width: 100%;
+          padding: 0 space(2.5);
+        }
+      }
+    }
   }
 }
