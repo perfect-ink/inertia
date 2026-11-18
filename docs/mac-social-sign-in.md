@@ -15,7 +15,7 @@ For local Docker development, set these in the repository's ignored `.env` file.
 | `APPLE_TEAM_ID` | Apple Developer team ID. |
 | `APPLE_KEY_ID` | ID of the Sign in with Apple private key. |
 | `APPLE_PRIVATE_KEY` | Contents of the `.p8` signing key. Use a quoted multiline value, or literal `\n` between lines. |
-| `BYPASS_AUTH` | Set to `false` for local testing of real user accounts. The default dev bypass selects the seed user regardless of login. The Mac app also signs in as the seed user by itself when `INERTIA_API_URL` is localhost (once per launch; the API accepts `admin`/`admin` only in development), so the sign-in screen only shows against a remote API or after signing out. |
+| `BYPASS_AUTH` | Set to `false` for local testing of real user accounts. The default dev bypass selects the seed user regardless of login. The Mac app also signs in as the seed user by itself when its API is localhost (`INERTIA_API_URL`, or by default for a build run from `build/Inertia.app`; once per launch; the API accepts `admin`/`admin` only in development), so the sign-in screen only shows against a remote API or after signing out. |
 
 The Mac binary needs only `INERTIA_API_URL` and `INERTIA_WEB_URL`, which `make dev-all` and `make dev-mac` set to localhost. Never put provider secrets in the app or frontend.
 

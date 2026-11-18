@@ -6,4 +6,12 @@ public enum LocalEndpoint {
         guard let host = url.host?.lowercased() else { return false }
         return host == "localhost" || host == "127.0.0.1" || host == "::1" || host.hasSuffix(".localhost")
     }
+
+    /// A build made by `make mac-build` runs from `build/Inertia.app`; the installed app lives in /Applications.
+    public static func isDevelopmentBuild(bundlePath: String) -> Bool {
+        bundlePath.hasSuffix("/build/Inertia.app")
+    }
+
+    public static let developmentAPI = "http://localhost:3847"
+    public static let developmentWeb = "http://localhost:5174"
 }

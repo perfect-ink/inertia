@@ -266,8 +266,8 @@ reinstall: ## Uninstall, then install the Mac app
 	$(MAKE) uninstall
 	$(MAKE) install
 
-dev-native-mac: mac-build ## Open the native SwiftUI macOS app
-	open build/Inertia.app
+dev-native-mac: mac-build ## Open the native SwiftUI macOS app against the local servers
+	open -n --env INERTIA_API_URL=http://localhost:$${API_PORT:-3847} --env INERTIA_WEB_URL=http://localhost:5174 build/Inertia.app
 
 test-native-mac: ## Run native API/model regression tests
 	swift test --package-path macos --scratch-path build/swift

@@ -3,9 +3,13 @@ import InertiaCore
 import AuthenticationServices
 
 @MainActor final class Session: ObservableObject {
-    // Production by default; local development can override both endpoints.
-    let api = URL(string: ProcessInfo.processInfo.environment["INERTIA_API_URL"] ?? "https://inertia.it.com")!
-    let web = URL(string: ProcessInfo.processInfo.environment["INERTIA_WEB_URL"] ?? "https://inertia.it.com")!
+    // Production by default; INERTIA_API_URL and INERTIA_WEB_URL override both endpoints, and a
+    // development build (build/Inertia.app) defaults to the local servers.
+    private static let developmentBuild = LocalEndpoint.isDevelopmentBuild(bundlePath: Bundle.main.bundlePath)
+    let api = URL(string: ProcessInfo.processInfo.environment["INERTIA_API_URL"]
+        ?? (developmentBuild ? LocalEndpoint.developmentAPI : "https://inertia.it.com"))!
+    let web = URL(string: ProcessInfo.processInfo.environment["INERTIA_WEB_URL"]
+        ?? (developmentBuild ? LocalEndpoint.developmentWeb : "https://inertia.it.com"))!
     @Published var token: String?
     @Published var user: Login.User?
     @Published var error: String?

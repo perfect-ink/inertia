@@ -13,4 +13,9 @@ final class LocalEndpointTests: XCTestCase {
             XCTAssertFalse(LocalEndpoint.isLocal(URL(string: address)!), address)
         }
     }
+
+    func testOnlyTheBuildFolderAppIsADevelopmentBuild() {
+        XCTAssertTrue(LocalEndpoint.isDevelopmentBuild(bundlePath: "/Users/a/inertia/build/Inertia.app"))
+        XCTAssertFalse(LocalEndpoint.isDevelopmentBuild(bundlePath: "/Applications/Inertia.app"))
+    }
 }
