@@ -43,7 +43,7 @@ struct WorkspaceWebView: NSViewRepresentable {
             config.userContentController.addUserScript(WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         }
         config.userContentController.add(context.coordinator, name: "inertiaSession")
-        let view = WKWebView(frame: .zero, configuration: config)
+        let view = TaskDropWebView(frame: .zero, configuration: config)
         view.navigationDelegate = context.coordinator
         view.uiDelegate = context.coordinator
         context.coordinator.webView = view

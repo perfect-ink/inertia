@@ -1,0 +1,21 @@
+@use 'tokens' as *;
+
+@layer app.components {
+  // A banner while files are dragged over the workspace. It never takes the drop itself
+  // (pointer-events: none), so the drop lands on whatever is underneath.
+  .file_drop_zone {
+    position: fixed;
+    right: space(4);
+    bottom: space(4);
+    left: space(4);
+    z-index: 50;
+    padding: space(4);
+    border: 2px dashed color(primary);
+    border-radius: radius('md');
+    background: color(card, 0.95);
+    color: color(foreground);
+    text-align: center;
+    pointer-events: none;
+    @include text('sm');
+  }
+}

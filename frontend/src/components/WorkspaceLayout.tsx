@@ -2,6 +2,7 @@ import { Button } from '@/components/ui'
 import { Menu } from 'lucide-react'
 import Sidebar from '@/components/file-manager/Sidebar'
 import TabBar from '@/components/TabBar'
+import FileDropZone from '@/components/FileDropZone'
 import './WorkspaceLayout.scss'
 import { useSidebarStore } from '@/store/sidebar'
 import { useWorkspace } from '@/api/workspace'
@@ -31,6 +32,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
         <TabBar />
         {children}
       </div>
+      <FileDropZone />
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import WorkspaceLayout from './WorkspaceLayout'
 
 jest.mock('@/components/file-manager/Sidebar', () => function SidebarMock() { return <nav data-testid="sidebar" /> })
+jest.mock('@/components/FileDropZone', () => function FileDropZoneMock() { return null })
 jest.mock('@/components/TabBar', () => function TabBarMock() { return <nav data-testid="tabs" /> })
 
 let mockSpace: { name: string } | undefined

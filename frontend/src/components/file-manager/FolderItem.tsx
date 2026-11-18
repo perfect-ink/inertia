@@ -1,3 +1,4 @@
+import { hasFiles } from '@/util/dragFiles'
 import { Button, IconButton, Input } from '@/components/ui'
 import { Database } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
@@ -95,9 +96,6 @@ function InlineInput({ defaultValue, onConfirm, onCancel }: { defaultValue: stri
 }
 
 // ── FolderItem ────────────────────────────────────────────────────────────────
-
-// Whether a drag carries files from outside the page (not an item being moved inside it).
-const hasFiles = (transfer: DataTransfer) => Array.from(transfer.types).includes('Files')
 
 // `bare` draws only the folder's contents, without its own row: the Root, and
 // a project whose row the sidebar's project list already shows.
