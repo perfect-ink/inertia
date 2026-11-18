@@ -21,6 +21,9 @@ import InertiaCore
                 Button("New Task File") { NSDocumentController.shared.newDocument(nil) }.keyboardShortcut("n", modifiers: [.command, .option])
                 Button("Refresh Space") { NotificationCenter.default.post(name: .refreshWorkspace, object: nil) }.keyboardShortcut("r")
             }
+            CommandGroup(after: .appInfo) {
+                Button("Choose Local or Cloud Server…") { session.chooseServerAgain() }.disabled(!session.canChooseServer)
+            }
             // The document editor's formatting keys, listed so people can find them (Components/FormatMenu.swift).
             FormatCommands()
         }

@@ -7,7 +7,14 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if session.token == nil {
+            if session.needsServerChoice {
+                ServerChoiceView()
+            } else if session.startingServer {
+                VStack(spacing: 12) {
+                    ProgressView()
+                    Text("Starting the local server…").voltaMuted()
+                }
+            } else if session.token == nil {
                 if creatingAccount { SignupView(showLogin: { creatingAccount = false }) }
                 else { LoginView(showSignup: { creatingAccount = true }) }
             } else {
@@ -17,6 +24,6 @@ struct RootView: View {
             }
         }
         // Local development skips the sign-in screen (see `Session.signInIfLocal`).
-        .task { await session.signInIfLocal() }
+        .onAppear { Task { await session.signInIfLocal() } }
     }
 }

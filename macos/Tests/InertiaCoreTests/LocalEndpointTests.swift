@@ -18,4 +18,18 @@ final class LocalEndpointTests: XCTestCase {
         XCTAssertTrue(LocalEndpoint.isDevelopmentBuild(bundlePath: "/Users/a/inertia/build/Inertia.app"))
         XCTAssertFalse(LocalEndpoint.isDevelopmentBuild(bundlePath: "/Applications/Inertia.app"))
     }
+
+    func testRepositoryRootIsTheFolderAboveBuild() {
+        XCTAssertEqual(LocalEndpoint.repositoryRoot(bundlePath: "/Users/a/inertia/build/Inertia.app"), "/Users/a/inertia")
+        XCTAssertNil(LocalEndpoint.repositoryRoot(bundlePath: "/Applications/Inertia.app"))
+        XCTAssertNil(LocalEndpoint.repositoryRoot(bundlePath: "/build/Inertia.app"))
+    }
+
+    func testServerChoiceEndpoints() {
+        XCTAssertTrue(LocalEndpoint.isLocal(URL(string: ServerChoice.local.api)!))
+        XCTAssertTrue(LocalEndpoint.isLocal(URL(string: ServerChoice.local.web)!))
+        XCTAssertFalse(LocalEndpoint.isLocal(URL(string: ServerChoice.cloud.api)!))
+        XCTAssertEqual(ServerChoice(rawValue: "local"), .local)
+        XCTAssertNil(ServerChoice(rawValue: "other"))
+    }
 }

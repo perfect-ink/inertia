@@ -15,7 +15,7 @@ For local Docker development, set these in the repository's ignored `.env` file.
 | `APPLE_TEAM_ID` | Apple Developer team ID. |
 | `APPLE_KEY_ID` | ID of the Sign in with Apple private key. |
 | `APPLE_PRIVATE_KEY` | Contents of the `.p8` signing key. Use a quoted multiline value, or literal `\n` between lines. |
-| `BYPASS_AUTH` | Set to `false` for local testing of real user accounts. The default dev bypass selects the seed user regardless of login. The Mac app also signs in as the seed user by itself when its API is localhost (`INERTIA_API_URL`, or by default for a build run from `build/Inertia.app`; once per launch; the API accepts `admin`/`admin` only in development), so the sign-in screen only shows against a remote API or after signing out. |
+| `BYPASS_AUTH` | Set to `false` for local testing of real user accounts. The default dev bypass selects the seed user regardless of login. A development build (run from `build/Inertia.app`) asks once, on first launch, whether to use **Local** or **Cloud** and remembers the answer (the Inertia menu's "Choose Local or Cloud Server…" asks again). Local has no sign-in at all: the app starts the servers on this Mac itself (`make up-d` in its checkout, which starts Docker) when nothing answers on `/up`, showing "Starting the local server…", then opens the workspace with a placeholder session, because the local API runs with `BYPASS_AUTH` (the dev default) and answers as the seeded user; Cloud uses inertia.it.com and the normal sign-in. `INERTIA_API_URL` skips the question. The installed app never asks and never starts anything. |
 
 The Mac binary needs only `INERTIA_API_URL` and `INERTIA_WEB_URL`, which `make dev-all` and `make dev-mac` set to localhost. Never put provider secrets in the app or frontend.
 
@@ -68,3 +68,7 @@ Automated tests use locally signed provider tokens and stubbed HTTP responses, s
 - [Apple authorization requests and callback restrictions](https://developer.apple.com/documentation/signinwithapplerestapi/request-an-authorization-to-the-sign-in-with-apple-server.)
 - [Apple token validation](https://developer.apple.com/documentation/signinwithapplerestapi/generate-and-validate-tokens)
 - [Apple system browser authentication](https://developer.apple.com/documentation/authenticationservices/authenticating-a-user-through-a-web-service)
+
+## Logs
+
+`make logs-mac` streams the app's log (macOS unified log, subsystem `com.inertia.native`): the local sign-in check, the server choice, the `make up-d` output and whether the local server answered. The same lines show in Console.app when you filter by that subsystem. Start it before opening the app; run it in a normal terminal, since the Claude Code sandbox may block `log stream`.
