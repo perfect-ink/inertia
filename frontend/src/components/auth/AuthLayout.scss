@@ -31,7 +31,8 @@
       margin-right: auto;
       margin-left: auto;
 
-      /* Tight, so the card background doesn't show through where the artwork reaches the corners. */
+      /* A small radius that clips only the very corners; the 4px one cut into the artwork. */
+      overflow: hidden;
       border-radius: radius('sm');
     }
 
