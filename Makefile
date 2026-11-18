@@ -124,8 +124,8 @@ up: deps ## Stop anything running, rebuild, and start all services attached (str
 	$(REBUILD)
 	$(COMPOSE) up
 
-up-d: deps ## Start all services in the background
-	$(COMPOSE) up -d
+up-d: deps ## Start all services in the background (rebuilding images that changed)
+	$(COMPOSE) up -d --build
 
 up-build: deps ## Rebuild images then start all services
 	$(COMPOSE) up --build
@@ -152,6 +152,10 @@ logs-backend: ## Tail backend logs
 
 logs-frontend: ## Tail frontend logs
 	$(COMPOSE) logs -f frontend
+
+.PHONY: logs-mac
+logs-mac: ## Stream the native Mac app's logs (macOS unified log, subsystem com.inertia.native)
+	log stream --level info --style compact --predicate 'subsystem == "com.inertia.native"'
 
 ps: ## Show running service status
 	$(COMPOSE) ps
