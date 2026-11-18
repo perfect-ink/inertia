@@ -231,14 +231,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_120001) do
     t.datetime "archived_at"
     t.integer "kind", default: 0, null: false
     t.integer "dependency_mode", default: 0, null: false
-    t.string "icon"
-    t.string "image_url"
     t.bigint "owner_id"
     t.integer "project_status", default: 0, null: false
     t.date "start_date"
     t.date "target_date"
     t.text "description"
     t.bigint "home_document_id"
+    t.string "icon"
+    t.string "image_url"
     t.string "slug"
     t.json "features"
     t.index ["home_document_id"], name: "index_folders_on_home_document_id"
@@ -551,8 +551,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_120001) do
     t.bigint "relation_table_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "formula"
     t.string "unit"
+    t.text "formula"
     t.string "display_format"
     t.json "options"
     t.integer "next_number"
@@ -674,12 +674,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_120001) do
     t.bigint "parent_id"
     t.bigint "milestone_id"
     t.bigint "sprint_id"
+    t.string "recurrence"
+    t.integer "recurrence_from", default: 0, null: false
     t.integer "priority", default: 0, null: false
     t.decimal "estimate_hours", precision: 7, scale: 2
     t.integer "story_points"
     t.integer "actual_story_points"
-    t.string "recurrence"
-    t.integer "recurrence_from", default: 0, null: false
     t.integer "kind", default: 0, null: false
     t.bigint "created_by_id"
     t.index ["assignee_id"], name: "index_tasks_on_assignee_id"
