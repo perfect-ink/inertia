@@ -11,6 +11,17 @@ import AuthenticationServices
     @Published var error: String?
     @Published var busy = false
     private let socialSignIn = SocialSignIn()
+    private var triedLocalSignIn = false
+
+    /// Against a local API the app skips the sign-in screen by signing in as the seeded development
+    /// user (the API accepts admin/admin only in its development environment). Once per launch, so
+    /// signing out still reaches the sign-in screen, and a failure leaves that screen without an alert.
+    func signInIfLocal() async {
+        guard token == nil, !triedLocalSignIn, LocalEndpoint.isLocal(api) else { return }
+        triedLocalSignIn = true
+        await login(email: "admin", password: "admin")
+        error = nil
+    }
 
     func login(email: String, password: String) async {
         guard !busy else { return }

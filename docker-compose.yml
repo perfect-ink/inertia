@@ -28,7 +28,7 @@ services:
       # does, but under that origin instead of file://, so it needs an
       # explicit CORS allow same as any other cross-origin API caller.
       CORS_ORIGINS: http://localhost:5174,capacitor://localhost
-      BYPASS_AUTH: ${BYPASS_AUTH:-false}
+      BYPASS_AUTH: ${BYPASS_AUTH:-true}
       APP_URL: http://localhost:${API_PORT:-3847}
       WEB_URL: http://localhost:5174
       OAUTH_CALLBACK_BASE_URL: ${OAUTH_CALLBACK_BASE_URL:-http://localhost:${API_PORT:-3847}}
@@ -89,7 +89,7 @@ services:
     environment:
       API_URL: http://localhost:${API_PORT:-3847}
       COLLAB_URL: ws://localhost:1234
-      BYPASS_AUTH: ${BYPASS_AUTH:-false}
+      BYPASS_AUTH: ${BYPASS_AUTH:-true}
     volumes:
       - ./frontend:/app
       - frontend_node_modules:/app/node_modules

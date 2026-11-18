@@ -18,7 +18,8 @@ class ApplicationController < ActionController::API
   end
 
   def bypass_auth?
-    ENV["BYPASS_AUTH"] == "true"
+    # Never in production, whatever the environment says: it signs everyone in as the first user.
+    ENV["BYPASS_AUTH"] == "true" && !Rails.env.production?
   end
 
   def bypass_auth!

@@ -6,13 +6,17 @@ struct RootView: View {
     @State private var creatingAccount = true
 
     var body: some View {
-        if session.token == nil {
-            if creatingAccount { SignupView(showLogin: { creatingAccount = false }) }
-            else { LoginView(showSignup: { creatingAccount = true }) }
-        } else {
-            WorkspaceWebView(session: session).id(session.token)
-                .focusedSceneValue(\.workspaceActive, true)
-                .onAppear { creatingAccount = false }
+        Group {
+            if session.token == nil {
+                if creatingAccount { SignupView(showLogin: { creatingAccount = false }) }
+                else { LoginView(showSignup: { creatingAccount = true }) }
+            } else {
+                WorkspaceWebView(session: session).id(session.token)
+                    .focusedSceneValue(\.workspaceActive, true)
+                    .onAppear { creatingAccount = false }
+            }
         }
+        // Local development skips the sign-in screen (see `Session.signInIfLocal`).
+        .task { await session.signInIfLocal() }
     }
 }
