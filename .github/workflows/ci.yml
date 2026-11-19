@@ -6,9 +6,11 @@ name: CI
 # test suite at all (just brakeman + rubocop); this one does, folding those
 # two checks in as their own jobs alongside real backend and frontend runs.
 
+# Automatic runs are off (Alex, 2026-11-19): CI runs only when started by
+# hand from the Actions tab ("Run workflow"). A manual run on main still
+# deploys once every check passes. To turn automatic runs back on, restore
+# the push and pull_request triggers.
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 
 concurrency:

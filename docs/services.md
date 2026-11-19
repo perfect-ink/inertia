@@ -35,7 +35,7 @@ The Docker frontend starts through `frontend/scripts/start-dev.sh`. It compares 
 | openstreetmap.org (link only) | The "Open in OpenStreetMap" link on a map pin opens the record's coordinates on openstreetmap.org in a new tab. Nothing is called by the app; coordinates leave only when a person clicks. | `frontend/src/util/geo.ts` (`openStreetMapUrl`) |
 | Coolify | Builds and runs the production stack from `docker-compose.coolify.yml`, routes the domain and issues TLS certificates (Traefik + Let's Encrypt). | `docker-compose.coolify.yml`, [deployment.md](deployment.md) |
 | DigitalOcean | The droplet Coolify runs on. Inertia no longer uses the managed MySQL cluster; its database there was dropped on 2026-10-29. | |
-| GitHub Actions | CI (`.github/workflows/ci.yml`). Its last job deploys `main` through Coolify's API once every other job passes; Coolify's Auto Deploy is off. | |
+| GitHub Actions | CI (`.github/workflows/ci.yml`), run by hand only (no push or pull request triggers since 2026-11-19). Its last job deploys `main` through Coolify's API once every other job passes; Coolify's Auto Deploy is off. | |
 | Public npm registry | Installs frontend and collab dependencies locally and in CI. Lockfile URLs must use `registry.npmjs.org`, with no private registry credentials required. | `frontend/package-lock.json`, `collab-server/package-lock.json` |
 | nginx | Serves the static frontend and proxies the marketing pages, `/api`, Active Storage and `/collab` (the `web` service). | `frontend/nginx/default.conf` |
 

@@ -6,4 +6,4 @@ The commands the shared rules mean by "lint", "tests" and "every check that can 
 - **Tests:** `make test` runs every suite: the backend (`rails test`), the frontend (Jest), the collab server (Vitest) and, on macOS, the Swift tests; `make test-fast` is the short pre-commit suite (backend models and controllers, frontend, Swift). `make typecheck` runs the TypeScript type-checker.
 - **Migrations:** `make db-migrate`, then check `backend/db/schema.rb`.
 - **Mac app:** run the Swift build and tests when `macos/` changed (`make build-mac`).
-- **Deploys:** pushing `main` deploys to production through Coolify once CI passes (see [deployment.md](deployment.md)).
+- **Deploys:** CI runs only when started by hand (Alex, 2026-11-19); a manual CI run on `main` deploys through Coolify once it passes. A push alone does not deploy (see [deployment.md](deployment.md)). Run the checks locally before pushing.

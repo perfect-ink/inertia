@@ -28,7 +28,7 @@ Only `web` gets a domain. `api` and `collab` are reachable only inside the stack
 
 ## Deploys
 
-A push to `main` deploys only once CI passes (Alex, 2026-10-22). Coolify reads the repo through its GitHub App with **Auto Deploy off**; the last job in `.github/workflows/ci.yml`, `deploy`, runs after every other CI job succeeds on `main` and POSTs the resource's deploy endpoint. Coolify builds and starts the new containers and only switches traffic once their health checks pass.
+CI runs only when started by hand (Alex, 2026-11-19: GitHub Actions no longer runs on push or pull requests), so a push to `main` does not deploy by itself. To deploy, run the CI workflow on `main` from the Actions tab ("Run workflow"), or use **Deploy** in Coolify. Coolify reads the repo through its GitHub App with **Auto Deploy off**; the last job in `.github/workflows/ci.yml`, `deploy`, runs after every other CI job succeeds on `main` and POSTs the resource's deploy endpoint. Coolify builds and starts the new containers and only switches traffic once their health checks pass.
 
 To deploy by hand, use **Deploy** on the resource in Coolify.
 

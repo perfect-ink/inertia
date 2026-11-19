@@ -4,7 +4,7 @@ Production runs on Coolify from `docker-compose.coolify.yml`; [docs/deployment.m
 
 ### Hands off production
 
-- A push to `main` deploys once CI passes: CI's last job, `deploy`, tells Coolify to deploy (Auto Deploy is off). A red CI run means nothing ships.
+- CI no longer runs on push (Alex, 2026-11-19): `.github/workflows/ci.yml` runs only when started by hand (Actions tab, "Run workflow" on `main`), and its last job, `deploy`, tells Coolify to deploy once every check passes. A push to `main` alone does not deploy; deploy with a manual CI run or **Deploy** on the resource in Coolify (Auto Deploy is off). A red CI run means nothing ships.
 - **Do not SSH to the server, run commands against the production database, or change GitHub secrets, variables or DNS.** Hand those steps to the user as exact instructions.
 - Sessions that have `COOLIFY_API_TOKEN` may use Coolify's API to check the `inertia` resource and its deployments (Alex asked for this on 2026-10-21). Change its settings or start a deploy by hand only when the user asks.
 - Secrets live in the encrypted Rails credentials (`backend/config/credentials.yml.enc`, key in the gitignored `backend/config/master.key`), in Coolify's environment variables. Never print or commit them, and never pass one as a frontend build argument (`APP_URL`, `COLLAB_URL` and anything else webpack's `DefinePlugin` reads ship to every browser).
