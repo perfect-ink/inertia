@@ -4,17 +4,20 @@ import { Button, FormError, Input, Modal, classNames } from '@/components/ui'
 import { useUpdateFolder } from '@/api/folders'
 import { uploadFile } from '@/api/uploads'
 import { errorMessage } from '@/util/errorMessage'
-import { PROJECT_EMOJIS } from '@/data/project'
+import { PROJECT_ICONS, projectIconOf } from '@/data/project'
 import type { Folder } from '@/types'
 import ProjectIcon from './ProjectIcon'
+import { PROJECT_ICON_COMPONENTS } from './projectIcons'
 import './ProjectIconDialog.scss'
 
-// Choose a project's emoji, upload an image for it, or clear both.
+// Choose a project's icon, upload an image for it, or clear both.
 export default function ProjectIconDialog({ project, onClose }: { project: Folder | null; onClose: () => void }) {
   const updateFolder = useUpdateFolder()
   const fileRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
+  const current = project ? projectIconOf(project) : null
+  const chosen = current && 'icon' in current ? current.icon : null
 
   function save(changes: { icon?: string | null; image_url?: string | null }) {
     if (!project) return
@@ -40,35 +43,30 @@ export default function ProjectIconDialog({ project, onClose }: { project: Folde
     <Modal open={project !== null} title={`Icon for ${project?.name ?? 'product'}`} onClose={onClose}>
       {project && (
         <div className="ui-project_icon_dialog">
-          <div className="ui-project_icon_dialog-current">
-            <ProjectIcon project={project} size="lg" />
-            <span>{project.image_url ? 'Image' : project.icon ? 'Emoji' : 'Default icon'}</span>
-          </div>
+          {project.image_url && (
+            <div className="ui-project_icon_dialog-current">
+              <ProjectIcon project={project} size="lg" />
+              <span>Image</span>
+            </div>
+          )}
 
-          <div className="ui-project_icon_dialog-emojis" role="group" aria-label="Emojis">
-            {PROJECT_EMOJIS.map((emoji) => (
-              <Button
-                key={emoji}
-                aria-label={emoji}
-                aria-pressed={!project.image_url && project.icon === emoji}
-                onClick={() => save({ icon: emoji, image_url: null })}
-                className={classNames('ui-project_icon_dialog-emoji', !project.image_url && project.icon === emoji && 'ui-project_icon_dialog-emoji--active')}
-              >
-                {emoji}
-              </Button>
-            ))}
+          <div className="ui-project_icon_dialog-icons" role="group" aria-label="Icons">
+            {PROJECT_ICONS.map(({ name, label }) => {
+              const Glyph = PROJECT_ICON_COMPONENTS[name]
+              return (
+                <Button
+                  key={name}
+                  aria-label={label}
+                  title={label}
+                  aria-pressed={chosen === name}
+                  onClick={() => save({ icon: name, image_url: null })}
+                  className={classNames('ui-project_icon_dialog-icon', chosen === name && 'ui-project_icon_dialog-icon--active')}
+                >
+                  <Glyph aria-hidden="true" className="ui-project_icon_dialog-glyph" />
+                </Button>
+              )
+            })}
           </div>
-
-          <label className="ui-project_icon_dialog-field">
-            Or type any emoji
-            <Input
-              maxLength={16}
-              onKeyDown={(e) => {
-                const value = e.currentTarget.value.trim()
-                if (e.key === 'Enter' && value) save({ icon: value, image_url: null })
-              }}
-            />
-          </label>
 
           <FormError message={error} />
 

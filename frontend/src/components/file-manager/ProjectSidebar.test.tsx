@@ -21,7 +21,7 @@ const mockClient = { resetQueries: mockReset }
 jest.mock('@tanstack/react-query', () => ({ useQueryClient: () => mockClient }))
 
 const doc = { id: 9, title: 'Brief', doc_type: 'document' }
-const messages = { id: 2, name: 'Messages', kind: 'project', icon: '🚀', documents: [doc], children: [] } as unknown as Folder
+const messages = { id: 2, name: 'Messages', kind: 'project', icon: 'rocket', documents: [doc], children: [] } as unknown as Folder
 const billing = { id: 3, name: 'Billing', kind: 'project', documents: [], children: [] } as unknown as Folder
 let mockShared = true
 const mockWorkspace = () => ({

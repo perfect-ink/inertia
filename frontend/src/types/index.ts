@@ -46,7 +46,7 @@ export interface Folder {
   slug?: string | null
   // A project is a folder of docs listed on the Projects screen.
   kind: FolderKind
-  // A project's emoji, and an uploaded image shown instead when set.
+  // A project's icon name (see PROJECT_ICONS), and an uploaded image shown instead when set.
   icon?: string | null
   image_url?: string | null
   dependency_mode?: DependencyMode

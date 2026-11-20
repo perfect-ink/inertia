@@ -72,9 +72,9 @@ class ProjectScopingTest < ActionDispatch::IntegrationTest
   end
 
   test "a project keeps an emoji and an image" do
-    patch "/api/v1/folders/#{@project.id}", params: { folder: { icon: "🚀", image_url: "/rails/active_storage/blobs/x/logo.png" } }, headers: @headers, as: :json
+    patch "/api/v1/folders/#{@project.id}", params: { folder: { icon: "rocket", image_url: "/rails/active_storage/blobs/x/logo.png" } }, headers: @headers, as: :json
     assert_response :success
-    assert_equal [ "🚀", "/rails/active_storage/blobs/x/logo.png" ], [ @project.reload.icon, @project.image_url ]
+    assert_equal [ "rocket", "/rails/active_storage/blobs/x/logo.png" ], [ @project.reload.icon, @project.image_url ]
 
     patch "/api/v1/folders/#{@project.id}", params: { folder: { image_url: "javascript:alert(1)" } }, headers: @headers, as: :json
     assert_response :unprocessable_entity

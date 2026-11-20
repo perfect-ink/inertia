@@ -4,21 +4,54 @@
 export const PERSONAL_PROJECT_NAME = 'Personal Product'
 export const PERSONAL_PROJECT_NAMES = [PERSONAL_PROJECT_NAME, 'Personal Project']
 
-// Emojis offered when choosing a project's icon; any other emoji can be typed.
-export const PROJECT_EMOJIS = [
-  '🚀', '📁', '📌', '🎯', '💡', '🛠️', '📈', '🧪',
-  '🎨', '🎵', '📚', '🏠', '🌱', '⭐', '🔥', '💬',
-  '🧭', '📦', '🗓️', '✅', '🐞', '🔒', '🌍', '💼',
-]
+// Icons a project can show, by name (stored in `folders.icon`). Monochrome
+// line icons only: emojis are never used as icons (design principle 13).
+export const PROJECT_ICONS = [
+  { name: 'rocket', label: 'Rocket' },
+  { name: 'folder', label: 'Folder' },
+  { name: 'pin', label: 'Pin' },
+  { name: 'target', label: 'Target' },
+  { name: 'lightbulb', label: 'Light bulb' },
+  { name: 'wrench', label: 'Wrench' },
+  { name: 'trending-up', label: 'Chart' },
+  { name: 'flask', label: 'Flask' },
+  { name: 'palette', label: 'Palette' },
+  { name: 'music', label: 'Music' },
+  { name: 'book', label: 'Book' },
+  { name: 'house', label: 'House' },
+  { name: 'sprout', label: 'Sprout' },
+  { name: 'star', label: 'Star' },
+  { name: 'flame', label: 'Flame' },
+  { name: 'message', label: 'Message' },
+  { name: 'compass', label: 'Compass' },
+  { name: 'package', label: 'Package' },
+  { name: 'calendar', label: 'Calendar' },
+  { name: 'check', label: 'Check' },
+  { name: 'bug', label: 'Bug' },
+  { name: 'lock', label: 'Lock' },
+  { name: 'globe', label: 'Globe' },
+  { name: 'briefcase', label: 'Briefcase' },
+] as const
 
-// What a project shows as its icon: an uploaded image wins over an emoji;
-// neither means the default project icon.
-export type ProjectIconKind = { image: string } | { emoji: string } | null
+export type ProjectIconName = (typeof PROJECT_ICONS)[number]['name']
+
+// Projects that chose an emoji before icons replaced them show the matching icon.
+const LEGACY_EMOJIS: Record<string, ProjectIconName> = {
+  '🚀': 'rocket', '📁': 'folder', '📌': 'pin', '🎯': 'target', '💡': 'lightbulb', '🛠️': 'wrench', '🛠': 'wrench', '📈': 'trending-up',
+  '🧪': 'flask', '🎨': 'palette', '🎵': 'music', '📚': 'book', '🏠': 'house', '🌱': 'sprout', '⭐': 'star', '🔥': 'flame',
+  '💬': 'message', '🧭': 'compass', '📦': 'package', '🗓️': 'calendar', '🗓': 'calendar', '✅': 'check', '🐞': 'bug', '🔒': 'lock',
+  '🌍': 'globe', '💼': 'briefcase',
+}
+
+// What a project shows as its icon: an uploaded image wins over a named icon;
+// neither (or an emoji with no matching icon) means the default project icon.
+export type ProjectIconKind = { image: string } | { icon: ProjectIconName } | null
 
 export function projectIconOf(project: { icon?: string | null; image_url?: string | null }): ProjectIconKind {
   if (project.image_url) return { image: project.image_url }
-  if (project.icon?.trim()) return { emoji: project.icon.trim() }
-  return null
+  const value = project.icon?.trim() ?? ''
+  const named = PROJECT_ICONS.find((i) => i.name === value)?.name ?? LEGACY_EMOJIS[value]
+  return named ? { icon: named } : null
 }
 
 // Whether the page at `pathname` is the one a navigation link opens. A link

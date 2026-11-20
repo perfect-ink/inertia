@@ -12,13 +12,11 @@
 
     &--sm {
       @include icon-size(space(4.5));
-      font-size: 0.875rem;
     }
 
     &--lg {
       @include icon-size(space(8));
       border-radius: radius('md');
-      font-size: 1.375rem;
     }
   }
 
@@ -28,11 +26,7 @@
     object-fit: cover;
   }
 
-  .ui-project_icon-emoji {
-    line-height: 1;
-  }
-
-  .ui-project_icon-default {
+  .ui-project_icon-glyph {
     width: 80%;
     height: 80%;
     color: color(muted-foreground);
