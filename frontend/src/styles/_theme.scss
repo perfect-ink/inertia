@@ -2,17 +2,20 @@
 @use 'volta';
 
 // Inertia theme: Volta's tokens set to Inertia's blue palette. A different
-// theme only needs to override these tokens. The native Mac app carries the same
+// theme only needs to override these tokens. The page is a soft grey with the
+// slightest touch of blue (Alex, 2026-11-20), and cards, menus and dialogs stay
+// white so they stand off it; the Classic theme in data/appearance.ts restores
+// the earlier white page. The native Mac app carries the same
 // values in macos/Sources/InertiaCore/VoltaPalette.swift (a test reads this file
 // and fails when they differ), so change both together.
 :root {
   --v-accent: hsl(217deg 72% 32%);
   --v-accent-hover: hsl(217deg 72% 27%);
   --v-accent-subtle: hsl(217deg 30% 90%);
-  --v-color-base: hsl(0deg 0% 100%);
-  --v-color-base-subtle: hsl(217deg 20% 88%);
-  --v-color-base-less-subtle: hsl(217deg 20% 78%);
-  --v-color-base-more-subtle: hsl(217deg 20% 94%);
+  --v-color-base: hsl(216deg 14% 95%);
+  --v-color-base-subtle: hsl(217deg 16% 85%);
+  --v-color-base-less-subtle: hsl(217deg 16% 75%);
+  --v-color-base-more-subtle: hsl(217deg 16% 92%);
   --v-color-trim: hsl(210deg 20% 16%);
   --v-color-trim-subtle: hsl(200deg 10% 40%);
   --v-color-danger: hsl(0deg 72% 51%);
@@ -22,7 +25,7 @@
 
   // Inertia colors Volta has no token for.
   --accent-foreground: hsl(217deg 72% 20%);
-  --card: var(--v-color-base);
+  --card: hsl(0deg 0% 100%);
 }
 
 @include volta.dark-scheme {
@@ -31,14 +34,14 @@
   --v-accent: hsl(217deg 72% 42%);
   --v-accent-hover: hsl(217deg 72% 36%);
   --v-accent-subtle: hsl(217deg 15% 18%);
-  --v-color-base: hsl(222deg 32% 10%);
-  --v-color-base-subtle: hsl(222deg 22% 22%);
-  --v-color-base-less-subtle: hsl(222deg 18% 32%);
-  --v-color-base-more-subtle: hsl(222deg 26% 15%);
+  --v-color-base: hsl(220deg 12% 11%);
+  --v-color-base-subtle: hsl(220deg 10% 22%);
+  --v-color-base-less-subtle: hsl(220deg 8% 32%);
+  --v-color-base-more-subtle: hsl(220deg 11% 15%);
   --v-color-trim: hsl(0deg 0% 95%);
   --v-color-trim-subtle: hsl(220deg 12% 68%);
   --accent-foreground: hsl(217deg 60% 75%);
-  --card: hsl(222deg 28% 13%);
+  --card: hsl(220deg 11% 14%);
 }
 
 // Status colors: task statuses, health, deadlines, errors, overdue. Inertia sits
@@ -58,6 +61,7 @@
 //                        statusColors.test.ts re-checks every pair.
 :root {
   --status-red: var(--v-color-danger);
+
   // Light mode: Volta's success nudged 5% toward the text color, to clear 3:1 on
   // the muted surface (Volta's own is 2.98 there), and a deeper yellow and
   // orange (the old #eab308 and #f97316 were 1.92 and 2.80 on white).
@@ -67,13 +71,13 @@
   --status-blue: #3b82f6;
   --status-purple: #a855f7;
   --status-gray: #71717a;
-  --status-red-text: color-mix(in srgb, var(--status-red) 80%, var(--v-color-trim));
-  --status-green-text: color-mix(in srgb, var(--status-green) 70%, var(--v-color-trim));
-  --status-yellow-text: color-mix(in srgb, var(--status-yellow) 70%, var(--v-color-trim));
-  --status-orange-text: color-mix(in srgb, var(--status-orange) 70%, var(--v-color-trim));
-  --status-blue-text: color-mix(in srgb, var(--status-blue) 65%, var(--v-color-trim));
-  --status-purple-text: color-mix(in srgb, var(--status-purple) 70%, var(--v-color-trim));
-  --status-gray-text: color-mix(in srgb, var(--status-gray) 85%, var(--v-color-trim));
+  --status-red-text: color-mix(in srgb, var(--status-red) 70%, var(--v-color-trim));
+  --status-green-text: color-mix(in srgb, var(--status-green) 65%, var(--v-color-trim));
+  --status-yellow-text: color-mix(in srgb, var(--status-yellow) 65%, var(--v-color-trim));
+  --status-orange-text: color-mix(in srgb, var(--status-orange) 65%, var(--v-color-trim));
+  --status-blue-text: color-mix(in srgb, var(--status-blue) 60%, var(--v-color-trim));
+  --status-purple-text: color-mix(in srgb, var(--status-purple) 60%, var(--v-color-trim));
+  --status-gray-text: color-mix(in srgb, var(--status-gray) 75%, var(--v-color-trim));
 }
 
 // The text trim is light in dark mode, so the same mix lightens the hue instead
@@ -84,12 +88,12 @@
   --status-green: var(--v-color-success);
   --status-yellow: #eab308;
   --status-orange: #f97316;
-  --status-red-text: color-mix(in srgb, var(--status-red) 65%, var(--v-color-trim));
-  --status-green-text: color-mix(in srgb, var(--status-green) 85%, var(--v-color-trim));
+  --status-red-text: color-mix(in srgb, var(--status-red) 60%, var(--v-color-trim));
+  --status-green-text: color-mix(in srgb, var(--status-green) 80%, var(--v-color-trim));
   --status-yellow-text: var(--status-yellow);
   --status-orange-text: var(--status-orange);
   --status-blue-text: color-mix(in srgb, var(--status-blue) 80%, var(--v-color-trim));
-  --status-purple-text: color-mix(in srgb, var(--status-purple) 75%, var(--v-color-trim));
+  --status-purple-text: color-mix(in srgb, var(--status-purple) 70%, var(--v-color-trim));
   --status-gray-text: color-mix(in srgb, var(--status-gray) 70%, var(--v-color-trim));
 }
 

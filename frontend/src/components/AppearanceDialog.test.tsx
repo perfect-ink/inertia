@@ -12,7 +12,7 @@ test('choosing a mode and a colour theme updates the saved appearance, and reset
   expect(useAppearanceStore.getState()).toMatchObject({ theme: 'dark', colorTheme: 'purple' })
   expect(screen.getByRole('radio', { name: 'Plum' })).toHaveAttribute('aria-checked', 'true')
   expect(screen.getByRole('radio', { name: 'Inertia' })).toHaveAttribute('aria-checked', 'false')
-  expect(screen.getByRole('radiogroup', { name: 'Colour theme' })).toBeInTheDocument()
+  expect(screen.getByRole('radiogroup', { name: 'Theme' })).toBeInTheDocument()
 
   fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
   expect(useAppearanceStore.getState()).toMatchObject({ theme: 'system', colorTheme: 'teal' })

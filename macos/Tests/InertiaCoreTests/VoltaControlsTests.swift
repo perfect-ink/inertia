@@ -26,12 +26,12 @@ final class VoltaControlsTests: XCTestCase {
         XCTAssertEqual(VoltaPalette.accent.light, HSL(217, 72, 32))
         XCTAssertEqual(VoltaPalette.accent.dark, HSL(217, 72, 42))
         XCTAssertEqual(VoltaPalette.accentHover.light, HSL(217, 72, 27))
-        XCTAssertEqual(VoltaPalette.base.light, HSL(0, 0, 100))
-        XCTAssertEqual(VoltaPalette.base.dark, HSL(222, 32, 10))
+        XCTAssertEqual(VoltaPalette.base.light, HSL(216, 14, 95))
+        XCTAssertEqual(VoltaPalette.base.dark, HSL(220, 12, 11))
         XCTAssertEqual(VoltaPalette.trim.light, HSL(210, 20, 16))
         XCTAssertEqual(VoltaPalette.trimSubtle.light, HSL(200, 10, 40))
         XCTAssertEqual(VoltaPalette.trimSubtle.dark, HSL(220, 12, 68))
-        XCTAssertEqual(VoltaPalette.card.dark, HSL(222, 28, 13))
+        XCTAssertEqual(VoltaPalette.card.dark, HSL(220, 11, 14))
         // The theme only sets one danger red; Volta's dark palette does not change it.
         XCTAssertEqual(VoltaPalette.danger.light, VoltaPalette.danger.dark)
         XCTAssertEqual(VoltaPalette.accent.value(dark: true), VoltaPalette.accent.dark)
@@ -42,7 +42,7 @@ final class VoltaControlsTests: XCTestCase {
         XCTAssertEqual(VoltaFill.clear.resolve(dark: false).alpha, 0)
         assertEqual(VoltaFill.white.resolve(dark: true), .white)
         assertEqual(VoltaFill.errorText.resolve(dark: false), RGBA(red255: 239, green255: 68, blue255: 68))
-        assertEqual(VoltaFill.token(VoltaPalette.base).resolve(dark: false), .white)
+        assertEqual(VoltaFill.token(VoltaPalette.card).resolve(dark: false), .white)
         XCTAssertNotEqual(VoltaFill.token(VoltaPalette.base).resolve(dark: true), VoltaFill.token(VoltaPalette.base).resolve(dark: false))
     }
 
@@ -317,8 +317,8 @@ final class VoltaControlsTests: XCTestCase {
             // A token the dark block does not set keeps its light value, as in CSS.
             XCTAssertEqual(dark[name] ?? light[name], token.dark, "\(name) in dark mode")
         }
-        // `--card` is the page color in light mode (`var(--v-color-base)`) and its own color in dark mode.
-        XCTAssertEqual(light["v-color-base"], VoltaPalette.card.light)
+        // `--card` is white in light mode, off the grey page, and its own color in dark mode.
+        XCTAssertEqual(light["card"], VoltaPalette.card.light)
         XCTAssertEqual(dark["card"], VoltaPalette.card.dark)
     }
 

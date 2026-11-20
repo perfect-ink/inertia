@@ -66,15 +66,15 @@ public enum VoltaPalette {
     public static let accentHover = VoltaToken(light: HSL(217, 72, 27), dark: HSL(217, 72, 36))
     public static let accentSubtle = VoltaToken(light: HSL(217, 30, 90), dark: HSL(217, 15, 18))
     public static let accentForeground = VoltaToken(light: HSL(217, 72, 20), dark: HSL(217, 60, 75))
-    public static let base = VoltaToken(light: HSL(0, 0, 100), dark: HSL(222, 32, 10))
-    public static let baseSubtle = VoltaToken(light: HSL(217, 20, 88), dark: HSL(222, 22, 22))
-    public static let baseLessSubtle = VoltaToken(light: HSL(217, 20, 78), dark: HSL(222, 18, 32))
-    public static let baseMoreSubtle = VoltaToken(light: HSL(217, 20, 94), dark: HSL(222, 26, 15))
+    public static let base = VoltaToken(light: HSL(216, 14, 95), dark: HSL(220, 12, 11))
+    public static let baseSubtle = VoltaToken(light: HSL(217, 16, 85), dark: HSL(220, 10, 22))
+    public static let baseLessSubtle = VoltaToken(light: HSL(217, 16, 75), dark: HSL(220, 8, 32))
+    public static let baseMoreSubtle = VoltaToken(light: HSL(217, 16, 92), dark: HSL(220, 11, 15))
     public static let trim = VoltaToken(light: HSL(210, 20, 16), dark: HSL(0, 0, 95))
     public static let trimSubtle = VoltaToken(light: HSL(200, 10, 40), dark: HSL(220, 12, 68))
     public static let danger = VoltaToken(light: HSL(0, 72, 51), dark: HSL(0, 72, 51))
-    /// `--card`: white in light mode (it is `--v-color-base`), a step above the dark base in dark mode.
-    public static let card = VoltaToken(light: HSL(0, 0, 100), dark: HSL(222, 28, 13))
+    /// `--card`: white in light mode, standing off the grey page, and a step above the dark base in dark mode.
+    public static let card = VoltaToken(light: HSL(0, 0, 100), dark: HSL(220, 11, 14))
 }
 
 /// A color a control draws with: a theme token, or one of the few fixed colors

@@ -32,3 +32,14 @@ test('dark sets data-theme and a colour theme sets its tokens and tints the side
   expect(document.documentElement).not.toHaveAttribute('data-sidebar')
   expect(document.documentElement.style.getPropertyValue('--sidebar-background')).toBe('')
 })
+
+test('Classic sets the earlier white page, and switching back to the default grey removes it', () => {
+  useAppearanceStore.setState({ theme: 'light', colorTheme: 'classic' })
+  const { rerender } = render(<AppearanceEffect />)
+  expect(document.documentElement.style.getPropertyValue('--v-color-base')).toBe('hsl(0deg 0% 100%)')
+  expect(document.documentElement).not.toHaveAttribute('data-sidebar')
+
+  useAppearanceStore.setState({ colorTheme: 'teal' })
+  rerender(<AppearanceEffect />)
+  expect(document.documentElement.style.getPropertyValue('--v-color-base')).toBe('')
+})

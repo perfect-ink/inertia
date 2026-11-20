@@ -15,7 +15,7 @@ import AppearanceDialog from '@/components/AppearanceDialog'
 import {
   CheckSquare, FileText, Database,
   Table as TableIcon, Pin, Folder, Loader2, CalendarDays,
-  Plus, Keyboard, Download, Palette, Sparkles, LogOut, ChevronsUpDown,
+  Plus, Keyboard, Download, Settings, Sparkles, LogOut, ChevronsUpDown,
 } from 'lucide-react'
 import { useWorkspace } from '@/api/workspace'
 import { usePinFolder } from '@/api/folders'
@@ -344,7 +344,7 @@ export default function Sidebar() {
                 ? [{ key: 'quick-add', label: 'Quick add', hint: platformKeys('⌘K', isMac), icon: <Plus className="sidebar-icon--sm" />, onSelect: openQuickAdd }]
                 : []),
               { key: 'shortcuts', label: 'Keyboard shortcuts', hint: platformKeys('⌘/', isMac), icon: <Keyboard className="sidebar-icon--sm" />, onSelect: () => setShortcutsOpen(true) },
-              { key: 'appearance', label: 'Appearance', icon: <Palette className="sidebar-icon--sm" />, onSelect: () => setAppearanceOpen(true), separatorBefore: true },
+              { key: 'settings', label: 'Settings', icon: <Settings className="sidebar-icon--sm" />, onSelect: () => setAppearanceOpen(true), separatorBefore: true },
               { key: 'quip', label: 'Import from Quip', icon: <Download className="sidebar-icon--sm" />, onSelect: () => setQuipImportOpen(true) },
               ...(user && !onboardingVisible ? [{ key: 'onboarding', label: 'Show getting started', icon: <Sparkles className="sidebar-icon--sm" />, onSelect: () => { useOnboardingStore.getState().reopen(user.id); navigate('/space') } }] : []),
               { key: 'sign-out', label: 'Sign out', icon: <LogOut className="sidebar-icon--sm" />, onSelect: handleLogout, separatorBefore: true },

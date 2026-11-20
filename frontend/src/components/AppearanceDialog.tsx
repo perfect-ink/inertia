@@ -1,29 +1,30 @@
 import type { CSSProperties } from 'react'
 import { Button, Modal, Select } from '@/components/ui'
-import { COLOR_THEMES, THEME_CHOICES, accentColor, isDark, sidebarColor, type ThemeChoice } from '@/data/appearance'
+import { COLOR_THEMES, THEME_CHOICES, accentColor, isDark, pageColor, sidebarColor, type ThemeChoice } from '@/data/appearance'
 import { useAppearanceStore } from '@/store/appearance'
 import './AppearanceDialog.scss'
 
-// Light, dark or system, and a colour theme picked from preview cards, as in
-// Slack. Changes apply immediately.
+// Settings: light, dark or system, and a theme picked from preview cards, as
+// in Slack. Changes apply immediately.
 export default function AppearanceDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { theme, colorTheme, setTheme, setColorTheme, reset } = useAppearanceStore()
   const dark = isDark(theme, window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false)
 
   return (
-    <Modal open={open} title="Appearance" description="Saved on this device." onClose={onClose}>
+    <Modal open={open} title="Settings" description="Saved on this device." onClose={onClose}>
       <label className="appearance_dialog-field">
         Mode
         <Select value={theme} onChange={(e) => setTheme(e.target.value as ThemeChoice)}>
           {THEME_CHOICES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
         </Select>
       </label>
-      <p id="appearance-color-theme" className="appearance_dialog-heading">Colour theme</p>
+      <p id="appearance-color-theme" className="appearance_dialog-heading">Theme</p>
       <div role="radiogroup" aria-labelledby="appearance-color-theme" className="appearance_dialog-themes">
         {COLOR_THEMES.map((t) => {
           const selected = colorTheme === t.id
-          // The card previews the theme: its sidebar beside a page with its accent.
+          // The card previews the theme: its sidebar beside its page with its accent.
           const preview = {
+            '--preview-page': pageColor(t.id, dark) ?? 'var(--background)',
             '--preview-sidebar': sidebarColor(t.id, dark) ?? 'var(--muted)',
             '--preview-accent': accentColor(t.hue, dark),
           } as CSSProperties

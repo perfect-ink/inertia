@@ -36,15 +36,15 @@ Every fill is at least 3:1 (WCAG 1.4.11, graphics) against the page, a card and 
 ### Text
 | Hue | Text, light | Text, dark | Weakest text pair, light / dark |
 | --- | --- | --- | --- |
-| red | `#b7282a` | `#e46f6f` | 4.60 / 4.69 |
-| green | `#0d791a` | `#27ad30` | 4.65 / 4.74 |
-| yellow | `#7e630f` | `#eab308` | 4.81 / 6.52 |
-| orange | `#a34e13` | `#f97316` | 4.77 / 4.86 |
-| blue | `#3263b1` | `#6098f5` | 4.98 / 4.84 |
-| purple | `#7f48bc` | `#bb7cf6` | 4.61 / 4.62 |
-| gray | `#65666f` | `#98989e` | 4.72 / 4.99 |
+| red | `#a4282b` | `#e57979` | 4.75 / 4.79 |
+| green | `#0e731b` | `#33b13c` | 4.51 / 4.73 |
+| yellow | `#775f11` | `#eab308` | 4.65 / 6.09 |
+| orange | `#9a4b15` | `#f97316` | 4.63 / 4.55 |
+| blue | `#305ea7` | `#6098f5` | 4.83 / 4.59 |
+| purple | `#7243a8` | `#be84f6` | 4.80 / 4.68 |
+| gray | `#5d5f68` | `#98989e` | 4.76 / 4.71 |
 
-"Weakest text pair" is the lowest ratio of the text token on the page, a card, a muted surface, and the hue's own tint (15%; 20% for red and purple) over the page and over a card. Figures are for the default Inertia theme; colour themes change only the accent and the sidebar. The hex values are the results of the mixes, for reading; the CSS holds the mixes, so red and green follow Volta if it changes them.
+"Weakest text pair" is the lowest ratio of the text token on the page, a card, a muted surface, and the hue's own tint (15%; 20% for red and purple) over the page and over a card. Figures are for the default Inertia theme (grey page since 2026-11-20, which deepened the light mixes a step); colour themes change only the accent and the sidebar, and Classic's white page is lighter, so it only adds contrast. The hex values are the results of the mixes, for reading; the CSS holds the mixes, so red and green follow Volta if it changes them.
 
 ## What changed in how things look
 - Red and green fills are Volta's (`#dc2828` in Inertia's theme, `#03a10e`), a little deeper than the Tailwind-style red and green they replace (`#ef4444`, `#22c55e`). Meaning is unchanged. In light mode green is a touch deeper still (`#049b10`).

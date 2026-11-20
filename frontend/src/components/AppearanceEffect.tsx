@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import { APPEARANCE_PROPERTY_NAMES, accentProperties, isDark, sidebarProperties, themeAttribute } from '@/data/appearance'
+import { APPEARANCE_PROPERTY_NAMES, accentProperties, isDark, sidebarProperties, surfaceProperties, themeAttribute } from '@/data/appearance'
 import { useAppearanceStore } from '@/store/appearance'
 
 // Applies the saved appearance to the page: `data-theme` on <html> for light or
 // dark (unset follows the OS), the colour theme's accent and sidebar tokens as
-// inline custom properties, and `data-sidebar="tinted"` when the theme tints
+// inline custom properties (with its page surface, if it has its own), and `data-sidebar="tinted"` when the theme tints
 // the sidebar. Re-applies when the OS colour scheme changes while "System" is
 // chosen. Renders nothing.
 export default function AppearanceEffect() {
@@ -26,7 +26,7 @@ export default function AppearanceEffect() {
       if (sidebar) root.setAttribute('data-sidebar', 'tinted')
       else root.removeAttribute('data-sidebar')
       APPEARANCE_PROPERTY_NAMES.forEach((name) => root.style.removeProperty(name))
-      Object.entries({ ...accentProperties(colorTheme, dark), ...sidebar })
+      Object.entries({ ...accentProperties(colorTheme, dark), ...surfaceProperties(colorTheme, dark), ...sidebar })
         .forEach(([name, value]) => root.style.setProperty(name, value))
     }
 

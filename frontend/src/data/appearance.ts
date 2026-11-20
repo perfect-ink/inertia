@@ -11,24 +11,48 @@ export const THEME_CHOICES: { value: ThemeChoice; label: string }[] = [
 // A sidebar tint: a deep colour the rail and panel are drawn in, with light text.
 interface SidebarTint { hue: number; saturation: number; lightness: number }
 
+// Page surfaces a theme can use instead of the default soft grey in _theme.scss.
+// 'white' is the page Inertia had before 2026-11-20: white in light mode, navy in dark.
+const SURFACES = {
+  white: {
+    light: {
+      '--v-color-base': 'hsl(0deg 0% 100%)',
+      '--v-color-base-subtle': 'hsl(217deg 20% 88%)',
+      '--v-color-base-less-subtle': 'hsl(217deg 20% 78%)',
+      '--v-color-base-more-subtle': 'hsl(217deg 20% 94%)',
+      '--card': 'hsl(0deg 0% 100%)',
+    },
+    dark: {
+      '--v-color-base': 'hsl(222deg 32% 10%)',
+      '--v-color-base-subtle': 'hsl(222deg 22% 22%)',
+      '--v-color-base-less-subtle': 'hsl(222deg 18% 32%)',
+      '--v-color-base-more-subtle': 'hsl(222deg 26% 15%)',
+      '--card': 'hsl(222deg 28% 13%)',
+    },
+  },
+} as const
+
+type Surface = keyof typeof SURFACES
+
 // The hue of Inertia's own accent, the blue in _theme.scss.
 const DEFAULT_HUE = 217
 
 // Colour themes. `hue` is the accent; `sidebar` tints the sidebar, or null for
-// the plain one. 'teal' is Inertia's own theme (_theme.scss), so choosing it
+// the plain one; `surface` replaces the default grey page, or null to keep it. 'teal' is Inertia's own theme (_theme.scss), so choosing it
 // applies no override; it is blue now but keeps its id so saved choices load. The ids of the first seven are the earlier accent
 // presets, so a saved accent keeps its colour.
 export const COLOR_THEMES = [
-  { id: 'teal', label: 'Inertia', hue: DEFAULT_HUE, sidebar: null },
-  { id: 'midnight', label: 'Midnight', hue: DEFAULT_HUE, sidebar: { hue: 224, saturation: 40, lightness: 15 } },
-  { id: 'blue', label: 'Harbor', hue: 217, sidebar: { hue: 217, saturation: 50, lightness: 24 } },
-  { id: 'purple', label: 'Plum', hue: 262, sidebar: { hue: 285, saturation: 35, lightness: 24 } },
-  { id: 'pink', label: 'Rose', hue: 330, sidebar: { hue: 335, saturation: 40, lightness: 26 } },
-  { id: 'red', label: 'Crimson', hue: 0, sidebar: { hue: 355, saturation: 45, lightness: 25 } },
-  { id: 'orange', label: 'Ember', hue: 24, sidebar: { hue: 18, saturation: 45, lightness: 24 } },
-  { id: 'green', label: 'Moss', hue: 142, sidebar: { hue: 150, saturation: 30, lightness: 20 } },
-  { id: 'graphite', label: 'Graphite', hue: 217, sidebar: { hue: 220, saturation: 8, lightness: 21 } },
-] as const satisfies readonly { id: string; label: string; hue: number; sidebar: SidebarTint | null }[]
+  { id: 'teal', label: 'Inertia', hue: DEFAULT_HUE, sidebar: null, surface: null },
+  { id: 'midnight', label: 'Midnight', hue: DEFAULT_HUE, sidebar: { hue: 224, saturation: 40, lightness: 15 }, surface: null },
+  { id: 'blue', label: 'Harbor', hue: 217, sidebar: { hue: 217, saturation: 50, lightness: 24 }, surface: null },
+  { id: 'purple', label: 'Plum', hue: 262, sidebar: { hue: 285, saturation: 35, lightness: 24 }, surface: null },
+  { id: 'pink', label: 'Rose', hue: 330, sidebar: { hue: 335, saturation: 40, lightness: 26 }, surface: null },
+  { id: 'red', label: 'Crimson', hue: 0, sidebar: { hue: 355, saturation: 45, lightness: 25 }, surface: null },
+  { id: 'orange', label: 'Ember', hue: 24, sidebar: { hue: 18, saturation: 45, lightness: 24 }, surface: null },
+  { id: 'green', label: 'Moss', hue: 142, sidebar: { hue: 150, saturation: 30, lightness: 20 }, surface: null },
+  { id: 'graphite', label: 'Graphite', hue: 217, sidebar: { hue: 220, saturation: 8, lightness: 21 }, surface: null },
+  { id: 'classic', label: 'Classic', hue: DEFAULT_HUE, sidebar: null, surface: 'white' },
+] as const satisfies readonly { id: string; label: string; hue: number; sidebar: SidebarTint | null; surface: Surface | null }[]
 
 export type ColorThemeId = (typeof COLOR_THEMES)[number]['id']
 
@@ -92,8 +116,22 @@ export function sidebarProperties(id: ColorThemeId, dark: boolean): Record<strin
   }
 }
 
+// Page surface tokens for a theme with its own page colour, or null for the
+// default grey page in _theme.scss.
+export function surfaceProperties(id: ColorThemeId, dark: boolean): Record<string, string> | null {
+  const surface = findTheme(id)?.surface
+  if (!surface) return null
+  return { ...SURFACES[surface][dark ? 'dark' : 'light'] }
+}
+
+// The page colour itself, for a theme's preview card.
+export function pageColor(id: ColorThemeId, dark: boolean): string | null {
+  return surfaceProperties(id, dark)?.['--v-color-base'] ?? null
+}
+
 export const APPEARANCE_PROPERTY_NAMES = [
   '--v-accent', '--v-accent-hover', '--v-accent-subtle',
+  '--v-color-base', '--v-color-base-subtle', '--v-color-base-less-subtle', '--v-color-base-more-subtle', '--card',
   '--sidebar-background', '--sidebar-hover', '--sidebar-border', '--sidebar-field',
   '--sidebar-foreground', '--sidebar-muted-foreground',
 ] as const

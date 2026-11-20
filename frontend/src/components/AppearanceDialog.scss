@@ -62,7 +62,7 @@
       overflow: hidden;
       border: 1px solid color(border);
       border-radius: radius('md');
-      background: color(background);
+      background: var(--preview-page);
 
       &_sidebar {
         width: 32%;

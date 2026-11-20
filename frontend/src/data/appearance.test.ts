@@ -1,4 +1,4 @@
-import { COLOR_THEMES, accentProperties, DEFAULT_APPEARANCE, isDark, sidebarColor, sidebarProperties, themeAttribute } from './appearance'
+import { COLOR_THEMES, accentProperties, DEFAULT_APPEARANCE, isDark, pageColor, sidebarColor, sidebarProperties, surfaceProperties, themeAttribute } from './appearance'
 
 test('system follows the OS; light and dark are fixed', () => {
   expect(isDark('system', true)).toBe(true)
@@ -33,4 +33,14 @@ test('the default theme keeps the plain sidebar; others tint it, deeper in dark 
 test('every theme has a unique id and label', () => {
   expect(new Set(COLOR_THEMES.map((t) => t.id)).size).toBe(COLOR_THEMES.length)
   expect(new Set(COLOR_THEMES.map((t) => t.label)).size).toBe(COLOR_THEMES.length)
+})
+
+test('only Classic replaces the default grey page, with the earlier white (light) or navy (dark)', () => {
+  expect(surfaceProperties('teal', false)).toBeNull()
+  expect(surfaceProperties('purple', true)).toBeNull()
+  expect(pageColor('teal', false)).toBeNull()
+  expect(surfaceProperties('classic', false)).toMatchObject({ '--v-color-base': 'hsl(0deg 0% 100%)', '--card': 'hsl(0deg 0% 100%)' })
+  expect(pageColor('classic', true)).toBe('hsl(222deg 32% 10%)')
+  expect(accentProperties('classic', false)).toBeNull()
+  expect(sidebarProperties('classic', false)).toBeNull()
 })
