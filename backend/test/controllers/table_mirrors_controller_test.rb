@@ -5,7 +5,7 @@ class TableMirrorsControllerTest < ActionDispatch::IntegrationTest
     @previous_bypass = ENV["BYPASS_AUTH"]
     ENV["BYPASS_AUTH"] = "true"
     @user = User.first || User.create!(name: "Ada", email: "table-mirror-api@example.com", password: "password123")
-    @folder = @user.workspace.folders.create!(name: "Tables")
+    @folder = @user.workspace.folders.create!(name: "Tables", kind: :project)
     @contacts = @folder.documents.create!(title: "Contacts", doc_type: :table, created_by: @user)
     @companies = @folder.documents.create!(title: "Companies", doc_type: :table, created_by: @user)
     @name = @companies.table_fields.create!(name: "Name", data_type: "text")
@@ -58,7 +58,7 @@ class TableMirrorsControllerTest < ActionDispatch::IntegrationTest
 
   test "fields from another Space cannot be mirrored" do
     other = User.create!(name: "Other", email: "foreign-mirror-api@example.com", password: "password123")
-    folder = other.workspace.folders.create!(name: "Private")
+    folder = other.workspace.folders.create!(name: "Private", kind: :project)
     table = folder.documents.create!(title: "Private", doc_type: :table, created_by: other)
     secret = table.table_fields.create!(name: "Secret", data_type: "text")
     link = table.table_fields.create!(name: "Self", data_type: "relation", relation_table: table)

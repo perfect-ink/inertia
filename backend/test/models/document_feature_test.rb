@@ -4,7 +4,7 @@ class DocumentFeatureTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Pat", email: "pat-docfeature@example.com", password: "password123")
     @workspace = @user.workspace
-    @folder = @workspace.folders.create!(name: "Features", kind: :feature)
+    @folder = @workspace.folders.create!(name: "Features", kind: :feature, parent: @workspace.folders.create!(name: "Product", kind: :project))
   end
 
   def doc(title, **attrs) = Document.create!({ title: title, folder: @folder, created_by: @user }.merge(attrs))
@@ -22,7 +22,7 @@ class DocumentFeatureTest < ActiveSupport::TestCase
 
   test "the parent, epic, milestone and owner must be in this space" do
     other = User.create!(name: "O", email: "o-docfeature@example.com", password: "password123")
-    foreign_doc = Document.create!(title: "Theirs", folder: other.workspace.folders.create!(name: "X"), created_by: other)
+    foreign_doc = Document.create!(title: "Theirs", folder: other.workspace.folders.create!(name: "X", kind: :project), created_by: other)
     feature = doc("Feature")
 
     feature.parent_feature = foreign_doc

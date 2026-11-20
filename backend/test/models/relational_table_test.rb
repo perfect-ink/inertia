@@ -3,7 +3,7 @@ require "test_helper"
 class RelationalTableTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Ada", email: "table-ada@example.com", password: "password123")
-    @folder = @user.workspace.folders.create!(name: "Tables")
+    @folder = @user.workspace.folders.create!(name: "Tables", kind: :project)
     @table = @folder.documents.create!(title: "Contacts", doc_type: :table, created_by: @user)
     @record = @table.table_records.create!
   end
@@ -37,7 +37,7 @@ class RelationalTableTest < ActiveSupport::TestCase
 
   test "relation targets cannot cross workspace boundaries or point to documents" do
     other = User.create!(name: "Other", email: "other-table@example.com", password: "password123")
-    foreign_folder = other.workspace.folders.create!(name: "Foreign")
+    foreign_folder = other.workspace.folders.create!(name: "Foreign", kind: :project)
     foreign_table = foreign_folder.documents.create!(title: "Foreign", doc_type: :table, created_by: other)
     field = @table.table_fields.build(name: "Foreign", data_type: "relation", relation_table: foreign_table)
     assert_not field.valid?
@@ -116,7 +116,7 @@ class RelationalTableTest < ActiveSupport::TestCase
     assert @record.table_cells.build(table_field: many, value: shots.map(&:id)).save
 
     other = User.create!(name: "O", email: "table-files-other@example.com", password: "password123")
-    foreign = file_item("x.png", other.workspace.folders.create!(name: "X"), other)
+    foreign = file_item("x.png", other.workspace.folders.create!(name: "X", kind: :project), other)
     plain = Document.create!(title: "Plain", folder: @folder, created_by: @user)
     record2 = @table.table_records.create!
     [ [ single, foreign.id ], [ single, plain.id ], [ single, "7" ], [ many, [ foreign.id ] ], [ many, shots.map(&:id) * 2 ], [ many, "no" ] ].each do |field, bad|

@@ -89,7 +89,7 @@ class WorkspacesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "documents are found across workspaces and the role of their own workspace applies" do
-    folder = @team.root_folder
+    folder = @team.folders.create!(name: "Plans", kind: :project)
     doc = folder.documents.create!(title: "Plan", doc_type: :document, created_by: @owner)
 
     get "/api/v1/documents/#{doc.id}", headers: headers_for(@viewer)

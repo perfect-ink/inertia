@@ -212,7 +212,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "documents in a space are reachable by team-only people with the team's role" do
-    doc = @space.root_folder.documents.create!(title: "Plan", doc_type: :document, created_by: @owner)
+    doc = @space.folders.create!(name: "Plans", kind: :project).documents.create!(title: "Plan", doc_type: :document, created_by: @owner)
 
     get "/api/v1/documents/#{doc.id}", headers: headers_for(@ada)
     assert_response :success

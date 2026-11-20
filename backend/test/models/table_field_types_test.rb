@@ -7,7 +7,7 @@ class TableFieldTypesTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Ada", email: "field-types-ada@example.com", password: "password123")
     @space = Workspace.create!(name: "Team", user: @user)
-    @folder = @space.folders.create!(name: "Tables")
+    @folder = @space.folders.create!(name: "Tables", kind: :project)
     @table = @folder.documents.create!(title: "People", doc_type: :table, created_by: @user)
   end
 

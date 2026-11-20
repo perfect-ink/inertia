@@ -10,7 +10,7 @@ class AgentHandoffsControllerTest < ActionDispatch::IntegrationTest
     @workspace = Workspace.create!(name: "Team", user: @owner)
     @workspace.memberships.create!(user: @viewer, role: :viewer)
     @workspace.memberships.create!(user: @member, role: :member)
-    @folder = @workspace.folders.create!(name: "Plans")
+    @folder = @workspace.folders.create!(name: "Plans", kind: :project)
     @doc = Document.create!(title: "PRD", folder: @folder, created_by: @owner, content: { "type" => "doc", "content" => [ { "type" => "paragraph", "content" => [ { "type" => "text", "text" => "Build it" } ] } ] })
     @task = @workspace.tasks.create!(title: "Ship it", document: @doc, folder: @folder)
   end
@@ -69,7 +69,7 @@ class AgentHandoffsControllerTest < ActionDispatch::IntegrationTest
     post "/api/v1/agent_handoffs", params: { subject_type: "user", subject_id: 1 }, headers: headers_for(@owner), as: :json
     assert_response :unprocessable_entity
     other = User.create!(name: "Other", email: "other-handoff@example.com", password: "password123")
-    foreign = other.workspace.folders.create!(name: "Theirs")
+    foreign = other.workspace.folders.create!(name: "Theirs", kind: :project)
     post "/api/v1/agent_handoffs", params: { subject_type: "folder", subject_id: foreign.id }, headers: headers_for(@owner), as: :json
     assert_response :not_found
   end

@@ -4,7 +4,7 @@ class TaskStatusSettingTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Ada", email: "ada-status-setting@example.com", password: "password123")
     @workspace = @user.workspace
-    @folder = @workspace.folders.create!(name: "Project")
+    @folder = @workspace.folders.create!(name: "Project", kind: :project)
   end
 
   test "labels are trimmed and a blank label or color is dropped" do
@@ -43,7 +43,7 @@ class TaskStatusSettingTest < ActiveSupport::TestCase
 
   test "rejects a folder from another workspace" do
     other = User.create!(name: "Bob", email: "bob-status-setting@example.com", password: "password123")
-    foreign = other.workspace.folders.create!(name: "Theirs")
+    foreign = other.workspace.folders.create!(name: "Theirs", kind: :project)
 
     setting = @workspace.task_status_settings.build(status: :todo, label: "Queued", folder: foreign)
     assert_not setting.valid?
@@ -81,7 +81,7 @@ class TaskStatusSettingTest < ActiveSupport::TestCase
 
     team = Workspace.create!(name: "Team", user: @user)
     team.task_status_settings.create!(status: :todo, label: "Queued")
-    team.task_status_settings.create!(status: :todo, label: "Queued", folder: team.folders.create!(name: "Sub"))
+    team.task_status_settings.create!(status: :todo, label: "Queued", folder: team.folders.create!(name: "Sub", kind: :project))
     team.destroy
     assert_equal 0, TaskStatusSetting.count
   end

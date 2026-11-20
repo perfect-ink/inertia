@@ -145,18 +145,21 @@ export interface FolderChoice {
 
 // A Space's flat folder list as choices, in tree order (siblings by position,
 // then name). A folder whose parent is missing from the list, such as one
-// under an archived folder, is left out.
-export function folderChoices(folders: SpaceFolder[]): FolderChoice[] {
+// under an archived folder, is left out. `inProductOnly` keeps only folders in a
+// project ("product" in the UI), where documents have to go.
+export function folderChoices(folders: SpaceFolder[], { inProductOnly = false } = {}): FolderChoice[] {
   const children = new Map<number | null, SpaceFolder[]>()
   for (const folder of folders) {
     children.set(folder.parent_id, [...(children.get(folder.parent_id) ?? []), folder])
   }
-  const walk = (parentId: number | null, path: string[]): FolderChoice[] =>
+  const walk = (parentId: number | null, path: string[], inProduct: boolean): FolderChoice[] =>
     (children.get(parentId) ?? [])
       .sort((a, b) => a.position - b.position || a.name.localeCompare(b.name))
       .flatMap((folder) => {
         const here = folder.root ? path : [...path, folder.name]
-        return [{ id: folder.id, label: folder.root ? 'Top level' : here.join(' / ') }, ...walk(folder.id, here)]
+        const inside = inProduct || folder.kind === 'project'
+        const choice = { id: folder.id, label: folder.root ? 'Top level' : here.join(' / ') }
+        return [...(!inProductOnly || inside ? [choice] : []), ...walk(folder.id, here, inside)]
       })
-  return walk(null, [])
+  return walk(null, [], false)
 }

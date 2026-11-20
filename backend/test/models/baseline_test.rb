@@ -4,7 +4,7 @@ class BaselineTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Pat", email: "pat-baseline@example.com", password: "password123")
     @workspace = @user.workspace
-    @folder = @workspace.folders.create!(name: "Plan")
+    @folder = @workspace.folders.create!(name: "Plan", kind: :project)
     @sub = @workspace.folders.create!(name: "Sub", parent: @folder)
   end
 

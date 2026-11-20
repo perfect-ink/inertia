@@ -140,3 +140,16 @@ test('findDocument finds a document anywhere in the Space, or nothing', () => {
   expect(findDocument(tree(), 1)?.title).toBe('Readme')
   expect(findDocument(tree(), 99)).toBeUndefined()
 })
+
+test('folderChoices can keep only the folders inside a product, where documents go', () => {
+  const folders = [
+    { ...spaceFolder(1, 'Root', null, 0, true), kind: 'folder' as const },
+    { ...spaceFolder(2, 'Messages', 1, 0), kind: 'project' as const },
+    { ...spaceFolder(4, 'Design', 2), kind: 'folder' as const },
+    { ...spaceFolder(3, 'Loose', 1, 1), kind: 'folder' as const },
+  ]
+  expect(folderChoices(folders, { inProductOnly: true })).toEqual([
+    { id: 2, label: 'Messages' },
+    { id: 4, label: 'Messages / Design' },
+  ])
+})

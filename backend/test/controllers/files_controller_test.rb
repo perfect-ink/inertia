@@ -8,7 +8,7 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     @user = User.create!(name: "Pat", email: "pat-files-api@example.com", password: "password123")
     token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
     @headers = { "Authorization" => "Bearer #{token}" }
-    @folder = @user.workspace.folders.create!(name: "Assets")
+    @folder = @user.workspace.folders.create!(name: "Assets", kind: :project)
   end
 
   teardown { ENV["BYPASS_AUTH"] = @previous_bypass }
@@ -37,7 +37,7 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
 
   test "another space's folder is not found" do
     other = User.create!(name: "O", email: "o-files-api@example.com", password: "password123")
-    theirs = other.workspace.folders.create!(name: "Theirs")
+    theirs = other.workspace.folders.create!(name: "Theirs", kind: :project)
     post "/api/v1/folders/#{theirs.id}/files", params: { file: upload("a.txt", "text/plain") }, headers: @headers
     assert_response :not_found
   end
@@ -67,7 +67,7 @@ class FilesControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
 
     other = User.create!(name: "O", email: "o-files-api2@example.com", password: "password123")
-    theirs = Document.new(title: "t.txt", doc_type: :file, folder: other.workspace.folders.create!(name: "X"), created_by: other)
+    theirs = Document.new(title: "t.txt", doc_type: :file, folder: other.workspace.folders.create!(name: "X", kind: :project), created_by: other)
     theirs.file.attach(io: StringIO.new("x"), filename: "t.txt", content_type: "text/plain")
     theirs.save!
     put "/api/v1/documents/#{theirs.id}/file", params: { file: upload("b.csv", "text/csv") }, headers: @headers

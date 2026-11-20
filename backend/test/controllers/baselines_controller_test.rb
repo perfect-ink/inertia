@@ -7,7 +7,7 @@ class BaselinesControllerTest < ActionDispatch::IntegrationTest
     @user = User.create!(name: "Pat", email: "pat-baseline-api@example.com", password: "password123")
     token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
     @headers = { "Authorization" => "Bearer #{token}" }
-    @folder = @user.workspace.folders.create!(name: "Plan")
+    @folder = @user.workspace.folders.create!(name: "Plan", kind: :project)
     @user.workspace.tasks.create!(title: "A", folder: @folder, start_date: Date.new(2026, 11, 1), due_date: Date.new(2026, 11, 5))
   end
 
@@ -33,7 +33,7 @@ class BaselinesControllerTest < ActionDispatch::IntegrationTest
 
   test "another space's folder and baseline are not found" do
     other = User.create!(name: "O", email: "o-baseline-api@example.com", password: "password123")
-    folder = other.workspace.folders.create!(name: "Theirs")
+    folder = other.workspace.folders.create!(name: "Theirs", kind: :project)
     baseline = Baseline.snapshot!(folder: folder, name: "x")
     post "/api/v1/folders/#{folder.id}/baselines", params: { baseline: { name: "y" } }, headers: @headers, as: :json
     assert_response :not_found

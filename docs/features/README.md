@@ -17,6 +17,7 @@ One file per implemented feature, written from the code (see `docs/rules/feature
 | All files: every document, sheet and Collection in a Space | [all_files.md](all_files.md) |
 | Projects: the Space home and sidebar, per-project pages, emoji or image icons | [projects.md](projects.md) |
 | Two-sidebar navigation: Space and recent projects on the left (collapsible), the open project's tasks, documents and views beside it | [two_sidebar_navigation.md](two_sidebar_navigation.md) |
+| Every document is in a product: API rules, Personal Product, loose documents moved by a migration | [documents_in_products.md](documents_in_products.md) |
 | Checklist lines in documents become Space tasks | [document_task_lines.md](document_task_lines.md) |
 | Switching Spaces from the sidebar | [space_switcher.md](space_switcher.md) |
 | Collections naming (tables are called Collections in the UI) | [collections.md](collections.md) |

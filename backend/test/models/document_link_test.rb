@@ -3,7 +3,7 @@ require "test_helper"
 class DocumentLinkTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Pat", email: "pat-links@example.com", password: "password123")
-    @folder = @user.workspace.folders.create!(name: "Docs")
+    @folder = @user.workspace.folders.create!(name: "Docs", kind: :project)
     @a = Document.create!(title: "A", folder: @folder, created_by: @user)
     @b = Document.create!(title: "B", folder: @folder, created_by: @user)
     @c = Document.create!(title: "C", folder: @folder, created_by: @user)
@@ -71,7 +71,7 @@ class DocumentLinkTest < ActiveSupport::TestCase
 
   test "links to itself, to missing documents and to other Spaces are ignored" do
     other = User.create!(name: "O", email: "o-links@example.com", password: "password123")
-    foreign = Document.create!(title: "Theirs", folder: other.workspace.folders.create!(name: "X"), created_by: other)
+    foreign = Document.create!(title: "Theirs", folder: other.workspace.folders.create!(name: "X", kind: :project), created_by: other)
     @a.update!(content: doc_with(paragraph(document_link(@a.id), document_link(999_999), document_link(foreign.id))))
     assert_empty @a.outgoing_links
   end
@@ -86,14 +86,14 @@ class DocumentLinkTest < ActiveSupport::TestCase
     assert_equal 1, @a.outgoing_links.count
 
     team = Workspace.create!(name: "Team", user: @user)
-    @a.update!(folder: team.root_folder)
+    @a.update!(folder: team.folders.create!(name: "Plans", kind: :project))
     assert_empty @a.reload.outgoing_links
   end
 
   test "links are by id, so renaming or moving either document within the Space keeps the backlink" do
     @a.update!(content: doc_with(paragraph(link_text("/documents/#{@b.id}#intro"))))
-    @b.update!(title: "B renamed", folder: @user.workspace.folders.create!(name: "Elsewhere"))
-    @a.update!(title: "A renamed", folder: @user.workspace.folders.create!(name: "Also elsewhere"))
+    @b.update!(title: "B renamed", folder: @user.workspace.folders.create!(name: "Elsewhere", kind: :project))
+    @a.update!(title: "A renamed", folder: @user.workspace.folders.create!(name: "Also elsewhere", kind: :project))
     assert_equal [ "A renamed" ], @b.reload.backlinks.map(&:title)
   end
 
@@ -101,7 +101,7 @@ class DocumentLinkTest < ActiveSupport::TestCase
     @c.update!(content: doc_with(paragraph(document_link(@a.id))))
     @b.update!(content: doc_with(paragraph(link_text("/documents/#{@a.id}"))))
     other = User.create!(name: "O", email: "o-backlinks@example.com", password: "password123")
-    stale = Document.create!(title: "Stale", folder: other.workspace.folders.create!(name: "X"), created_by: other)
+    stale = Document.create!(title: "Stale", folder: other.workspace.folders.create!(name: "X", kind: :project), created_by: other)
     DocumentLink.create!(source_document: stale, target_document: @a)
 
     assert_equal [ "B", "C" ], @a.backlinks.map(&:title)

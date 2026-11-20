@@ -5,7 +5,7 @@ class SpaceTransferMirrorTest < ActiveSupport::TestCase
     @user = User.create!(name: "Ada", email: "transfer-mirror@example.com", password: "password123")
     @source = @user.workspace
     @team = Workspace.create!(name: "Team", user: @user)
-    @folder = @source.folders.create!(name: "Plans")
+    @folder = @source.folders.create!(name: "Plans", kind: :project)
     @companies = @folder.documents.create!(title: "Companies", doc_type: :table, created_by: @user)
     @name = @companies.table_fields.create!(name: "Name", data_type: "text")
     @contacts = @folder.documents.create!(title: "Contacts", doc_type: :table, created_by: @user)
@@ -18,7 +18,7 @@ class SpaceTransferMirrorTest < ActiveSupport::TestCase
   end
 
   test "copying a folder re-points a mirror at the copied fields" do
-    copy = transfer_into(@team.root_folder).copy_folder(@folder)
+    copy = transfer_into(@team.folders.create!(name: "Inbox", kind: :project)).copy_folder(@folder)
 
     new_companies = copy.documents.find_by!(title: "Companies")
     new_contacts = copy.documents.find_by!(title: "Contacts")
@@ -30,7 +30,7 @@ class SpaceTransferMirrorTest < ActiveSupport::TestCase
   end
 
   test "a mirror survives copying its Collection inside the same Space" do
-    other_folder = @source.folders.create!(name: "Elsewhere")
+    other_folder = @source.folders.create!(name: "Elsewhere", kind: :project)
 
     copy = transfer_into(other_folder).copy_document(@contacts)
 
@@ -40,7 +40,7 @@ class SpaceTransferMirrorTest < ActiveSupport::TestCase
   end
 
   test "a mirror's Collection cannot be copied alone into another Space" do
-    error = assert_raises(SpaceTransfer::Error) { transfer_into(@team.root_folder).copy_document(@contacts) }
+    error = assert_raises(SpaceTransfer::Error) { transfer_into(@team.folders.create!(name: "Inbox", kind: :project)).copy_document(@contacts) }
 
     assert_equal SpaceTransfer::LINKED_COLLECTION, error.message
   end

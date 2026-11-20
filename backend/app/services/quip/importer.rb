@@ -2,7 +2,7 @@ module Quip
   # Orchestrates one QuipImport run: walks the account's Desktop/Starred/
   # Shared folder roots (mirroring quip-export's MigrationEngine.swift),
   # creating a matching Folder/Document under quip_import.destination_folder
-  # (or at the workspace root when none was chosen) for every thread found.
+  # (or in a new "Quip import" project when none inside a project was chosen) for every thread found.
   #
   # Runs inside QuipImportJob, not a request — the token lives only in the
   # Client instance's memory for the run's duration, never persisted.
@@ -25,7 +25,11 @@ module Quip
       root_ids = ([ user["desktop_folder_id"], user["starred_folder_id"] ].compact +
                   (user["shared_folder_ids"] || [])).uniq
 
-      root_ids.each { |quip_folder_id| walk_folder(quip_folder_id, parent_folder: @quip_import.destination_folder) }
+      destination = @quip_import.destination_folder
+      # Documents live in a project ("product" in the UI); without a chosen
+      # folder inside one, the import gets a project of its own.
+      destination = @workspace.folders.create!(name: "Quip import", kind: :project) unless destination&.project
+      root_ids.each { |quip_folder_id| walk_folder(quip_folder_id, parent_folder: destination) }
 
       @quip_import.update!(status: :completed, finished_at: Time.current)
     rescue Quip::NotAuthorizedError, Quip::ApiError => e

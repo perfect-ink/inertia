@@ -8,7 +8,7 @@ class TaskFilesControllerTest < ActionDispatch::IntegrationTest
     @viewer = User.create!(name: "Vi", email: "viewer-taskfile-api@example.com", password: "password123")
     @workspace = Workspace.create!(name: "Team", user: @user)
     @workspace.memberships.create!(user: @viewer, role: :viewer)
-    @folder = @workspace.folders.create!(name: "Assets")
+    @folder = @workspace.folders.create!(name: "Assets", kind: :project)
     @task = @workspace.tasks.create!(title: "Design")
     @file = file_item(@folder, @user)
   end
@@ -59,7 +59,7 @@ class TaskFilesControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
 
     other = User.create!(name: "O", email: "o-taskfile-api@example.com", password: "password123")
-    theirs = file_item(other.workspace.folders.create!(name: "X"), other, "t.png")
+    theirs = file_item(other.workspace.folders.create!(name: "X", kind: :project), other, "t.png")
     post "/api/v1/tasks/#{@task.id}/files", params: { file_id: theirs.id }, headers: headers_for(@user), as: :json
     assert_response :not_found
     assert_equal 0, TaskFile.count

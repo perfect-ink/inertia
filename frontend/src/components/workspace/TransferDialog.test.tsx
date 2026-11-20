@@ -22,7 +22,7 @@ jest.mock('@/api/transfer', () => ({
 }))
 
 const space = (id: number, name: string): WorkspaceSummary => ({ id, name, personal: false, role: 'member' })
-const folder = (id: number, name: string, parent_id: number | null, root = false): SpaceFolder => ({ id, name, parent_id, position: 0, root })
+const folder = (id: number, name: string, parent_id: number | null, root = false): SpaceFolder => ({ id, name, parent_id, position: 0, root, kind: root ? 'folder' : 'project' })
 const request = (overrides: Partial<TransferRequest> = {}): TransferRequest =>
   ({ mode: 'copy', kind: 'document', id: 7, name: 'Plan', documentIds: [7], ...overrides })
 
@@ -43,8 +43,9 @@ test('explains the action and offers the other Spaces and their folders', () => 
   render(<TransferDialog request={request()} onClose={jest.fn()} />)
   expect(screen.getByRole('dialog', { name: 'Copy to another Space' })).toBeInTheDocument()
   expect(screen.getByText(/The original stays here/)).toBeInTheDocument()
-  expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Team', 'Client', 'Top level', 'Messages'])
-  expect((screen.getByLabelText('Folder') as HTMLSelectElement).value).toBe('20')
+  // A document goes into a product, so the top level isn't offered.
+  expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Team', 'Client', 'Messages'])
+  expect((screen.getByLabelText('Folder') as HTMLSelectElement).value).toBe('21')
 })
 
 test('copying sends the chosen Space\'s folder and keeps the page open', () => {
@@ -56,8 +57,8 @@ test('copying sends the chosen Space\'s folder and keeps the page open', () => {
   expect(mockNavigate).not.toHaveBeenCalled()
 })
 
-test('choosing another Space goes back to its top level', () => {
-  render(<TransferDialog request={request()} onClose={jest.fn()} />)
+test('choosing another Space goes back to its first choice', () => {
+  render(<TransferDialog request={request({ kind: 'folder', id: 4 })} onClose={jest.fn()} />)
   fireEvent.change(screen.getByLabelText('Folder'), { target: { value: '21' } })
   fireEvent.change(screen.getByLabelText('Space'), { target: { value: '3' } })
   expect((screen.getByLabelText('Folder') as HTMLSelectElement).value).toBe('30')

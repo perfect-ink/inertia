@@ -58,6 +58,7 @@ class Folder < ApplicationRecord
   slugged_by :name, within: :parent
   validate :validate_parent
   validate :protect_root_location
+  validate :documents_stay_in_a_project, on: :update
   before_destroy :protect_root_deletion, prepend: true
 
   def root?
@@ -110,6 +111,19 @@ class Folder < ApplicationRecord
     ids = [ id ]
     children.find_each { |child| ids.concat(child.self_and_descendant_ids) }
     ids
+  end
+
+  # The project this folder is in: itself when it is one, else the nearest
+  # project above it; nil outside every project (the Root and plain top-level
+  # folders). Every document has to be in one (Document#folder_in_a_project).
+  def project
+    seen = Set.new
+    folder = self
+    while folder && seen.add?(folder.id || folder.object_id)
+      return folder if folder.project?
+      folder = folder.parent
+    end
+    nil
   end
 
   # This folder and everything nested in it as [record, slugs from the Root]
@@ -187,6 +201,15 @@ class Folder < ApplicationRecord
     errors.add(:parent, "cannot move the document root") if parent_id.present?
     errors.add(:archived_at, "cannot archive the document root") if archived_at.present?
     errors.add(:kind, "cannot make the document root a #{kind}") unless folder?
+  end
+
+  # Moving a folder out of every project, or making a project a plain folder
+  # there, would leave its documents outside a project.
+  def documents_stay_in_a_project
+    return unless will_save_change_to_parent_id? || will_save_change_to_kind?
+    return if project
+    return unless Document.exists?(folder_id: self_and_descendant_ids)
+    errors.add(:base, "Documents must be in a product, so this folder can't leave one")
   end
 
   def protect_root_deletion

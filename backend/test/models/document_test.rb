@@ -7,7 +7,7 @@ class DocumentTest < ActiveSupport::TestCase
   # without anyone having to set content explicitly.
   test "content defaults to an empty hash" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Docs")
+    folder = user.workspace.folders.create!(name: "Docs", kind: :project)
     document = folder.documents.create!(title: "Untitled", created_by: user)
 
     assert_equal({}, document.content)

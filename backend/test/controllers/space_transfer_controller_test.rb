@@ -6,9 +6,10 @@ class SpaceTransferControllerTest < ActionDispatch::IntegrationTest
     ENV["BYPASS_AUTH"] = "false"
     @user = User.create!(name: "Ada", email: "transfer-api@example.com", password: "password123")
     @team = Workspace.create!(name: "Team", user: @user)
-    @folder = @user.workspace.folders.create!(name: "Plans")
+    @folder = @user.workspace.folders.create!(name: "Plans", kind: :project)
     @document = @folder.documents.create!(title: "Plan", created_by: @user)
-    @team_root = @team.root_folder
+    # Documents land in a project ("product" in the UI), not in the Root.
+    @team_root = @team.folders.create!(name: "Inbox", kind: :project)
   end
 
   teardown { ENV["BYPASS_AUTH"] = @previous_bypass }
@@ -77,7 +78,7 @@ class SpaceTransferControllerTest < ActionDispatch::IntegrationTest
 
   test "a document in a Space the user can only read cannot be copied or moved out" do
     viewer_space = space_with_role(:viewer)
-    readable = viewer_space.root_folder.documents.create!(title: "Read only", created_by: viewer_space.user)
+    readable = viewer_space.folders.create!(name: "Plans", kind: :project).documents.create!(title: "Read only", created_by: viewer_space.user)
 
     post "/api/v1/documents/#{readable.id}/copy", params: { target_folder_id: @team_root.id }, headers: headers_for(@user), as: :json
     assert_response :forbidden
@@ -138,9 +139,9 @@ class SpaceTransferControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "a Space's active folders can be listed from another Space" do
-    archived = @team.folders.create!(name: "Old")
+    archived = @team.folders.create!(name: "Old", kind: :project)
     archived.archive!
-    nested = @team.folders.create!(name: "Nested", parent: @team.folders.create!(name: "Top"))
+    nested = @team.folders.create!(name: "Nested", parent: @team.folders.create!(name: "Top", kind: :project))
 
     get "/api/v1/workspaces/#{@team.id}/folders", headers: headers_for(@user)
 
@@ -149,7 +150,7 @@ class SpaceTransferControllerTest < ActionDispatch::IntegrationTest
     assert_includes names, "Nested"
     assert_not_includes names, "Old"
     root = response.parsed_body.find { |folder| folder["root"] }
-    assert_equal @team_root.id, root["id"]
+    assert_equal @team.root_folder_id, root["id"]
     assert_equal "Top", response.parsed_body.find { |folder| folder["id"] == nested.parent_id }["name"]
   end
 

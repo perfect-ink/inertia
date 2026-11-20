@@ -5,13 +5,13 @@ module AgentAccess
   def build_agent_space
     @owner = create_agent_user("owner")
     @space = Workspace.create!(name: "Agent Space", user: @owner)
-    @plans = @space.folders.create!(name: "Plans")
+    @plans = @space.folders.create!(name: "Plans", kind: :project)
     @drafts = @space.folders.create!(name: "Drafts", parent: @plans)
-    @other_folder = @space.folders.create!(name: "Other")
+    @other_folder = @space.folders.create!(name: "Other", kind: :project)
 
     @stranger = create_agent_user("stranger")
     @elsewhere = @stranger.workspace
-    @elsewhere_folder = @elsewhere.folders.create!(name: "Private")
+    @elsewhere_folder = @elsewhere.folders.create!(name: "Private", kind: :project)
   end
 
   def create_agent_user(label)

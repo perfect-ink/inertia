@@ -5,7 +5,7 @@ import { useCreateFolder } from '@/api/folders'
 import { untitledTitle } from '@/data/document'
 import { projectsOf } from '@/data/folder'
 import { idPath } from '@/data/path'
-import { PERSONAL_PROJECT_NAME } from '@/data/project'
+import { PERSONAL_PROJECT_NAME, PERSONAL_PROJECT_NAMES } from '@/data/project'
 import { useSelectProject } from '@/hooks/useSelectProject'
 import { markUntouched } from '@/store/untouchedDocuments'
 import type { DocumentTemplate } from '@/data/documentTemplate'
@@ -13,7 +13,7 @@ import type { Document } from '@/types'
 
 // Creates an untitled document of a type in a folder and opens it, with the
 // cursor in its title. With no folder (no project context) it goes in the
-// "Personal Project", which is created and opened if the Space has none yet.
+// "Personal Product" (or an older "Personal Project"), which is created and opened if the Space has none yet.
 // With a template, the document starts with the template's title and content.
 // Throws when it can't, so callers can show the error.
 export function useNewDocument() {
@@ -26,7 +26,7 @@ export function useNewDocument() {
     let target = folderId
     if (!target) {
       if (!workspace) throw new Error('The space is still loading. Please try again.')
-      const personal = projectsOf(workspace.folders ?? []).find((p) => p.name === PERSONAL_PROJECT_NAME)
+      const personal = projectsOf(workspace.folders ?? []).find((p) => PERSONAL_PROJECT_NAMES.includes(p.name))
         ?? await createFolder.mutateAsync({ name: PERSONAL_PROJECT_NAME, kind: 'project' })
       selectProject(personal.id)
       target = personal.id

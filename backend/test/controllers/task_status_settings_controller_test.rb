@@ -9,7 +9,7 @@ class TaskStatusSettingsControllerTest < ActionDispatch::IntegrationTest
     @team = Workspace.create!(name: "Team", user: @user)
     @team.memberships.create!(user: @viewer, role: :viewer)
     @workspace = @user.workspace
-    @folder = @workspace.folders.create!(name: "Project")
+    @folder = @workspace.folders.create!(name: "Project", kind: :project)
     @headers = headers_for(@user)
   end
 

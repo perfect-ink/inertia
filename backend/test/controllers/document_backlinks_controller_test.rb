@@ -7,7 +7,7 @@ class DocumentBacklinksControllerTest < ActionDispatch::IntegrationTest
     @user = User.create!(name: "Pat", email: "pat-backlinks-api@example.com", password: "password123")
     token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
     @headers = { "Authorization" => "Bearer #{token}" }
-    folder = @user.workspace.folders.create!(name: "Docs")
+    folder = @user.workspace.folders.create!(name: "Docs", kind: :project)
     @target = Document.create!(title: "Target", folder: folder, created_by: @user)
     @source = Document.create!(title: "Source", folder: folder, created_by: @user)
   end
@@ -47,7 +47,7 @@ class DocumentBacklinksControllerTest < ActionDispatch::IntegrationTest
 
   test "another space's document is not found" do
     other = User.create!(name: "O", email: "o-backlinks-api@example.com", password: "password123")
-    theirs = Document.create!(title: "Theirs", folder: other.workspace.folders.create!(name: "X"), created_by: other)
+    theirs = Document.create!(title: "Theirs", folder: other.workspace.folders.create!(name: "X", kind: :project), created_by: other)
     get "/api/v1/documents/#{theirs.id}/backlinks", headers: @headers
     assert_response :not_found
   end

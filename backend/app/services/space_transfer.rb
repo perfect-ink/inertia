@@ -53,11 +53,13 @@ class SpaceTransfer
 
   # Returns the new document.
   def copy_document(document)
+    require_product_destination!
     transaction { copy_documents([ [ document, @target_folder ] ]).fetch(document.id) }
   end
 
   # Returns the moved document, now in the target folder.
   def move_document(document)
+    require_product_destination!
     transaction do
       require_other_space!(document.folder.workspace_id)
       move_documents([ document ])
@@ -71,6 +73,7 @@ class SpaceTransfer
   def copy_folder(folder)
     transaction do
       reject_root!(folder)
+      require_product_destination!(folder)
       pairs = []
       copy = copy_tree(folder, @target_folder, pairs)
       copy_documents(pairs)
@@ -83,6 +86,7 @@ class SpaceTransfer
   def move_folder(folder)
     transaction do
       reject_root!(folder)
+      require_product_destination!(folder)
       require_other_space!(folder.workspace_id)
       folder_ids = folder.self_and_descendant_ids
       documents = Document.where(folder_id: folder_ids).to_a
@@ -103,6 +107,14 @@ class SpaceTransfer
 
   def require_other_space!(source_workspace_id)
     raise Error, "That is already in this Space. Choose a different Space." if source_workspace_id == @workspace.id
+  end
+
+  # Every document is in a project ("product" in the UI), so documents can only
+  # land in one: the target is in a project, or the folder going there is one.
+  def require_product_destination!(folder = nil)
+    return if @target_folder.project || folder&.project?
+    return if folder && !Document.exists?(folder_id: folder.self_and_descendant_ids)
+    raise Error, "Documents must be in a product. Choose a product, or a folder inside one."
   end
 
   def reject_root!(folder)

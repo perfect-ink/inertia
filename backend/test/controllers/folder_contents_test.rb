@@ -8,7 +8,7 @@ class FolderContentsTest < ActionDispatch::IntegrationTest
     token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
     @headers = { "Authorization" => "Bearer #{token}" }
     @workspace = @user.workspace
-    @messages = @workspace.folders.create!(name: "Messages")
+    @messages = @workspace.folders.create!(name: "Messages", kind: :project)
     @design = @workspace.folders.create!(name: "Design", parent: @messages, position: 2)
     @mockups = @workspace.folders.create!(name: "Mockups", parent: @design)
     @brief = @messages.documents.create!(title: "Brief", created_by: @user)
@@ -33,7 +33,7 @@ class FolderContentsTest < ActionDispatch::IntegrationTest
   end
 
   test "a folder with nothing directly inside lists nothing, however much sits below it" do
-    empty = @workspace.folders.create!(name: "Empty")
+    empty = @workspace.folders.create!(name: "Empty", kind: :project)
     nested = @workspace.folders.create!(name: "Nested", parent: empty)
     nested.documents.create!(title: "Below", created_by: @user)
     body = contents(empty)
@@ -72,7 +72,7 @@ class FolderContentsTest < ActionDispatch::IntegrationTest
 
   test "another space's folder is not found" do
     theirs = User.create!(name: "O", email: "o-folder-contents@example.com", password: "password123").workspace
-    folder = theirs.folders.create!(name: "Theirs")
+    folder = theirs.folders.create!(name: "Theirs", kind: :project)
     get "/api/v1/folders/#{folder.id}/contents", headers: @headers
     assert_response :not_found
   end

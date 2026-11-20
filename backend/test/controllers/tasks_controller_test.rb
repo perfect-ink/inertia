@@ -10,7 +10,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
     @headers = { "Authorization" => "Bearer #{token}" }
     @workspace = @user.workspace
-    @folder = @workspace.folders.create!(name: "Launch")
+    @folder = @workspace.folders.create!(name: "Launch", kind: :project)
   end
 
   teardown { ENV["BYPASS_AUTH"] = @previous_bypass }

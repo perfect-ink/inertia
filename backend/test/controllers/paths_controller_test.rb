@@ -8,7 +8,7 @@ class PathsControllerTest < ActionDispatch::IntegrationTest
     token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
     @headers = { "Authorization" => "Bearer #{token}" }
     @workspace = @user.workspace
-    @product = @workspace.folders.create!(name: "Product")
+    @product = @workspace.folders.create!(name: "Product", kind: :project)
     @features = @workspace.folders.create!(name: "Feature Folders", parent: @product)
     @spec = @features.documents.create!(title: "Requirements", created_by: @user)
   end
@@ -68,7 +68,7 @@ class PathsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "an old path resolves after a move" do
-    elsewhere = @workspace.folders.create!(name: "Archive")
+    elsewhere = @workspace.folders.create!(name: "Archive", kind: :project)
     @spec.update!(folder: elsewhere)
 
     lookup "product/feature-folders/requirements"
@@ -95,7 +95,7 @@ class PathsControllerTest < ActionDispatch::IntegrationTest
   test "an alias never leads to an item that moved to another space" do
     other = User.create!(name: "Mover", email: "paths-mover@example.com", password: "password123")
     @spec.update!(title: "Renamed")
-    @spec.update!(folder: other.workspace.root_folder)
+    @spec.update!(folder: other.workspace.folders.create!(name: "Inbox", kind: :project))
 
     lookup "product/feature-folders/requirements"
 
@@ -114,7 +114,7 @@ class PathsControllerTest < ActionDispatch::IntegrationTest
     owner = User.create!(name: "#{name} owner", email: owner_email || "paths-#{name.parameterize}@example.com", password: "password123")
     space = Workspace.create!(name: name, user: owner)
     space.memberships.create!(user: @user, role: role) if role
-    handbook = space.folders.create!(name: folder)
+    handbook = space.folders.create!(name: folder, kind: :project)
     handbook.documents.create!(title: document, created_by: owner)
     space
   end

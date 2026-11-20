@@ -3,7 +3,7 @@ require "test_helper"
 class DocumentFileTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Pat", email: "pat-docfile@example.com", password: "password123")
-    @folder = @user.workspace.folders.create!(name: "Assets")
+    @folder = @user.workspace.folders.create!(name: "Assets", kind: :project)
   end
 
   test "a file document needs an attached file" do

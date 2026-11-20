@@ -5,7 +5,7 @@ class TablesControllerTest < ActionDispatch::IntegrationTest
     @previous_bypass = ENV["BYPASS_AUTH"]
     ENV["BYPASS_AUTH"] = "true"
     @user = User.first || User.create!(name: "Ada", email: "table-api@example.com", password: "password123")
-    @folder = @user.workspace.folders.create!(name: "Tables")
+    @folder = @user.workspace.folders.create!(name: "Tables", kind: :project)
     @table = @folder.documents.create!(title: "Contacts", doc_type: :table, created_by: @user)
     @field = @table.table_fields.create!(name: "Age", data_type: "integer")
   end
@@ -34,7 +34,7 @@ class TablesControllerTest < ActionDispatch::IntegrationTest
 
   test "workspace access applies to tables, fields and records" do
     other = User.create!(name: "Other", email: "foreign-table-api@example.com", password: "password123")
-    folder = other.workspace.folders.create!(name: "Private")
+    folder = other.workspace.folders.create!(name: "Private", kind: :project)
     table = folder.documents.create!(title: "Private", doc_type: :table, created_by: other)
     get "/api/v1/tables/#{table.id}"
     assert_response :not_found
@@ -131,7 +131,7 @@ class TablesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "folder deletion reports referenced tables and preserves the folder" do
-    folder = @user.workspace.folders.create!(name: "Companies")
+    folder = @user.workspace.folders.create!(name: "Companies", kind: :project)
     target = folder.documents.create!(title: "Companies", doc_type: :table, created_by: @user)
     @table.table_fields.create!(name: "Company", data_type: "relation", relation_table: target)
     delete "/api/v1/folders/#{folder.id}"

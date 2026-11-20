@@ -4,7 +4,7 @@ class DocumentInitiativeTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Pat", email: "pat-docinit@example.com", password: "password123")
     @workspace = @user.workspace
-    @folder = @workspace.folders.first
+    @folder = @workspace.folders.create!(name: "Launch", kind: :project)
     @initiative = @workspace.initiatives.create!(title: "Launch", start_date: Date.new(2026, 11, 1), target_date: Date.new(2026, 12, 1))
   end
 

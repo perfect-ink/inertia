@@ -77,7 +77,7 @@ export interface Folder {
 
 // A folder as listed for choosing where to put something in a Space: the
 // flat list from GET /api/v1/workspaces/:id/folders, without contents.
-export type SpaceFolder = Pick<Folder, 'id' | 'name' | 'parent_id' | 'position' | 'root'>
+export type SpaceFolder = Pick<Folder, 'id' | 'name' | 'parent_id' | 'position' | 'root'> & Partial<Pick<Folder, 'kind'>>
 
 export type WorkspaceRole = 'viewer' | 'member' | 'admin' | 'owner'
 

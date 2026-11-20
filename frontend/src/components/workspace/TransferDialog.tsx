@@ -43,7 +43,9 @@ export function TransferDialog({ request, onClose }: { request: TransferRequest;
 
   const space = targets.find((s) => s.id === chosenSpaceId) ?? targets[0]
   const { data: folders, isLoading: loadingFolders, isError: foldersFailed } = useSpaceFolders(space?.id ?? null)
-  const choices = folderChoices(folders ?? [])
+  // A document has to land in a product; a folder may go anywhere (the server
+  // refuses a move that would leave documents outside every product).
+  const choices = folderChoices(folders ?? [], { inProductOnly: kind === 'document' })
   const folderId = choices.some((c) => c.id === chosenFolderId) ? chosenFolderId : (choices[0]?.id ?? null)
 
   // Whatever left this Space can't stay open or in a tab here.

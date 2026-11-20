@@ -4,7 +4,7 @@ class TaskFileTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Pat", email: "pat-taskfile@example.com", password: "password123")
     @workspace = @user.workspace
-    @folder = @workspace.folders.create!(name: "Assets")
+    @folder = @workspace.folders.create!(name: "Assets", kind: :project)
     @task = @workspace.tasks.create!(title: "Design")
   end
 
@@ -39,7 +39,7 @@ class TaskFileTest < ActiveSupport::TestCase
     assert_includes link.errors[:file], "must be an uploaded file"
 
     other = User.create!(name: "O", email: "o-taskfile@example.com", password: "password123")
-    foreign = file_item(other.workspace.folders.create!(name: "X"), other)
+    foreign = file_item(other.workspace.folders.create!(name: "X", kind: :project), other)
     link = @task.task_files.build(file: foreign)
     assert_not link.valid?
     assert_includes link.errors[:file], "must be in the same Space as the task"

@@ -18,8 +18,8 @@ class FolderBlueprintTest < ActiveSupport::TestCase
 
   test "has_tasks is true for a task linked directly to the folder" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Project")
-    other = user.workspace.folders.create!(name: "Untouched")
+    folder = user.workspace.folders.create!(name: "Project", kind: :project)
+    other = user.workspace.folders.create!(name: "Untouched", kind: :project)
     user.workspace.tasks.create!(title: "Direct task", folder: folder)
 
     folders = render_folders(user.workspace)
@@ -30,7 +30,7 @@ class FolderBlueprintTest < ActiveSupport::TestCase
 
   test "has_tasks is true for a task linked to one of the folder's documents" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Project")
+    folder = user.workspace.folders.create!(name: "Project", kind: :project)
     doc = folder.documents.create!(title: "Spec", doc_type: :document, created_by: user)
     user.workspace.tasks.create!(title: "Doc-linked task", document: doc)
 
@@ -41,8 +41,8 @@ class FolderBlueprintTest < ActiveSupport::TestCase
 
   test "has_events is true only for a folder with a directly-linked event" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Project")
-    other = user.workspace.folders.create!(name: "Untouched")
+    folder = user.workspace.folders.create!(name: "Project", kind: :project)
+    other = user.workspace.folders.create!(name: "Untouched", kind: :project)
     user.workspace.events.create!(title: "Launch", folder: folder, date: Date.today)
 
     folders = render_folders(user.workspace)
@@ -53,7 +53,7 @@ class FolderBlueprintTest < ActiveSupport::TestCase
 
   test "has_tasks and has_events are false for a folder with neither" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Empty")
+    folder = user.workspace.folders.create!(name: "Empty", kind: :project)
 
     folders = render_folders(user.workspace)
 
@@ -63,7 +63,7 @@ class FolderBlueprintTest < ActiveSupport::TestCase
 
   test "the flags reach nested child folders too" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    top = user.workspace.folders.create!(name: "Top")
+    top = user.workspace.folders.create!(name: "Top", kind: :project)
     child = user.workspace.folders.create!(name: "Child", parent: top)
     user.workspace.tasks.create!(title: "Nested task", folder: child)
 

@@ -36,6 +36,10 @@ class Document < ApplicationRecord
   validates :title, presence: true
   validates :doc_type, presence: true
   validate :file_documents_have_a_file
+  # Alex (2026-11-20): every document belongs to a project ("product" in the
+  # UI). Checked when a document is made or moved; older ones were moved into
+  # their Space's Personal Project by MoveLooseDocumentsIntoProjects.
+  validate :folder_in_a_project, if: -> { new_record? || will_save_change_to_folder_id? }
   validate :initiative_in_same_workspace
   validate :parent_feature_is_valid
   validate :feature_links_in_same_workspace
@@ -73,6 +77,11 @@ class Document < ApplicationRecord
   after_update { Folder.where(home_document_id: id).where.not(id: folder_id).update_all(home_document_id: nil) if saved_change_to_folder_id? }
 
   private
+
+  def folder_in_a_project
+    return if folder.nil? || folder.project
+    errors.add(:folder, "must be in a product")
+  end
 
   def refresh_links
     DocumentLink.refresh!(self)

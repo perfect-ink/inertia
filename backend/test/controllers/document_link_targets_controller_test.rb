@@ -8,7 +8,7 @@ class DocumentLinkTargetsControllerTest < ActionDispatch::IntegrationTest
     @previous_bypass = ENV["BYPASS_AUTH"]
     ENV["BYPASS_AUTH"] = "false"
     @user = User.create!(name: "Ada", email: "link-targets@example.com", password: "password123")
-    @folder = @user.workspace.folders.create!(name: "Plans")
+    @folder = @user.workspace.folders.create!(name: "Plans", kind: :project)
   end
 
   teardown { ENV["BYPASS_AUTH"] = @previous_bypass }
@@ -56,9 +56,9 @@ class DocumentLinkTargetsControllerTest < ActionDispatch::IntegrationTest
 
   test "documents in another Space the user belongs to are found, others are not" do
     team = Workspace.create!(name: "Team", user: @user)
-    teamwork = team.root_folder.documents.create!(title: "Team plan", created_by: @user)
+    teamwork = team.folders.create!(name: "Plans", kind: :project).documents.create!(title: "Team plan", created_by: @user)
     stranger = User.create!(name: "Stranger", email: "link-stranger@example.com", password: "password123")
-    private_doc = stranger.workspace.root_folder.documents.create!(title: "Private", created_by: stranger)
+    private_doc = stranger.workspace.folders.create!(name: "Private", kind: :project).documents.create!(title: "Private", created_by: stranger)
 
     link_targets([ teamwork.id, private_doc.id ])
 

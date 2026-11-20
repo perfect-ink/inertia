@@ -7,8 +7,8 @@ class PathResolverTest < ActiveSupport::TestCase
     @studio = Workspace.create!(name: "Studio", user: @user)
     @agency = Workspace.create!(name: "Agency", user: @user)
     @stranger_space = Workspace.create!(name: "Private", user: User.create!(name: "Else", email: "path-resolver-else@example.com", password: "password123"))
-    [ @mine, @studio, @agency, @stranger_space ].each { |space| space.folders.create!(name: "Product") }
-    @studio.folders.create!(name: "Studio only")
+    [ @mine, @studio, @agency, @stranger_space ].each { |space| space.folders.create!(name: "Product", kind: :project) }
+    @studio.folders.create!(name: "Studio only", kind: :project)
   end
 
   def product_in(space)
@@ -45,7 +45,7 @@ class PathResolverTest < ActiveSupport::TestCase
   end
 
   test "looks only in the Spaces it is given" do
-    secret = @stranger_space.folders.create!(name: "Secret")
+    secret = @stranger_space.folders.create!(name: "Secret", kind: :project)
 
     assert_nil PathResolver.find_across([ @mine, @studio, @agency ], %w[secret], preferred: @mine)
     assert_equal secret, PathResolver.find_across([ @stranger_space ], %w[secret]).item

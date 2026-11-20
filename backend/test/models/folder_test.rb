@@ -3,10 +3,10 @@ require "test_helper"
 class FolderTest < ActiveSupport::TestCase
   test "self_and_descendant_ids includes folders nested several levels deep" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    top = user.workspace.folders.create!(name: "Top")
+    top = user.workspace.folders.create!(name: "Top", kind: :project)
     mid = user.workspace.folders.create!(name: "Mid", parent: top)
     leaf = user.workspace.folders.create!(name: "Leaf", parent: mid)
-    unrelated = user.workspace.folders.create!(name: "Unrelated")
+    unrelated = user.workspace.folders.create!(name: "Unrelated", kind: :project)
 
     ids = top.self_and_descendant_ids
 
@@ -19,7 +19,7 @@ class FolderTest < ActiveSupport::TestCase
 
   test "archive! and unarchive! toggle archived? and the active/archived scopes" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Old project")
+    folder = user.workspace.folders.create!(name: "Old project", kind: :project)
 
     assert_not folder.archived?
     assert_includes Folder.active, folder
@@ -37,7 +37,7 @@ class FolderTest < ActiveSupport::TestCase
 
   test "destroying a folder nullifies its tasks and epics instead of destroying them" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Project")
+    folder = user.workspace.folders.create!(name: "Project", kind: :project)
     task = user.workspace.tasks.create!(title: "Direct task", folder: folder)
     epic = user.workspace.epics.create!(title: "Direct epic", folder: folder)
 
@@ -62,7 +62,7 @@ class FolderTest < ActiveSupport::TestCase
 
   test "dependency_mode defaults to none and accepts strict and flexible" do
     user = User.create!(name: "Ada", email: "ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Plan")
+    folder = user.workspace.folders.create!(name: "Plan", kind: :project)
 
     assert folder.dependencies_none?
     folder.update!(dependency_mode: :flexible)
@@ -82,8 +82,8 @@ class FolderTest < ActiveSupport::TestCase
 
   test "a folder's home document must be one of its own documents and is cleared when the document moves" do
     user = User.create!(name: "Ada", email: "home-ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Album")
-    other = user.workspace.folders.create!(name: "Other")
+    folder = user.workspace.folders.create!(name: "Album", kind: :project)
+    other = user.workspace.folders.create!(name: "Other", kind: :project)
     inside = Document.create!(title: "Plan", folder: folder, created_by: user)
     outside = Document.create!(title: "Elsewhere", folder: other, created_by: user)
 
@@ -100,7 +100,7 @@ class FolderTest < ActiveSupport::TestCase
 
   test "deleting the home document clears it" do
     user = User.create!(name: "Ada", email: "home2-ada@example.com", password: "password123")
-    folder = user.workspace.folders.create!(name: "Album")
+    folder = user.workspace.folders.create!(name: "Album", kind: :project)
     home = Document.create!(title: "Plan", folder: folder, created_by: user)
     folder.update!(home_document: home)
     home.destroy

@@ -23,11 +23,11 @@ class DocumentRootControllerTest < ActionDispatch::IntegrationTest
     assert_equal folder.id, data["folders"].first["children"].first["id"]
   end
 
-  test "create documents sheets and tables in root and create folders beneath it" do
+  test "documents can't be made in root (they belong to a product), and folders are created beneath it" do
     %w[document spreadsheet table].each do |type|
       post "/api/v1/folders/#{@root.id}/documents", params: { document: { title: "New #{type}", doc_type: type } }, headers: @headers, as: :json
-      assert_response :created
-      assert_equal @root.id, response.parsed_body["folder_id"]
+      assert_response :unprocessable_entity
+      assert_equal [ "Folder must be in a product" ], response.parsed_body["errors"]
     end
     post "/api/v1/folders", params: { folder: { name: "Project" } }, headers: @headers, as: :json
     assert_response :created
@@ -39,7 +39,7 @@ class DocumentRootControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     patch "/api/v1/folders/#{@root.id}", params: { folder: { archived: true } }, headers: @headers, as: :json
     assert_response :unprocessable_entity
-    folder = @user.workspace.folders.create!(name: "Project")
+    folder = @user.workspace.folders.create!(name: "Project", kind: :project)
     patch "/api/v1/folders/#{@root.id}", params: { folder: { parent_id: folder.id } }, headers: @headers, as: :json
     assert_response :unprocessable_entity
     other = User.create!(name: "Other", email: "other-root-api@example.com", password: "password123")

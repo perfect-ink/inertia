@@ -3,7 +3,7 @@ require "test_helper"
 class TableMirrorTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(name: "Ada", email: "table-mirror@example.com", password: "password123")
-    @folder = @user.workspace.folders.create!(name: "Tables")
+    @folder = @user.workspace.folders.create!(name: "Tables", kind: :project)
     @contacts = @folder.documents.create!(title: "Contacts", doc_type: :table, created_by: @user)
     @companies = @folder.documents.create!(title: "Companies", doc_type: :table, created_by: @user)
     @company_name = @companies.table_fields.create!(name: "Name", data_type: "text")

@@ -1,5 +1,8 @@
 // Where a new document goes when no project is open and no folder was chosen.
-export const PERSONAL_PROJECT_NAME = 'Personal Project'
+// Projects are "products" to users; Spaces made before that have a "Personal
+// Project", which is still used (backend LooseDocuments keeps the same list).
+export const PERSONAL_PROJECT_NAME = 'Personal Product'
+export const PERSONAL_PROJECT_NAMES = [PERSONAL_PROJECT_NAME, 'Personal Project']
 
 // Emojis offered when choosing a project's icon; any other emoji can be typed.
 export const PROJECT_EMOJIS = [

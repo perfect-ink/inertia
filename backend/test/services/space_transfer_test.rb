@@ -5,8 +5,9 @@ class SpaceTransferTest < ActiveSupport::TestCase
     @user = User.create!(name: "Ada", email: "transfer-ada@example.com", password: "password123")
     @source = @user.workspace
     @team = Workspace.create!(name: "Team", user: @user)
-    @source_folder = @source.folders.create!(name: "Plans")
+    @source_folder = @source.folders.create!(name: "Plans", kind: :project)
     @team_root = @team.root_folder
+    @team_project = @team.folders.create!(name: "Inbox", kind: :project)
   end
 
   def transfer_into(folder)
@@ -56,9 +57,9 @@ class SpaceTransferTest < ActiveSupport::TestCase
     child = @source.tasks.create!(title: "Test", document: document, parent: parent)
     document.update!(content: task_lines(parent.id, child.id, 9999))
 
-    copy = transfer_into(@team_root).copy_document(document)
+    copy = transfer_into(@team_project).copy_document(document)
 
-    assert_equal @team_root, copy.folder
+    assert_equal @team_project, copy.folder
     assert_equal "Plan", copy.title
     assert_equal @user, copy.created_by
     copied = @team.tasks.where(document: copy).order(:id).to_a
@@ -80,7 +81,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
     @source.tasks.create!(title: "Mine", document: document, assignee: teammate)
     @source.tasks.create!(title: "Theirs", document: document, assignee: stranger)
 
-    copy = transfer_into(@team_root).copy_document(document)
+    copy = transfer_into(@team_project).copy_document(document)
 
     assert_equal [ [ "Mine", teammate.id ], [ "Theirs", nil ] ], @team.tasks.where(document: copy).order(:id).map { |t| [ t.title, t.assignee_id ] }
   end
@@ -88,7 +89,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
   test "copying a Collection copies its fields, records and values" do
     companies, = linked_collections(@source_folder)
 
-    copy = transfer_into(@team_root).copy_document(companies)
+    copy = transfer_into(@team_project).copy_document(companies)
 
     assert copy.table?
     assert_equal %w[Name], copy.table_fields.map(&:name)
@@ -99,7 +100,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
   test "a Collection that links to one left behind can't be copied to another Space" do
     _companies, contacts = linked_collections(@source_folder)
 
-    error = assert_raises(SpaceTransfer::Error) { transfer_into(@team_root).copy_document(contacts) }
+    error = assert_raises(SpaceTransfer::Error) { transfer_into(@team_project).copy_document(contacts) }
 
     assert_equal SpaceTransfer::LINKED_COLLECTION, error.message
     assert_equal 0, @team.documents.count
@@ -111,7 +112,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
     other = Workspace.create!(name: "Other", user: @user)
     [ @team, other ].each { |space| space.memberships.create!(user: teammate, role: :member) }
     @team.memberships.create!(user: stranger, role: :member)
-    table = table_in(@team.folders.create!(name: "Orders"), "Orders")
+    table = table_in(@team.folders.create!(name: "Orders", kind: :project), "Orders")
     price = table.table_fields.create!(name: "Price", data_type: "money", display_format: "gbp")
     stage = table.table_fields.create!(name: "Stage", data_type: "single_select", options: %w[Open Done])
     table.table_fields.create!(name: "Double", data_type: "formula", formula: "{Price} * 2")
@@ -127,7 +128,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
     first.table_cells.find_by!(table_field: number).update_columns(value: 7)
     number.update_columns(next_number: 9)
 
-    copy = SpaceTransfer.new(user: @user, target_folder: other.root_folder).copy_document(table)
+    copy = SpaceTransfer.new(user: @user, target_folder: other.folders.create!(name: "Inbox", kind: :project)).copy_document(table)
 
     fields = copy.table_fields.index_by(&:name)
     assert_equal "gbp", fields["Price"].display_format
@@ -144,7 +145,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
 
   test "a Collection link survives a copy inside the same Space" do
     _companies, contacts = linked_collections(@source_folder)
-    other_folder = @source.folders.create!(name: "Elsewhere")
+    other_folder = @source.folders.create!(name: "Elsewhere", kind: :project)
 
     copy = transfer_into(other_folder).copy_document(contacts)
 
@@ -181,7 +182,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
   end
 
   test "an archived folder is not a destination" do
-    archived = @team.folders.create!(name: "Old")
+    archived = @team.folders.create!(name: "Old", kind: :project)
     archived.archive!
 
     assert_raises(SpaceTransfer::Error) { transfer_into(archived) }
@@ -202,10 +203,10 @@ class SpaceTransferTest < ActiveSupport::TestCase
     @source.ai_runs.create!(ai_worker: worker, task: first)
     share = document.shares.create!(created_by: @user)
 
-    moved = transfer_into(@team_root).move_document(document)
+    moved = transfer_into(@team_project).move_document(document)
 
     assert_equal document, moved
-    assert_equal @team_root, document.reload.folder
+    assert_equal @team_project, document.reload.folder
     assert_equal [ @team.id, @team.id ], [ first, second ].map { |task| task.reload.workspace_id }
     assert_nil first.epic_id
     assert_nil first.assignee_id
@@ -229,8 +230,8 @@ class SpaceTransferTest < ActiveSupport::TestCase
   test "a Collection moves only together with the Collections it links to" do
     companies, contacts = linked_collections(@source_folder)
 
-    assert_raises(SpaceTransfer::Error) { transfer_into(@team_root).move_document(contacts) }
-    assert_raises(SpaceTransfer::Error) { transfer_into(@team_root).move_document(companies) }
+    assert_raises(SpaceTransfer::Error) { transfer_into(@team_project).move_document(contacts) }
+    assert_raises(SpaceTransfer::Error) { transfer_into(@team_project).move_document(companies) }
     assert_equal [ @source_folder, @source_folder ], [ companies, contacts ].map { |table| table.reload.folder }
   end
 
@@ -283,10 +284,10 @@ class SpaceTransferTest < ActiveSupport::TestCase
   test "moving a document cuts the attached files that stay behind" do
     document = @source_folder.documents.create!(title: "Plan", created_by: @user)
     task = @source.tasks.create!(title: "Ship", document: document)
-    staying = file_in(@source.root_folder, "stays.pdf")
+    staying = file_in(@source.folders.create!(name: "Other", kind: :project), "stays.pdf")
     task.task_files.create!(file: staying)
 
-    transfer_into(@team_root).move_document(document)
+    transfer_into(@team_project).move_document(document)
 
     assert_equal @team.id, task.reload.workspace_id
     assert_empty task.task_files
@@ -298,7 +299,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
     file = file_in(@source_folder, "moves.pdf")
     task.task_files.create!(file: file)
 
-    transfer_into(@team_root).move_document(file)
+    transfer_into(@team_project).move_document(file)
 
     assert_equal @team, file.reload.folder.workspace
     assert_empty task.reload.task_files
@@ -321,7 +322,7 @@ class SpaceTransferTest < ActiveSupport::TestCase
     task = @source.tasks.create!(title: "Ship", document: document)
     task.task_files.create!(file: file_in(@source_folder, "orig.pdf"))
 
-    copy = transfer_into(@team_root).copy_document(document)
+    copy = transfer_into(@team_project).copy_document(document)
 
     assert_equal 1, task.reload.task_files.count
     assert_empty @team.tasks.where(document: copy).flat_map(&:task_files)

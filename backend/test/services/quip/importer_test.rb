@@ -68,7 +68,7 @@ module Quip
     end
 
     test "creates everything under the chosen destination folder" do
-      destination = @user.workspace.folders.create!(name: "Quip Import")
+      destination = @user.workspace.folders.create!(name: "Quip Import", kind: :project)
       @quip_import.update!(destination_folder: destination)
 
       fake = FakeClient.new(
