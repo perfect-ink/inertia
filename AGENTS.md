@@ -10,6 +10,7 @@ This file stays minimal. It loads the shared rules (synced from agent-rules into
 Shared rules from agent-rules, synced by `make rules`. Don't edit them here; docs/project/ holds this repo's settings and facts, not rules.
 
 @docs/rules/project-settings.md
+@docs/rules/audio-plugins.md
 @docs/rules/backend.md
 @docs/rules/backlog-mode.md
 @docs/rules/backlog.md
