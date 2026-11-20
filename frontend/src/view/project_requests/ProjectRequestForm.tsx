@@ -33,9 +33,9 @@ export default function ProjectRequestForm({ initial, submitLabel, busy, onSubmi
   }
 
   return (
-    <form className="project_requests-form" onSubmit={submit} noValidate aria-label="Project request">
+    <form className="project_requests-form" onSubmit={submit} noValidate aria-label="Product request">
       <label className="project_requests-field">
-        <span>Project name</span>
+        <span>Product name</span>
         <Input
           autoFocus
           value={draft.name}
@@ -50,7 +50,7 @@ export default function ProjectRequestForm({ initial, submitLabel, busy, onSubmi
         <Textarea
           rows={3}
           value={draft.description}
-          placeholder="What the project is and what it should deliver"
+          placeholder="What the product is and what it should deliver"
           onChange={(e) => set('description', e.target.value)}
         />
       </label>

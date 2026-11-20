@@ -163,7 +163,7 @@ class FolderTest < ActiveSupport::TestCase
     plain = user.workspace.folders.create!(name: "Drafts")
     plain.features = %w[tasks]
     assert_not plain.valid?
-    assert_includes plain.errors[:features], "can only be set on a project"
+    assert_includes plain.errors[:features], "can only be set on a product"
   end
 
   test "a project that already chose its pages can still be made a folder again" do

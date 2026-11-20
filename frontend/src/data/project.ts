@@ -43,7 +43,7 @@ export type PortfolioSortKey = 'name' | 'owner' | 'status' | 'target_date' | 'pe
 
 // The sortable columns of the portfolio table, in order.
 export const PORTFOLIO_COLUMNS: { key: PortfolioSortKey; label: string }[] = [
-  { key: 'name', label: 'Project' },
+  { key: 'name', label: 'Product' },
   { key: 'owner', label: 'Owner' },
   { key: 'status', label: 'Status' },
   { key: 'target_date', label: 'Dates' },

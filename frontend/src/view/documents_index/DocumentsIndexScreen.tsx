@@ -98,9 +98,9 @@ export default function DocumentsIndexScreen() {
           />
 
           <div className="documents_index-filters">
-            <Select aria-label="Filter by project" value={projectFilter} onChange={(e) => setProjectFilter(e.target.value)}>
-              <option value="">All projects</option>
-              <option value="0">No project</option>
+            <Select aria-label="Filter by product" value={projectFilter} onChange={(e) => setProjectFilter(e.target.value)}>
+              <option value="">All products</option>
+              <option value="0">No product</option>
               {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </Select>
             <Select aria-label="Filter by type" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
@@ -151,7 +151,7 @@ export default function DocumentsIndexScreen() {
                       title={doc.location}
                       className="documents_index-location"
                     >
-                      {doc.inProject && <FolderKanban className="documents_index-sort_icon" aria-label="Project" />}
+                      {doc.inProject && <FolderKanban className="documents_index-sort_icon" aria-label="Product" />}
                       <span className="documents_index-location_text">{doc.location}</span>
                     </Button>
                     <span className="documents_index-modified">

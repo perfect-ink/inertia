@@ -24,11 +24,11 @@ jest.mock('@/api/workspace', () => ({
 
 const titles = () => screen.getAllByRole('button').map((b) => b.textContent).filter((t) => ['Loose notes', 'Budget', 'Song'].includes(t ?? ''))
 
-test('lists every file, then narrows by project, type and owner', () => {
+test('lists every file, then narrows by product, type and owner', () => {
   render(<DocumentsIndexScreen />)
   expect(titles()).toHaveLength(3)
 
-  fireEvent.change(screen.getByLabelText('Filter by project'), { target: { value: '2' } })
+  fireEvent.change(screen.getByLabelText('Filter by product'), { target: { value: '2' } })
   expect(titles().sort()).toEqual(['Budget', 'Song'])
 
   fireEvent.change(screen.getByLabelText('Filter by type'), { target: { value: 'spreadsheet' } })
@@ -38,6 +38,6 @@ test('lists every file, then narrows by project, type and owner', () => {
   fireEvent.change(screen.getByLabelText('Filter by owner'), { target: { value: '8' } })
   expect(titles().sort()).toEqual(['Budget', 'Song'])
 
-  fireEvent.change(screen.getByLabelText('Filter by project'), { target: { value: '0' } })
+  fireEvent.change(screen.getByLabelText('Filter by product'), { target: { value: '0' } })
   expect(screen.getByText('No files match your search.')).toBeInTheDocument()
 })

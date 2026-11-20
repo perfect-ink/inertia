@@ -56,7 +56,7 @@ test('draws links between this folder\'s tasks, flags the driving path, and edit
   expect(items).toHaveLength(2)
   expect(items[0]).toHaveTextContent('Build waits on Design')
   // The link to a task in another project is listed, with its project, but not drawn.
-  expect(screen.getByRole('heading', { name: 'Other projects' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Other products' })).toBeInTheDocument()
   expect(items[1]).toHaveTextContent('Vendor contract (Billing) waits on Design')
   expect(items[1]).toHaveTextContent('Dates break this link by 2 days')
 

@@ -54,7 +54,7 @@ describe('project', () => {
     expect(project({ lat: 0, lng: 180 }, 1).x).toBe(2 * TILE_SIZE)
   })
 
-  test('unproject undoes project', () => {
+  test('unproject undoes product', () => {
     const back = unproject(project(tokyo, 9), 9)
     expect(back.lat).toBeCloseTo(tokyo.lat, 6)
     expect(back.lng).toBeCloseTo(tokyo.lng, 6)

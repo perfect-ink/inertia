@@ -38,7 +38,7 @@ const formatDate = (iso: string) => format(parseISO(iso), 'MMM d, yyyy')
 // project's purpose and dates; an admin or owner approves it (which creates
 // the project) or declines it with a reason.
 export default function ProjectRequestsScreen() {
-  usePageTitle('Project requests')
+  usePageTitle('Product requests')
   const { data: requests = [], isLoading } = useProjectRequests()
   const { data: workspace } = useWorkspace()
   const userId = useAuthStore((s) => s.user?.id)
@@ -61,7 +61,7 @@ export default function ProjectRequestsScreen() {
     <WorkspaceLayout>
       <div className="view-planning view-project_requests">
         <div className="planning-header">
-          <h1 className="planning-title">Project requests</h1>
+          <h1 className="planning-title">Product requests</h1>
           {requests.length > 0 && (
             <Tabs label="Request status">
               {PROJECT_REQUEST_STATUSES.map((status) => (
@@ -101,8 +101,8 @@ export default function ProjectRequestsScreen() {
               <div className="planning-empty">
                 <ClipboardList className="planning-empty_icon" aria-hidden="true" />
                 <p>
-                  No project requests yet.
-                  {canSubmit && ' Request a project and an admin of this Space decides whether it goes ahead.'}
+                  No product requests yet.
+                  {canSubmit && ' Request a product and an admin of this Space decides whether it goes ahead.'}
                 </p>
               </div>
             )}
@@ -157,7 +157,7 @@ export default function ProjectRequestsScreen() {
       <ConfirmDialog
         open={deleting != null}
         title={deleting && isWithdrawal(deleting, userId) ? 'Withdraw request' : 'Delete request'}
-        description={deleting ? `"${deleting.name}" will be removed.${deleting.project_id ? ' The project it created stays.' : ''}` : undefined}
+        description={deleting ? `"${deleting.name}" will be removed.${deleting.project_id ? ' The product it created stays.' : ''}` : undefined}
         confirmLabel={deleting && isWithdrawal(deleting, userId) ? 'Withdraw' : 'Delete'}
         destructive
         onConfirm={() => deleting && deleteRequest.mutate(deleting.id)}
@@ -214,7 +214,7 @@ function RequestCard({ request, canEdit, canDelete, isManager, withdrawing, busy
             {request.decision_note && <>: <span className="project_requests-text">{request.decision_note}</span></>}
           </p>
           {request.project_id != null && (
-            <Link to={paths.folder(request.project_id)} className="project_requests-link">Open project</Link>
+            <Link to={paths.folder(request.project_id)} className="project_requests-link">Open product</Link>
           )}
         </div>
       )}

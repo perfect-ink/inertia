@@ -34,14 +34,14 @@ export default function PortfolioScreen() {
       <div className="view-planning view-portfolio">
         <div className="planning-header">
           <h1 className="planning-title">Portfolio</h1>
-          <Link to="/projects" className="planning-initiative">Edit project details</Link>
+          <Link to="/projects" className="planning-initiative">Edit product details</Link>
         </div>
         <div className="planning-body">
           {isLoading && <Loader2 className="planning-spinner" aria-label="Loading" />}
           {!isLoading && rows.length === 0 && (
             <div className="planning-empty">
               <Briefcase className="planning-empty_icon" aria-hidden="true" />
-              <p>No projects yet. Make a folder a project to see it here.</p>
+              <p>No products yet. Make a folder a product to see it here.</p>
             </div>
           )}
           {rows.length > 0 && (

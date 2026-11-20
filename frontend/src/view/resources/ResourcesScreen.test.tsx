@@ -88,13 +88,13 @@ test('an admin changes a person\'s weekly capacity, and a value outside a week i
   expect(screen.getByRole('alert')).toHaveTextContent('Enter hours from 0 to 168.')
 })
 
-test('allocates a person to a project for some hours a week', () => {
+test('allocates a person to a product for some hours a week', () => {
   render(<ResourcesScreen />)
   fireEvent.click(screen.getByRole('button', { name: 'Allocate Ben' }))
-  expect(screen.getByRole('alert')).toHaveTextContent('Choose a project.')
+  expect(screen.getByRole('alert')).toHaveTextContent('Choose a product.')
   expect(mockCreate.mutate).not.toHaveBeenCalled()
 
-  fireEvent.change(screen.getByLabelText('Project for Ben'), { target: { value: '3' } })
+  fireEvent.change(screen.getByLabelText('Product for Ben'), { target: { value: '3' } })
   fireEvent.change(screen.getByLabelText('Hours per week to allocate Ben'), { target: { value: '12.5' } })
   fireEvent.click(screen.getByRole('button', { name: 'Allocate Ben' }))
   expect(mockCreate.mutate).toHaveBeenCalledWith(
@@ -131,9 +131,9 @@ test('a member who cannot manage the Space reads the plan without controls', () 
   expect(screen.queryByRole('button', { name: /Remove/ })).not.toBeInTheDocument()
 })
 
-test('the Projects tab totals each project\'s hours and lists who is on it', () => {
+test('the Products tab totals each product\'s hours and lists who is on it', () => {
   render(<ResourcesScreen />)
-  fireEvent.click(screen.getByRole('button', { name: 'Projects' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Products' }))
   expect(screen.getByRole('link', { name: 'Messages' })).toHaveAttribute('href', '/folders/2')
   const hours = within(screen.getByRole('list', { name: /Hours per week on Messages/ }))
   expect(hours.getAllByText('40 h')).toHaveLength(8)

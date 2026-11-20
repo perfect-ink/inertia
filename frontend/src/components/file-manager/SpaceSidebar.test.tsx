@@ -45,15 +45,15 @@ beforeEach(() => {
   useAuthStore.setState({ user: { id: 1, name: 'Ada Lovelace', email: 'ada@example.com' } } as never)
 })
 
-test('lists the recently opened projects first, then the rest by name, five at most, with a link to them all', () => {
+test('lists the recently opened products first, then the rest by name, five at most, with a link to them all', () => {
   useProjectStore.setState({ recentIds: [5, 3] })
   renderAt('/space')
-  const list = screen.getByRole('list', { name: 'Projects' })
+  const list = screen.getByRole('list', { name: 'Products' })
   expect(within(list).getAllByRole('link').map((a) => a.textContent)).toEqual(['Hiring', 'Billing', 'Docs', 'Infra', 'Legal'])
-  expect(screen.getByRole('link', { name: 'All projects' })).toHaveAttribute('href', '/space')
+  expect(screen.getByRole('link', { name: 'All products' })).toHaveAttribute('href', '/space')
 })
 
-test('picking a project opens it and makes it the most recent', () => {
+test('picking a product opens it and makes it the most recent', () => {
   renderAt('/space')
   fireEvent.click(screen.getByRole('link', { name: 'Billing' }))
   expect(useProjectStore.getState().activeProjectId).toBe(3)
@@ -61,7 +61,7 @@ test('picking a project opens it and makes it the most recent', () => {
   expect(screen.getByTestId('where')).toHaveTextContent('/folders/3')
 })
 
-test('opening a document inside a project opens that project', () => {
+test('opening a document inside a product opens that product', () => {
   renderAt('/documents/9')
   expect(useProjectStore.getState().activeProjectId).toBe(2)
 })

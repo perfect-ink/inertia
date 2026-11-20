@@ -157,7 +157,7 @@ export function FolderItem({ folder, depth = 0, bare = false, hideProjects = fal
     { label: 'Rename', action: () => setRenamingFolder(true) },
     ...(folder.root ? [] : [
       ...transferItems(() => ({ kind: 'folder', id: folder.id, name: folder.name, documentIds: documentsIn(folder).map((d) => d.id) })),
-      { label: isProject ? 'Make Folder' : 'Make Project', action: () => updateFolder.mutate({ id: folder.id, kind: isProject ? 'folder' : 'project' }) },
+      { label: isProject ? 'Make Folder' : 'Make Product', action: () => updateFolder.mutate({ id: folder.id, kind: isProject ? 'folder' : 'project' }) },
       { label: isFeature ? 'Make Folder' : 'Make Feature Folder', action: () => updateFolder.mutate({ id: folder.id, kind: isFeature ? 'folder' : 'feature' }) },
       { label: 'Archive', action: () => updateFolder.mutate({ id: folder.id, archived: true }) },
       { label: 'Delete', action: () => deleteFolder.mutate(folder.id, { onError: e => setActionError(errorMessage(e)) }), danger: true },
@@ -185,7 +185,7 @@ export function FolderItem({ folder, depth = 0, bare = false, hideProjects = fal
         <Button onClick={() => setOpen((o) => !o)} className="folder_item-toggle">
           <ChevronRight className={`folder_item-chevron${open ? ' folder_item-chevron--open' : ''}`} />
         </Button>
-        <FolderIcon className="folder_item-icon folder_item-icon--sm" aria-label={isProject ? 'Project' : isFeature ? 'Feature folder' : undefined} />
+        <FolderIcon className="folder_item-icon folder_item-icon--sm" aria-label={isProject ? 'Product' : isFeature ? 'Feature folder' : undefined} />
         {renamingFolder ? (
           <InlineInput
             defaultValue={folder.name}

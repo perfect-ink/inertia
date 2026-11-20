@@ -69,7 +69,7 @@ export function DependencyEditor({ tasks, dependencies, externalDependencies, fo
       </ul>
       {externalDependencies.length > 0 && (
         <>
-          <h3 className="gantt_pane-subheading">Other projects</h3>
+          <h3 className="gantt_pane-subheading">Other products</h3>
           <ul className="gantt_pane-list">
             {externalDependencies.map((d) => {
               const end = externalEnd(d, onChart, folders)
@@ -123,8 +123,8 @@ export function DependencyEditor({ tasks, dependencies, externalDependencies, fo
       <div className="gantt_pane-form">
         <Input
           type="search"
-          aria-label="Find a task in another project"
-          placeholder="Find a task in another project"
+          aria-label="Find a task in another product"
+          placeholder="Find a task in another product"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="gantt_pane-search"

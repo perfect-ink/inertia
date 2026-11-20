@@ -29,7 +29,7 @@ test('shows a banner while files are dragged over, and hides it when they leave 
   expect(screen.queryByRole('status')).toBeNull()
 })
 
-test('uploads into the open project', async () => {
+test('uploads into the open product', async () => {
   mockProject = { id: 9, name: 'Website' }
   render(<FileDropZone />)
   fireEvent.dragOver(window, { dataTransfer: transfer })
@@ -39,7 +39,7 @@ test('uploads into the open project', async () => {
   await waitFor(() => expect(mockNotify).toHaveBeenCalledWith('Uploaded plan.pdf to Website'))
 })
 
-test('with no project open, asks which project and uploads there', async () => {
+test('with no product open, asks which product and uploads there', async () => {
   mockFolders = [
     { id: 1, name: 'Root', kind: 'folder', children: [
       { id: 5, name: 'Website', kind: 'project' },
@@ -57,7 +57,7 @@ test('with no project open, asks which project and uploads there', async () => {
   await waitFor(() => expect(mockNotify).toHaveBeenCalledWith('Uploaded plan.pdf to Website'))
 })
 
-test('cancelling the project choice uploads nothing', async () => {
+test('cancelling the product choice uploads nothing', async () => {
   mockFolders = [{ id: 5, name: 'Website', kind: 'project' }]
   render(<FileDropZone />)
   await act(async () => { fireEvent.drop(window, { dataTransfer: transfer }) })
@@ -66,7 +66,7 @@ test('cancelling the project choice uploads nothing', async () => {
   expect(mockUpload).not.toHaveBeenCalled()
 })
 
-test('a Space with no projects points to the Space home instead of uploading', async () => {
+test('a Space with no products points to the Space home instead of uploading', async () => {
   render(<FileDropZone />)
   await act(async () => { fireEvent.drop(window, { dataTransfer: transfer }) })
   expect(screen.getByRole('dialog')).toHaveTextContent('this Space has none yet')

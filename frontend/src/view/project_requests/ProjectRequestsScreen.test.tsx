@@ -88,13 +88,13 @@ test('a viewer can read requests but not submit or change them', () => {
 test('submits a new request from the intake form', () => {
   render(<ProjectRequestsScreen />)
   fireEvent.click(screen.getByRole('button', { name: 'New request' }))
-  const form = screen.getByRole('form', { name: 'Project request' })
+  const form = screen.getByRole('form', { name: 'Product request' })
 
   fireEvent.click(within(form).getByRole('button', { name: 'Submit request' }))
-  expect(screen.getByRole('alert')).toHaveTextContent('Give the project a name.')
+  expect(screen.getByRole('alert')).toHaveTextContent('Give the product a name.')
   expect(mockCreate.mutate).not.toHaveBeenCalled()
 
-  fireEvent.change(within(form).getByLabelText('Project name'), { target: { value: '  Support portal ' } })
+  fireEvent.change(within(form).getByLabelText('Product name'), { target: { value: '  Support portal ' } })
   fireEvent.change(within(form).getByLabelText('Why does it matter?'), { target: { value: 'Tickets are slow' } })
   fireEvent.change(within(form).getByLabelText('Priority'), { target: { value: 'low' } })
   fireEvent.change(within(form).getByLabelText('Target date'), { target: { value: '2027-03-01' } })
@@ -112,8 +112,8 @@ test('submits a new request from the intake form', () => {
 test('rejects a target date before the start date without calling the server', () => {
   render(<ProjectRequestsScreen />)
   fireEvent.click(screen.getByRole('button', { name: 'New request' }))
-  const form = screen.getByRole('form', { name: 'Project request' })
-  fireEvent.change(within(form).getByLabelText('Project name'), { target: { value: 'Portal' } })
+  const form = screen.getByRole('form', { name: 'Product request' })
+  fireEvent.change(within(form).getByLabelText('Product name'), { target: { value: 'Portal' } })
   fireEvent.change(within(form).getByLabelText('Start date'), { target: { value: '2027-03-01' } })
   fireEvent.change(within(form).getByLabelText('Target date'), { target: { value: '2027-02-01' } })
   fireEvent.click(within(form).getByRole('button', { name: 'Submit request' }))
@@ -124,9 +124,9 @@ test('rejects a target date before the start date without calling the server', (
 test('editing a request starts from its saved values and saves the changes', () => {
   render(<ProjectRequestsScreen />)
   fireEvent.click(within(screen.getByRole('article', { name: 'Billing revamp' })).getByRole('button', { name: 'Edit' }))
-  const form = screen.getByRole('form', { name: 'Project request' })
-  expect(within(form).getByLabelText('Project name')).toHaveValue('Billing revamp')
-  fireEvent.change(within(form).getByLabelText('Project name'), { target: { value: 'Billing v2' } })
+  const form = screen.getByRole('form', { name: 'Product request' })
+  expect(within(form).getByLabelText('Product name')).toHaveValue('Billing revamp')
+  fireEvent.change(within(form).getByLabelText('Product name'), { target: { value: 'Billing v2' } })
   fireEvent.click(within(form).getByRole('button', { name: 'Save changes' }))
   expect(mockUpdate.mutate).toHaveBeenCalledWith(
     expect.objectContaining({ id: 1, name: 'Billing v2', priority: 'high', start_date: '2026-12-01' }),
@@ -139,8 +139,8 @@ test('an admin approves a request, optionally with a note', () => {
   render(<ProjectRequestsScreen />)
   fireEvent.click(within(screen.getByRole('article', { name: 'Mobile app' })).getByRole('button', { name: 'Approve' }))
 
-  const dialog = screen.getByRole('dialog', { name: 'Approve project' })
-  expect(dialog).toHaveTextContent('creates it as a project')
+  const dialog = screen.getByRole('dialog', { name: 'Approve product' })
+  expect(dialog).toHaveTextContent('creates it as a product')
   fireEvent.change(within(dialog).getByLabelText('Note (optional)'), { target: { value: 'Start in Q1' } })
   fireEvent.click(within(dialog).getByRole('button', { name: 'Approve' }))
   expect(mockDecide.mutate).toHaveBeenCalledWith(
@@ -154,7 +154,7 @@ test('declining needs a reason', () => {
   render(<ProjectRequestsScreen />)
   fireEvent.click(within(screen.getByRole('article', { name: 'Mobile app' })).getByRole('button', { name: 'Decline' }))
 
-  const dialog = screen.getByRole('dialog', { name: 'Decline project' })
+  const dialog = screen.getByRole('dialog', { name: 'Decline product' })
   const submit = within(dialog).getByRole('button', { name: 'Decline' })
   expect(submit).toBeDisabled()
   fireEvent.change(within(dialog).getByLabelText('Reason'), { target: { value: 'Out of scope' } })
@@ -166,12 +166,12 @@ test('declining needs a reason', () => {
   )
 })
 
-test('shows who decided an approved request, with a link to its project', () => {
+test('shows who decided an approved request, with a link to its product', () => {
   render(<ProjectRequestsScreen />)
   fireEvent.click(screen.getByRole('button', { name: 'Approved (1)' }))
   const card = screen.getByRole('article', { name: 'Data warehouse' })
   expect(card).toHaveTextContent(/Approved by Owen on .*: Fund it/)
-  expect(within(card).getByRole('link', { name: 'Open project' })).toHaveAttribute('href', '/folders/42')
+  expect(within(card).getByRole('link', { name: 'Open product' })).toHaveAttribute('href', '/folders/42')
   expect(screen.queryByRole('heading', { name: 'Billing revamp' })).not.toBeInTheDocument()
 })
 
@@ -194,6 +194,6 @@ test('an admin can reopen a declined request and delete any request', () => {
 test('the empty state explains what to do', () => {
   mockRequests = []
   render(<ProjectRequestsScreen />)
-  expect(screen.getByText(/No project requests yet\./)).toBeInTheDocument()
+  expect(screen.getByText(/No product requests yet\./)).toBeInTheDocument()
   expect(screen.queryByRole('button', { name: /Pending/ })).not.toBeInTheDocument()
 })

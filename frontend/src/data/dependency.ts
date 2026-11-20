@@ -226,7 +226,7 @@ export function externalEnd(dependency: TaskDependency, onChart: Map<number, Dat
 
 export interface LinkCandidates { project: string; tasks: Task[] }
 
-export const NO_PROJECT = 'No project'
+export const NO_PROJECT = 'No product'
 
 // Tasks found by a search, for the editor's pickers: those already on the
 // folder's chart left out, the rest grouped under the project they sit in

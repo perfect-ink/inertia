@@ -76,7 +76,7 @@ describe.each(THEMES)('the %s panels', (theme) => {
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
 
     fireEvent.click(within(panel('Dialogs', theme)).getByRole('button', { name: 'Confirm deletion' }))
-    const dialog = screen.getByRole('dialog', { name: 'Delete this project?' })
+    const dialog = screen.getByRole('dialog', { name: 'Delete this product?' })
     fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })

@@ -155,7 +155,7 @@ class Folder < ApplicationRecord
     if !features.is_a?(Array) || (features - PROJECT_FEATURES).any?
       errors.add(:features, "can only be #{PROJECT_FEATURES.join(', ')}")
     elsif !project? && will_save_change_to_features?
-      errors.add(:features, "can only be set on a project")
+      errors.add(:features, "can only be set on a product")
     end
   end
 

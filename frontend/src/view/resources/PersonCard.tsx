@@ -36,7 +36,7 @@ export default function PersonCard({ load, workspaceId, projects, projectName, c
       </ul>
 
       {load.allocations.length > 0 && (
-        <ul className="resources-allocations" aria-label={`Projects for ${load.name}`}>
+        <ul className="resources-allocations" aria-label={`Products for ${load.name}`}>
           {load.allocations.map((allocation) => (
             <AllocationRow
               key={allocation.id}

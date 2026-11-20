@@ -14,8 +14,8 @@ export default function ProjectFeaturesDialog({ project, onClose }: { project: F
       open={project !== null}
       wide
       className="ui-project_features_dialog-modal"
-      title={`Features for ${project?.name ?? 'project'}`}
-      description="Turn off the pages this project doesn't use. Its files always show, nothing is deleted, and turning a page back on shows it again."
+      title={`Features for ${project?.name ?? 'product'}`}
+      description="Turn off the pages this product doesn't use. Its files always show, nothing is deleted, and turning a page back on shows it again."
       onClose={onClose}
     >
       {project && <ProjectFeaturesForm project={project} onClose={onClose} />}

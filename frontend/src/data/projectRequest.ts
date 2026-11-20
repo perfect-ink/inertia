@@ -50,7 +50,7 @@ export const formFromProjectRequest = (request: ProjectRequest): ProjectRequestD
 // What is wrong with the form, or null when it can be submitted. Mirrors the
 // server's ProjectRequest validations so the user hears about it before the round trip.
 export function projectRequestFormError(form: ProjectRequestDraft): string | null {
-  if (!form.name.trim()) return 'Give the project a name.'
+  if (!form.name.trim()) return 'Give the product a name.'
   if (form.start_date && form.target_date && form.target_date < form.start_date) {
     return 'The target date cannot be before the start date.'
   }

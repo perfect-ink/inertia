@@ -474,7 +474,7 @@ export default function FolderDetailScreen({ id }: { id?: number }) {
                 variant="muted"
                 onClick={() => setShowFeatures(true)}
                 className="folder_detail-action"
-                title="Choose which pages this project shows"
+                title="Choose which pages this product shows"
               >
                 <SlidersHorizontal className="folder_detail-icon--sm" />
                 Pages

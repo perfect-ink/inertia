@@ -104,13 +104,13 @@ export function SpaceSidebar({ accountItems }: { accountItems: MenuItem[] }) {
 
       <div className="space_sidebar-body">
         <div className="space_sidebar-heading">
-          <Link to="/space" aria-current={pathname === '/space' ? 'page' : undefined} title={tip('All projects')} className="space_sidebar-label">Projects</Link>
-          <IconButton fill label="New project" title="New project" onClick={() => setNaming(true)} className="space_sidebar-add">
+          <Link to="/space" aria-current={pathname === '/space' ? 'page' : undefined} title={tip('All products')} className="space_sidebar-label">Products</Link>
+          <IconButton fill label="New product" title="New product" onClick={() => setNaming(true)} className="space_sidebar-add">
             <Plus className="space_sidebar-icon" />
           </IconButton>
         </div>
         <FormError message={error} />
-        <ul aria-label="Projects" className="space_sidebar-list">
+        <ul aria-label="Products" className="space_sidebar-list">
           {recent.map((project) => {
             const active = project.id === openProject?.id
             return (
@@ -130,7 +130,7 @@ export function SpaceSidebar({ accountItems }: { accountItems: MenuItem[] }) {
           })}
         </ul>
         {projects.length > recent.length && (
-          <Link to="/space" className="space_sidebar-more">All projects</Link>
+          <Link to="/space" className="space_sidebar-more">All products</Link>
         )}
 
         {/* Pinned documents, only when there are some. */}
@@ -174,7 +174,7 @@ export function SpaceSidebar({ accountItems }: { accountItems: MenuItem[] }) {
         </Menu>
       </div>
 
-      <PromptDialog open={naming} title="New project" label="Project name" placeholder="e.g. Website relaunch" submitLabel="Create" onSubmit={addProject} onClose={() => setNaming(false)} />
+      <PromptDialog open={naming} title="New product" label="Product name" placeholder="e.g. Website relaunch" submitLabel="Create" onSubmit={addProject} onClose={() => setNaming(false)} />
     </nav>
   )
 }

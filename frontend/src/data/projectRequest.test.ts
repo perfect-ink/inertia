@@ -29,7 +29,7 @@ test('an empty form is medium priority with nothing filled in', () => {
 test('the form needs a name and a target date that is not before the start date', () => {
   const form = { ...emptyProjectRequestForm(), name: 'Billing' }
   expect(projectRequestFormError(form)).toBeNull()
-  expect(projectRequestFormError({ ...form, name: '   ' })).toBe('Give the project a name.')
+  expect(projectRequestFormError({ ...form, name: '   ' })).toBe('Give the product a name.')
   expect(projectRequestFormError({ ...form, start_date: '2026-12-01', target_date: '2026-11-01' }))
     .toBe('The target date cannot be before the start date.')
   expect(projectRequestFormError({ ...form, start_date: '2026-12-01', target_date: '2026-12-01' })).toBeNull()

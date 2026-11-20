@@ -120,7 +120,7 @@ test('kindFromSides is the reverse of linkSides for all four kinds', () => {
   expect(kindFromSides('end', 'start')).toBe('finish_to_start')
 })
 
-describe('links to other projects', () => {
+describe('links to other products', () => {
   const folder = (id: number, name: string, kind: Folder['kind'], children: Folder[] = []) =>
     ({ id, name, kind, children, documents: [], parent_id: null }) as unknown as Folder
   const folders = [folder(1, 'Messages', 'project', [folder(2, 'Design', 'folder')]), folder(3, 'Billing', 'project')]
@@ -130,14 +130,14 @@ describe('links to other projects', () => {
   // The chart holds the task on this side of the link.
   const chart = (task?: TaskLink) => new Map([[task!.id, task!]])
 
-  test('splitDependencies separates links inside a folder from links to other projects', () => {
+  test('splitDependencies separates links inside a folder from links to other products', () => {
     const ids = new Set([1, 2])
     const { internal, external } = splitDependencies([dep(1, 2), dep(2, 9), dep(8, 1), dep(8, 9)], ids)
     expect(internal.map((d) => [d.predecessor_id, d.successor_id])).toEqual([[1, 2]])
     expect(external.map((d) => [d.predecessor_id, d.successor_id])).toEqual([[2, 9], [8, 1]])
   })
 
-  test('externalEnd names the other task, its project and which side of the link it is', () => {
+  test('externalEnd names the other task, its product and which side of the link it is', () => {
     const waitsOnVendor = { ...dep(8, 1), predecessor: link(8, '2026-11-05', 3), successor: link(1, '2026-11-20', 2, '2026-11-10') }
     const end = externalEnd(waitsOnVendor, chart(waitsOnVendor.successor), folders)
     expect(end).toMatchObject({ isPredecessor: true, project: 'Billing', brokenByDays: 0 })
@@ -154,7 +154,7 @@ describe('links to other projects', () => {
     expect(externalEnd(stale, chart(link(1, '2026-11-25', 2, '2026-11-09')), folders).brokenByDays).toBe(3)
   })
 
-  test('externalEnd looks up a project through its subfolders, and has none for a task outside any', () => {
+  test('externalEnd looks up a product through its subfolders, and has none for a task outside any', () => {
     const inSub = { ...dep(8, 1), predecessor: link(8, null, 2), successor: link(1, null, null) }
     expect(externalEnd(inSub, chart(inSub.successor), folders).project).toBe('Messages')
     const loose = { ...dep(8, 1), predecessor: link(8, null, null), successor: link(1, null, 2) }
@@ -174,7 +174,7 @@ describe('links to other projects', () => {
     expect(externalEnd(undated, chart(undated.successor), folders).brokenByDays).toBe(0)
   })
 
-  test('linkCandidates leaves out tasks on the chart and groups the rest by project', () => {
+  test('linkCandidates leaves out tasks on the chart and groups the rest by product', () => {
     const task = (id: number, folder_id: number | null, extra: Partial<Task> = {}) =>
       ({ id, title: `T${id}`, folder_id, ...extra }) as unknown as Task
     const found = [

@@ -50,20 +50,20 @@ beforeEach(() => {
   mockNewDocument.mockClear()
 })
 
-test('shows the project, its tasks and its documents', () => {
+test('shows the product, its tasks and its documents', () => {
   renderAt('/folders/2')
-  expect(screen.getByRole('button', { name: 'Project: Messages. Switch project' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Product: Messages. Switch product' })).toBeInTheDocument()
   expect(within(screen.getByRole('navigation', { name: 'Tasks' })).getByRole('link', { name: 'Tasks' })).toHaveAttribute('href', '/tasks?view=backlog')
   expect(screen.getByRole('link', { name: 'Documents' })).toHaveAttribute('href', '/documents')
   expect(screen.getByText('Files of Messages')).toBeInTheDocument()
 })
 
-test('a project with no documents says so', () => {
+test('a product with no documents says so', () => {
   renderAt('/folders/3', billing)
   expect(screen.getByText('No documents yet.')).toBeInTheDocument()
 })
 
-test('one + menu creates documents, sheets, Collections and folders in the project', () => {
+test('one + menu creates documents, sheets, Collections and folders in the product', () => {
   renderAt('/documents/9')
   const pick = (name: RegExp) => {
     fireEvent.click(screen.getByRole('button', { name: 'New' }))
@@ -107,20 +107,20 @@ test('turned-off pages and pages only for shared Spaces are left out', () => {
   expect(within(screen.getByRole('navigation', { name: 'Views' })).getAllByRole('link').map((a) => a.textContent)).toEqual(['Roadmap'])
 })
 
-test('a project with no other pages has no Views list', () => {
+test('a product with no other pages has no Views list', () => {
   renderAt('/folders/2', { ...messages, features: ['tasks'] } as Folder)
   expect(screen.queryByRole('navigation', { name: 'Views' })).toBeNull()
 })
 
-test('the project menu switches projects and goes back to them all', () => {
+test('the product menu switches products and goes back to them all', () => {
   renderAt('/folders/2')
-  fireEvent.click(screen.getByRole('button', { name: 'Project: Messages. Switch project' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Product: Messages. Switch product' }))
   expect(screen.getByRole('menuitemradio', { name: /Messages/ })).toHaveAttribute('aria-checked', 'true')
   fireEvent.click(screen.getByRole('menuitemradio', { name: /Billing/ }))
   expect(useProjectStore.getState().activeProjectId).toBe(3)
   expect(screen.getByTestId('where')).toHaveTextContent('/folders/3')
 
-  fireEvent.click(screen.getByRole('button', { name: 'Project: Messages. Switch project' }))
-  fireEvent.click(screen.getByRole('menuitem', { name: /All projects/ }))
+  fireEvent.click(screen.getByRole('button', { name: 'Product: Messages. Switch product' }))
+  fireEvent.click(screen.getByRole('menuitem', { name: /All products/ }))
   expect(screen.getByTestId('where')).toHaveTextContent('/space')
 })

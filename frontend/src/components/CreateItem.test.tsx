@@ -7,7 +7,7 @@ const mockNavigate = jest.fn()
 const mockWorkspace = {
   id: 1, name: 'Workspace', root_folder_id: 101,
   folders: [{ id: 101, name: 'Root', root: true, archived: false, documents: [], children: [
-    { id: 202, name: 'Project', archived: false, documents: [], children: [] },
+    { id: 202, name: 'Product', archived: false, documents: [], children: [] },
   ] }],
 }
 

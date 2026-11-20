@@ -12,7 +12,7 @@ struct AuthScreen<Form: View>: View {
             VStack(spacing: 8) {
                 AppLogo()
                 Text("Inertia").voltaFont(.twoXL, weight: .semibold).tracking(-0.6).foregroundStyle(Volta.foreground)
-                Text("Your documents, projects, and tasks.").voltaFont(.sm).foregroundStyle(Volta.mutedForeground)
+                Text("Your documents, products, and tasks.").voltaFont(.sm).foregroundStyle(Volta.mutedForeground)
             }
             VStack(spacing: 10) {
                 ForEach(SignInProvider.allCases) { provider in

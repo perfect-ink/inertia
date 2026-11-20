@@ -25,7 +25,7 @@ import { usePaths } from '@/hooks/usePaths'
 // page, which holds its documents, files, collections, tasks and events.
 export default function ProjectsScreen() {
   const paths = usePaths()
-  usePageTitle('Projects')
+  usePageTitle('Products')
   const { data: workspace, isLoading } = useWorkspace()
   const createFolder = useCreateFolder()
   const [adding, setAdding] = useState(false)
@@ -53,7 +53,7 @@ export default function ProjectsScreen() {
     <WorkspaceLayout>
       <div className="view-projects">
         <div className="projects-header">
-          <h1 className="projects-title">Projects</h1>
+          <h1 className="projects-title">Products</h1>
           {archivedProjects.length > 0 && (
             <Button variant="secondary" aria-pressed={showArchived} onClick={() => setShowArchived((on) => !on)} className="projects-new">
               Archived
@@ -72,7 +72,7 @@ export default function ProjectsScreen() {
           )}
           <Button variant="primary" onClick={() => setAdding(true)} className="projects-new">
             <Plus className="projects-icon" aria-hidden="true" />
-            New project
+            New product
           </Button>
         </div>
 
@@ -93,8 +93,8 @@ export default function ProjectsScreen() {
             {adding && (
               <Input
                 autoFocus
-                aria-label="Project name"
-                placeholder="Project name"
+                aria-label="Product name"
+                placeholder="Product name"
                 onChange={(e) => { nameRef.current = e.target.value }}
                 onBlur={commitAdd}
                 onKeyDown={(e) => {
@@ -109,7 +109,7 @@ export default function ProjectsScreen() {
             {!isLoading && projects.length === 0 && !adding && (
               <div className="projects-empty">
                 <FolderKanban className="projects-empty_icon" aria-hidden="true" />
-                <p>No projects yet. A project holds the documents, files, collections, tasks and events for one piece of work.</p>
+                <p>No products yet. A product holds the documents, files, collections, tasks and events for one piece of work.</p>
               </div>
             )}
 

@@ -24,7 +24,7 @@ const tree = (): Folder[] => [{
   ],
 }] as unknown as Folder[]
 
-test('spaceFiles lists every document with its path and nearest project', () => {
+test('spaceFiles lists every document with its path and nearest product', () => {
   const files = spaceFiles(tree())
   expect(files.map((f) => [f.document.title, f.path.join('/'), f.project?.name ?? null])).toEqual([
     ['Readme', '', null],
@@ -40,7 +40,7 @@ test('searchSpaceFiles matches titles and folder names, ignoring case', () => {
   expect(searchSpaceFiles(files, '')).toHaveLength(3)
 })
 
-test('projectsOf lists active projects by name', () => {
+test('projectsOf lists active products by name', () => {
   expect(projectsOf(tree()).map((f) => f.name)).toEqual(['Billing', 'Messages'])
 })
 
@@ -51,7 +51,7 @@ test('documentsIn and projectLastModified cover nested folders', () => {
   expect(projectLastModified(tree()[0].children[2])).toBeNull()
 })
 
-test('filterSpaceFiles filters by project, type and owner, and an unset filter matches all', () => {
+test('filterSpaceFiles filters by product, type and owner, and an unset filter matches all', () => {
   const owned = (d: Document, owner: number, type: Document['doc_type'] = 'document') => ({ ...d, created_by_id: owner, doc_type: type }) as Document
   const t = tree()
   t[0].documents = [owned(t[0].documents[0], 7)]

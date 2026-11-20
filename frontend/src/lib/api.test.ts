@@ -73,7 +73,7 @@ test('signing out forgets the active workspace', () => {
   expect(useWorkspaceStore.getState().activeWorkspaceId).toBeNull()
 })
 
-test('requests name the open project, and omit it when none is open', async () => {
+test('requests name the open product, and omit it when none is open', async () => {
   const { adapter, seen } = captureHeaders()
   useProjectStore.getState().setActive(11)
   await api.get('/x', { adapter })
@@ -83,7 +83,7 @@ test('requests name the open project, and omit it when none is open', async () =
   expect(seen()['X-Project-Id']).toBeUndefined()
 })
 
-test('signing out forgets the open project', () => {
+test('signing out forgets the open product', () => {
   useProjectStore.getState().setActive(11)
   useAuthStore.getState().logout()
   expect(useProjectStore.getState().activeProjectId).toBeNull()

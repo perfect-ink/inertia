@@ -48,8 +48,8 @@ en:
         one: "Allocation"
         other: "Allocations"
       project_request:
-        one: "Project request"
-        other: "Project requests"
+        one: "Product request"
+        other: "Product requests"
       task_status_setting:
         one: "Task status setting"
         other: "Task status settings"
@@ -76,7 +76,7 @@ en:
       resource_allocation:
         workspace: "Space"
         user: "Person"
-        folder: "Project"
+        folder: "Product"
         hours_per_week: "Hours per week"
       project_request:
         workspace: "Space"

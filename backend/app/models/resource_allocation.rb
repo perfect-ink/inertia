@@ -26,7 +26,7 @@ class ResourceAllocation < ApplicationRecord
   # Checked when the project is chosen, so a project later turned back into a
   # plain folder keeps the allocations it already has.
   def folder_is_a_project
-    errors.add(:folder, "must be a project") if folder && !folder.project?
+    errors.add(:folder, "must be a product") if folder && !folder.project?
   end
 
   def end_date_not_before_start_date

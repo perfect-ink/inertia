@@ -82,7 +82,7 @@ class ResourceAllocationsControllerTest < ActionDispatch::IntegrationTest
     plain = @team.folders.create!(name: "Notes")
     post "/api/v1/resource_allocations", params: allocation_params(folder_id: plain.id), headers: headers_for(@admin), as: :json
     assert_response :unprocessable_entity
-    assert_includes response.parsed_body["errors"], "Project must be a project"
+    assert_includes response.parsed_body["errors"], "Product must be a product"
 
     foreign = @owner.workspace.folders.create!(name: "Mine", kind: :project)
     post "/api/v1/resource_allocations", params: allocation_params(folder_id: foreign.id), headers: headers_for(@admin), as: :json

@@ -59,12 +59,12 @@ test('the Space default applies to every board', () => {
 test('the nearest folder wins over its parents and the Space', () => {
   const settings = [
     setting(null, 'todo', 'Space todo', 'red', 1),
-    setting(2, 'todo', 'Project todo', 'blue', 2),
+    setting(2, 'todo', 'Product todo', 'blue', 2),
     setting(3, 'todo', 'Sub todo', null, 3),
   ]
   expect(resolveStatuses(settings, [3, 2]).todo).toEqual({ label: 'Sub todo', color: 'blue' })
   expect(resolveStatuses(settings, [4, 3, 2]).todo).toEqual({ label: 'Sub todo', color: 'blue' })
-  expect(resolveStatuses(settings, [2]).todo).toEqual({ label: 'Project todo', color: 'blue' })
+  expect(resolveStatuses(settings, [2]).todo).toEqual({ label: 'Product todo', color: 'blue' })
   expect(resolveStatuses(settings, [5]).todo).toEqual({ label: 'Space todo', color: 'red' })
 })
 
@@ -86,10 +86,10 @@ test('the edited folder is the nearest one, or null for the Space default', () =
 test('inheritedStatuses leaves out the board being edited', () => {
   const settings = [
     setting(null, 'todo', 'Space todo', null, 1),
-    setting(2, 'todo', 'Project todo', null, 2),
+    setting(2, 'todo', 'Product todo', null, 2),
     setting(3, 'todo', 'Sub todo', null, 3),
   ]
-  expect(inheritedStatuses(settings, [3, 2]).todo.label).toBe('Project todo')
+  expect(inheritedStatuses(settings, [3, 2]).todo.label).toBe('Product todo')
   expect(inheritedStatuses(settings, [2]).todo.label).toBe('Space todo')
 })
 

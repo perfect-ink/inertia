@@ -37,7 +37,7 @@ export default function ProjectIconDialog({ project, onClose }: { project: Folde
   }
 
   return (
-    <Modal open={project !== null} title={`Icon for ${project?.name ?? 'project'}`} onClose={onClose}>
+    <Modal open={project !== null} title={`Icon for ${project?.name ?? 'product'}`} onClose={onClose}>
       {project && (
         <div className="ui-project_icon_dialog">
           <div className="ui-project_icon_dialog-current">

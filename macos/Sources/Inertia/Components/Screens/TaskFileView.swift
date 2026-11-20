@@ -24,7 +24,7 @@ struct TaskFileView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                TextField("Project name", text: $document.board.title).voltaFont(.xl, weight: .semibold).foregroundStyle(Volta.foreground)
+                TextField("Product name", text: $document.board.title).voltaFont(.xl, weight: .semibold).foregroundStyle(Volta.foreground)
                     .textFieldStyle(InertiaTextFieldStyle(showsBorder: false))
                 Picker("View", selection: $view) {
                     Text("Workboard").tag("Workboard")

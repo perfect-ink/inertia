@@ -7,7 +7,7 @@ test('every page of the rail has a feature, in the same order and groups', () =>
   expect(new Set(ALL_PROJECT_FEATURES).size).toBe(ALL_PROJECT_FEATURES.length)
 })
 
-test('a project with no list, or none open, shows everything', () => {
+test('a product with no list, or none open, shows everything', () => {
   expect(projectFeatureOn(undefined, 'sprints')).toBe(true)
   expect(projectFeatureOn(null, 'sprints')).toBe(true)
   expect(projectFeatureOn({}, 'sprints')).toBe(true)
@@ -15,7 +15,7 @@ test('a project with no list, or none open, shows everything', () => {
   expect(enabledProjectFeatures({})).toEqual(ALL_PROJECT_FEATURES)
 })
 
-test('a project with a list shows only what is in it', () => {
+test('a product with a list shows only what is in it', () => {
   expect(projectFeatureOn({ features: ['events'] }, 'sprints')).toBe(false)
   expect(projectFeatureOn({ features: ['events'] }, 'events')).toBe(true)
   expect(projectFeatureOn({ features: [] }, 'events')).toBe(false)
@@ -27,7 +27,7 @@ test('toggleProjectFeature adds or removes one and keeps the rail order', () => 
   expect(toggleProjectFeature(['events', 'okrs'], 'events', false)).toEqual(['okrs'])
 })
 
-test('quick add offers a task or event only when the project shows Tasks or Events', () => {
+test('quick add offers a task or event only when the product shows Tasks or Events', () => {
   expect(quickAddTypesOf(null)).toEqual(['task', 'event'])
   expect(quickAddTypesOf({ features: ['events', 'okrs'] })).toEqual(['event'])
   expect(quickAddTypesOf({ features: ['okrs'] })).toEqual([])

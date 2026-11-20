@@ -47,7 +47,7 @@ describe('isActiveInWeek', () => {
 describe('personLoads', () => {
   const members = [member(2, 'Ben', 20), member(1, 'Ada')]
 
-  test('adds a person\'s hours across projects per week and compares them with capacity', () => {
+  test('adds a person\'s hours across products per week and compares them with capacity', () => {
     const loads = personLoads(members, [alloc(1, 1, 10, 30), alloc(2, 1, 11, 20, '2026-11-09')], weeks)
     expect(loads.map((l) => l.name)).toEqual(['Ada', 'Ben'])
 
@@ -64,7 +64,7 @@ describe('personLoads', () => {
     expect(ben.overWeeks).toBe(0)
   })
 
-  test('two allocations to one project add up, and decimals do not drift', () => {
+  test('two allocations to one product add up, and decimals do not drift', () => {
     const [ada] = personLoads([member(1, 'Ada')], [alloc(1, 1, 10, 0.1), alloc(2, 1, 10, 0.2)], weeks)
     expect(ada.weeks[0].byProject).toEqual({ 10: 0.3 })
     expect(ada.weeks[0].allocated).toBe(0.3)
@@ -94,7 +94,7 @@ describe('personLoads', () => {
 })
 
 describe('projectLoads', () => {
-  test('totals hours and counts people per week for each project with current allocations', () => {
+  test('totals hours and counts people per week for each product with current allocations', () => {
     const loads = projectLoads([
       alloc(1, 1, 10, 10),
       alloc(2, 2, 10, 15, '2026-11-09'),
@@ -139,7 +139,7 @@ describe('allocationError', () => {
   })
 
   test('says what is missing or wrong', () => {
-    expect(allocationError({ ...form, folderId: '' })).toBe('Choose a project.')
+    expect(allocationError({ ...form, folderId: '' })).toBe('Choose a product.')
     expect(allocationError({ ...form, hours: '0' })).toBe(HOURS_ERROR)
     expect(allocationError({ ...form, hours: '' })).toBe(HOURS_ERROR)
     expect(allocationError({ ...form, end: '2026-11-01' })).toBe("The end date can't be before the start date.")

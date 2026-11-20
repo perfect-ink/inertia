@@ -14,7 +14,7 @@ const row = (id: number, name: string, extra = {}) => ({
   tasks_count: 4, done_tasks_count: 1, percent: 25, health: 'on_track', ...extra,
 })
 
-test('lists each project with owner, status, dates, progress and health', () => {
+test('lists each product with owner, status, dates, progress and health', () => {
   mockRows = [row(2, 'Album', { owner_name: 'Pat', health: 'at_risk' })]
   render(<PortfolioScreen />)
   const tr = screen.getByRole('rowheader', { name: 'Album' }).parentElement as HTMLElement
@@ -37,8 +37,8 @@ test('clicking a column sorts, and again reverses', () => {
   expect(names()).toEqual(['Alpha', 'Beta'])
 })
 
-test('with no projects it explains how to make one', () => {
+test('with no products it explains how to make one', () => {
   mockRows = []
   render(<PortfolioScreen />)
-  expect(screen.getByText(/No projects yet/)).toBeInTheDocument()
+  expect(screen.getByText(/No products yet/)).toBeInTheDocument()
 })

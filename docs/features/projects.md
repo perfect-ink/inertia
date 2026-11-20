@@ -1,5 +1,7 @@
 # Projects
 
+Users see projects as **Products** (Alex, 2026-11-20): every label, message and page title says Product; code, API and database keep `project`.
+
 ## What it does
 Inside a Space are projects. A project is a folder (`folders.kind: project`) that holds the documents, files, collections, tasks, events and planning records for one piece of work, including those in its subfolders.
 - **Space home** (`/space`): the Projects page. `/projects` redirects there. While a new user's getting-started steps are active, `/space` shows those instead.
@@ -71,3 +73,4 @@ Scoped to the current Space; writes need the member role, like the rest of the S
 - Merged to main 2026-11-05 after running, merged with main: `rails db:migrate` (schema diff clean), `rails test`, `npm run lint`, `tsc -b`, Jest, and the collab-server tests, all passing. Not checked in a browser.
 - 2026-11-18: the icon rail can expand to show page names (toggle button), open by default. Jest and ESLint, Stylelint and tsc pass; not run: the browser, so the expanded layout and the phone width are unchecked.
 - 2026-11-20: two sidebars replaced the panel and the icon rail (see [two_sidebar_navigation.md](two_sidebar_navigation.md)); All files and archived projects moved to the Projects page.
+- 2026-11-20: renamed to Products in everything users see (web app, Rails messages, Mac sign-in and task-file screens); code keeps `project`.

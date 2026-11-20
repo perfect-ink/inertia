@@ -34,13 +34,13 @@ beforeEach(() => {
   mockCreate.error = null
 })
 
-test('lists links to other projects apart from the folder\'s own, with the project and a warning when the dates break the link', () => {
+test('lists links to other products apart from the folder\'s own, with the product and a warning when the dates break the link', () => {
   const waitsOnVendor = link(7, 50, 2, {
     predecessor: { id: 50, title: 'Vendor contract', status: 'todo', start_date: null, due_date: '2026-11-12', folder_id: 3 },
     successor: { id: 2, title: 'Build', status: 'todo', start_date: '2026-11-06', due_date: '2026-11-20', folder_id: 1 },
   })
   renderEditor([waitsOnVendor], [link(5, 1, 2)])
-  expect(screen.getByRole('heading', { name: 'Other projects' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Other products' })).toBeInTheDocument()
   const items = screen.getAllByText(/waits on/, { selector: 'span.gantt_pane-item-text' })
   expect(items[0]).toHaveTextContent('Build waits on Design')
   const item = items[1]
@@ -63,15 +63,15 @@ test('a link that holds shows no warning, and a task that waits on this one read
   expect(item).not.toHaveTextContent('Dates break')
 })
 
-test('has no "Other projects" heading when every link is inside the folder', () => {
+test('has no "Other products" heading when every link is inside the folder', () => {
   renderEditor([], [link(5, 1, 2)])
-  expect(screen.queryByRole('heading', { name: 'Other projects' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('heading', { name: 'Other products' })).not.toBeInTheDocument()
 })
 
-test('searches the Space and links a task from another project, named with its project', () => {
+test('searches the Space and links a task from another product, named with its product', () => {
   mockSearch.mockImplementation((query: string) => ({ data: query === 'vend' ? [vendor, tasks[0]] : [], isFetching: false }))
   renderEditor()
-  fireEvent.change(screen.getByLabelText('Find a task in another project'), { target: { value: 'vend' } })
+  fireEvent.change(screen.getByLabelText('Find a task in another product'), { target: { value: 'vend' } })
   expect(mockSearch).toHaveBeenLastCalledWith('vend')
   // The task already on the chart is not offered twice.
   expect(screen.getAllByRole('option', { name: 'Design' })).toHaveLength(2)
@@ -80,7 +80,7 @@ test('searches the Space and links a task from another project, named with its p
   fireEvent.change(screen.getByLabelText('Task that waits'), { target: { value: '2' } })
   fireEvent.change(screen.getByLabelText('Task it waits on'), { target: { value: '50' } })
   // The pick stays chosen when the search is cleared.
-  fireEvent.change(screen.getByLabelText('Find a task in another project'), { target: { value: '' } })
+  fireEvent.change(screen.getByLabelText('Find a task in another product'), { target: { value: '' } })
   expect(screen.getByLabelText('Task it waits on')).toHaveValue('50')
   fireEvent.click(screen.getByRole('button', { name: 'Add' }))
   expect(mockCreate.mutate).toHaveBeenCalledWith({ predecessor_id: 50, successor_id: 2, kind: 'finish_to_start' }, expect.anything())
@@ -90,7 +90,7 @@ test('a link needs one end on this chart', () => {
   const other = task(51, 'Invoice run', { folder_id: 3 })
   mockSearch.mockImplementation((query: string) => ({ data: query ? [vendor, other] : [], isFetching: false }))
   renderEditor()
-  fireEvent.change(screen.getByLabelText('Find a task in another project'), { target: { value: 'o' } })
+  fireEvent.change(screen.getByLabelText('Find a task in another product'), { target: { value: 'o' } })
   fireEvent.change(screen.getByLabelText('Task that waits'), { target: { value: '51' } })
   fireEvent.change(screen.getByLabelText('Task it waits on'), { target: { value: '50' } })
   expect(screen.getByText('One of the two tasks has to be on this chart.')).toBeInTheDocument()
@@ -102,7 +102,7 @@ test('says when a search finds nothing, and shows the server\'s message when a l
   mockCreate.isError = true
   mockCreate.error = new Error('x')
   renderEditor()
-  fireEvent.change(screen.getByLabelText('Find a task in another project'), { target: { value: 'zzz' } })
+  fireEvent.change(screen.getByLabelText('Find a task in another product'), { target: { value: 'zzz' } })
   expect(screen.getByText('No tasks match.')).toBeInTheDocument()
   expect(screen.getByRole('alert')).toBeInTheDocument()
 })

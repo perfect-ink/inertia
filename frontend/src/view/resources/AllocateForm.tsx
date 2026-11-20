@@ -37,9 +37,9 @@ export default function AllocateForm({ userId, person, projects, today }: Alloca
   return (
     <form onSubmit={submit} className="resources-form" noValidate>
       <label className="resources-field resources-field--project">
-        <span>Project</span>
-        <Select aria-label={`Project for ${person}`} value={folderId} onChange={(e) => setFolderId(e.target.value)}>
-          <option value="">Choose a project</option>
+        <span>Product</span>
+        <Select aria-label={`Product for ${person}`} value={folderId} onChange={(e) => setFolderId(e.target.value)}>
+          <option value="">Choose a product</option>
           {projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}
         </Select>
       </label>

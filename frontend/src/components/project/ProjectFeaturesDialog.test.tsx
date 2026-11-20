@@ -13,7 +13,7 @@ const project = (features?: string[] | null) => ({ id: 7, name: 'Messages', kind
 
 beforeEach(() => mockMutate.mockReset())
 
-test('a project that never chose has every page checked, grouped as in the sidebar', () => {
+test('a product that never chose has every page checked, grouped as in the sidebar', () => {
   render(<ProjectFeaturesDialog project={project()} onClose={jest.fn()} />)
   expect(screen.getByRole('dialog', { name: 'Features for Messages' })).toBeInTheDocument()
   const boxes = screen.getAllByRole('checkbox')
@@ -22,7 +22,7 @@ test('a project that never chose has every page checked, grouped as in the sideb
   expect(within(screen.getByRole('group', { name: 'Planning' })).getByRole('checkbox', { name: 'Sprints' })).toBeChecked()
 })
 
-test('a project with a list has only those pages checked', () => {
+test('a product with a list has only those pages checked', () => {
   render(<ProjectFeaturesDialog project={project(['tasks', 'okrs'])} onClose={jest.fn()} />)
   expect(screen.getAllByRole('checkbox').filter((box) => (box as HTMLInputElement).checked).map((box) => box.parentElement?.textContent)).toEqual(['Tasks', 'OKRs'])
 })
@@ -47,7 +47,7 @@ test('a failed save stays open and shows the error', () => {
   expect(onClose).not.toHaveBeenCalled()
 })
 
-test('cancel closes without saving, and nothing shows with no project', () => {
+test('cancel closes without saving, and nothing shows with no product', () => {
   const onClose = jest.fn()
   const { rerender } = render(<ProjectFeaturesDialog project={project()} onClose={onClose} />)
   fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))

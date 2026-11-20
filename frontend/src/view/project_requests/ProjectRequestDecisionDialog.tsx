@@ -22,10 +22,10 @@ export default function ProjectRequestDecisionDialog({ request, decision, busy, 
   const [note, setNote] = useState('')
   useEffect(() => { if (open) setNote('') }, [open])
 
-  const title = approving ? 'Approve project' : 'Decline project'
+  const title = approving ? 'Approve product' : 'Decline product'
   const description = request
     ? approving
-      ? `Approving "${request.name}" creates it as a project in this Space.`
+      ? `Approving "${request.name}" creates it as a product in this Space.`
       : `Tell ${request.requested_by_name ?? 'the requester'} why "${request.name}" is declined.`
     : undefined
   const canSubmit = approving || note.trim().length > 0

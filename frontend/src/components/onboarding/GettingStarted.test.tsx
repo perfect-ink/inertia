@@ -32,7 +32,7 @@ afterEach(() => jest.clearAllMocks())
 test('shows every step with what Spaces are for', () => {
   render(<GettingStarted />)
   expect(screen.getByText('0 of 6 done')).toBeTruthy()
-  expect(screen.getByText(/A Space keeps one project or team together/)).toBeTruthy()
+  expect(screen.getByText(/A Space keeps one product or team together/)).toBeTruthy()
   for (const label of ['New Space', 'New document', 'New Sheet', 'Add a task', 'Add people', 'Open roadmap']) {
     expect(screen.getByRole('button', { name: label })).toBeTruthy()
   }

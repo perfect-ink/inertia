@@ -180,8 +180,8 @@ function DialogExamples() {
         </div>
       </Modal>
       <ConfirmDialog open={open === 'confirm'} title="Publish this roadmap?" description="Everyone with the link can see it." confirmLabel="Publish" onConfirm={noop} onClose={close} />
-      <ConfirmDialog open={open === 'destructive'} title="Delete this project?" description="This can't be undone." confirmLabel="Delete" destructive onConfirm={noop} onClose={close} />
-      <PromptDialog open={open === 'prompt'} title="Rename project" label="Project name" initialValue="Marketing site" submitLabel="Rename" onSubmit={noop} onClose={close} />
+      <ConfirmDialog open={open === 'destructive'} title="Delete this product?" description="This can't be undone." confirmLabel="Delete" destructive onConfirm={noop} onClose={close} />
+      <PromptDialog open={open === 'prompt'} title="Rename product" label="Product name" initialValue="Marketing site" submitLabel="Rename" onSubmit={noop} onClose={close} />
     </>
   )
 }

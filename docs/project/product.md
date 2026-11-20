@@ -20,8 +20,8 @@ Tasks can be rolled up from whats inside documents. Tasks are created in documen
 ### Spaces (code: workspaces)
 Users see workspaces as **Spaces**. Use "Space" in every label, message, page title and doc meant for users. Code, API paths, the `X-Workspace-Id` header and the database keep the name `workspace`. Rails model names are translated in `backend/config/locales/en.yml`. See `docs/spaces.md`.
 
-### Projects
-Inside a Space are Projects, and Projects are the Space's home page (`/space`). Each project has its own documents, files, collections, events and tasks. In code a project is a folder with `kind: project` (see `docs/features/projects.md`).
+### Products (code: projects)
+Users see projects as **Products** (Alex, 2026-11-20). Use "Product" in every label, message, page title and doc meant for users. Code, API paths, the `X-Project-Id` header and the database keep `project` (a folder with `kind: project`), like Spaces keep `workspace`; Rails attribute names are translated in `backend/config/locales/en.yml`. Inside a Space are Products, and they are the Space's home page (`/space`). Each has its own documents, files, collections, events and tasks, and every document belongs to one (see `docs/features/projects.md` and `docs/features/documents_in_products.md`).
 
 ### Design principles
 

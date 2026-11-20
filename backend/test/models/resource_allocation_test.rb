@@ -45,7 +45,7 @@ class ResourceAllocationTest < ActiveSupport::TestCase
     plain = @team.folders.create!(name: "Notes")
     record = allocation(folder: plain)
     assert_not record.valid?
-    assert_includes record.errors[:folder], "must be a project"
+    assert_includes record.errors[:folder], "must be a product"
 
     foreign = @owner.workspace.folders.create!(name: "Elsewhere", kind: :project)
     record = allocation(folder: foreign)

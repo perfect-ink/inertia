@@ -35,7 +35,7 @@ jest.mock('@/api/folders', () => ({
 }))
 jest.mock('@/hooks/useSelectProject', () => ({ useSelectProject: () => jest.fn() }))
 
-test('lists each project with the docs inside it, including subfolders', () => {
+test('lists each product with the docs inside it, including subfolders', () => {
   render(<ProjectsScreen />)
   expect(screen.getByRole('link', { name: 'Messages' })).toHaveAttribute('href', '/folders/2')
   expect(screen.getByRole('link', { name: 'Background images' })).toHaveAttribute('href', '/documents/2')
@@ -44,22 +44,22 @@ test('lists each project with the docs inside it, including subfolders', () => {
   expect(screen.getByText(/2 files/)).toBeInTheDocument()
 })
 
-test('creates a project from the name typed in', () => {
+test('creates a product from the name typed in', () => {
   render(<ProjectsScreen />)
-  fireEvent.click(screen.getByRole('button', { name: 'New project' }))
-  const input = screen.getByRole('textbox', { name: 'Project name' })
+  fireEvent.click(screen.getByRole('button', { name: 'New product' }))
+  const input = screen.getByRole('textbox', { name: 'Product name' })
   fireEvent.change(input, { target: { value: 'Billing' } })
   fireEvent.keyDown(input, { key: 'Enter' })
   expect(mockCreateFolder.mutate).toHaveBeenCalledWith({ name: 'Billing', kind: 'project' }, expect.anything())
 })
 
-test('the Portfolio button opens the portfolio once there are projects', () => {
+test('the Portfolio button opens the portfolio once there are products', () => {
   render(<ProjectsScreen />)
   fireEvent.click(screen.getByRole('button', { name: /Portfolio/ }))
   expect(mockNavigate).toHaveBeenCalledWith('/portfolio')
 })
 
-test('archived projects show from the header and can be unarchived', () => {
+test('archived products show from the header and can be unarchived', () => {
   render(<ProjectsScreen />)
   expect(screen.queryByText('Old site')).toBeNull()
   fireEvent.click(screen.getByRole('button', { name: 'Archived' }))

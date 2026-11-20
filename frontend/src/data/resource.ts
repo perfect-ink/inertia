@@ -184,7 +184,7 @@ export const CAPACITY_ERROR = `Enter hours from 0 to ${MAX_WEEKLY_HOURS}.`
 // The problem with a new allocation's form values (all as typed), or null when
 // it can be sent. The API checks these again.
 export function allocationError({ folderId, hours, start, end }: { folderId: string; hours: string; start: string; end: string }): string | null {
-  if (!folderId) return 'Choose a project.'
+  if (!folderId) return 'Choose a product.'
   if (parseHours(hours) === null) return HOURS_ERROR
   if (start && end && end < start) return "The end date can't be before the start date."
   return null

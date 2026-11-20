@@ -45,7 +45,7 @@ describe('recentProjects', () => {
     expect(recentProjects(projects, [3, 1]).map((p) => p.id)).toEqual([3, 1, 2, 4])
   })
 
-  test('skips ids of projects that are gone and stops at the limit', () => {
+  test('skips ids of products that are gone and stops at the limit', () => {
     expect(recentProjects(projects, [9, 4], 2).map((p) => p.id)).toEqual([4, 1])
   })
 })

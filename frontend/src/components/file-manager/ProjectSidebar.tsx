@@ -93,11 +93,11 @@ export function ProjectSidebar({ project }: { project: Folder }) {
   }
 
   return (
-    <aside aria-label={`Project: ${project.name}`} className="ui-project_sidebar">
+    <aside aria-label={`Product: ${project.name}`} className="ui-project_sidebar">
       {/* The project's name opens its menu: switch project, its overview, start one, its icon and pages. */}
       <div className="project_sidebar-header sidebar-drag">
         <Menu
-          label={`Project: ${project.name}. Switch project`}
+          label={`Product: ${project.name}. Switch product`}
           triggerClassName="workspace_switcher-trigger"
           items={[
             ...projects.map((p) => ({
@@ -108,10 +108,10 @@ export function ProjectSidebar({ project }: { project: Folder }) {
               onSelect: () => open(p),
             })),
             { key: 'overview', label: 'Overview', separatorBefore: true, onSelect: () => navigate(paths.folder(project.id)) },
-            { key: 'new', label: 'New project...', onSelect: () => setNaming(true) },
+            { key: 'new', label: 'New product...', onSelect: () => setNaming(true) },
             { key: 'icon', label: 'Change icon...', onSelect: () => setIconOpen(true) },
             ...(canWrite ? [{ key: 'features', label: 'Choose pages...', onSelect: () => setFeaturesOpen(true) }] : []),
-            { key: 'all', label: 'All projects', onSelect: () => navigate('/space') },
+            { key: 'all', label: 'All products', onSelect: () => navigate('/space') },
           ]}
         >
           <ProjectIcon project={project} />
@@ -174,7 +174,7 @@ export function ProjectSidebar({ project }: { project: Folder }) {
         )}
       </div>
 
-      <PromptDialog open={naming} title="New project" label="Project name" placeholder="e.g. Website relaunch" submitLabel="Create" onSubmit={addProject} onClose={() => setNaming(false)} />
+      <PromptDialog open={naming} title="New product" label="Product name" placeholder="e.g. Website relaunch" submitLabel="Create" onSubmit={addProject} onClose={() => setNaming(false)} />
       <ProjectIconDialog project={iconOpen ? project : null} onClose={() => setIconOpen(false)} />
       <ProjectFeaturesDialog project={featuresOpen ? project : null} onClose={() => setFeaturesOpen(false)} />
     </aside>

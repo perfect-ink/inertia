@@ -15,7 +15,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'space',
     title: 'Create a Space',
-    description: 'A Space keeps one project or team together: its documents, sheets, tasks and people. Your personal Space is just for you; make a new one for work you share.',
+    description: 'A Space keeps one product or team together: its documents, sheets, tasks and people. Your personal Space is just for you; make a new one for work you share.',
     actionLabel: 'New Space',
   },
   {

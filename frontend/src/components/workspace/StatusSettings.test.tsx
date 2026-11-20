@@ -15,7 +15,7 @@ jest.mock('@/api/taskStatusSettings', () => ({
 }))
 // Root(1) > Project(2)
 const mockWorkspace = {
-  folders: [{ id: 1, name: 'Root', root: true, parent_id: null, documents: [], children: [{ id: 2, name: 'Project', root: false, parent_id: 1, documents: [], children: [] }] }],
+  folders: [{ id: 1, name: 'Root', root: true, parent_id: null, documents: [], children: [{ id: 2, name: 'Product', root: false, parent_id: 1, documents: [], children: [] }] }],
 }
 jest.mock('@/api/workspace', () => ({ useWorkspace: () => ({ data: mockWorkspace }) }))
 
@@ -60,7 +60,7 @@ test('saves only the statuses that were renamed or recolored', () => {
 
 test('a folder starts from what it inherits and saves only its own differences', () => {
   mockSettings = [row(1, null, 'todo', 'Queued'), row(2, 2, 'done', 'Shipped')]
-  render(<StatusSettings open folderId={2} boardName="Project" onClose={jest.fn()} />)
+  render(<StatusSettings open folderId={2} boardName="Product" onClose={jest.fn()} />)
   expect(nameField('To Do')).toHaveValue('Queued')
   expect(nameField('Done')).toHaveValue('Shipped')
   fireEvent.click(screen.getByRole('button', { name: 'Save' }))
@@ -69,12 +69,12 @@ test('a folder starts from what it inherits and saves only its own differences',
 
 test('Reset clears the board\'s own settings only when it has some', () => {
   mockSettings = [row(1, null, 'todo', 'Queued')]
-  const { unmount } = render(<StatusSettings open folderId={2} boardName="Project" onClose={jest.fn()} />)
+  const { unmount } = render(<StatusSettings open folderId={2} boardName="Product" onClose={jest.fn()} />)
   expect(screen.queryByRole('button', { name: 'Reset' })).not.toBeInTheDocument()
   unmount()
 
   mockSettings = [row(2, 2, 'done', 'Shipped')]
-  render(<StatusSettings open folderId={2} boardName="Project" onClose={jest.fn()} />)
+  render(<StatusSettings open folderId={2} boardName="Product" onClose={jest.fn()} />)
   fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
   expect(mockReset.mutate).toHaveBeenCalledWith(2, expect.anything())
 })

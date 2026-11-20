@@ -46,7 +46,7 @@ export default function ResourcesScreen() {
   const canManage = canManageWorkspace(workspace?.role)
   const over = overAllocated(people)
   const isLoading = loadingWorkspace || loadingMembers || loadingAllocations
-  const projectName = (folderId: number) => names.get(folderId) ?? 'Archived project'
+  const projectName = (folderId: number) => names.get(folderId) ?? 'Archived product'
   const byName = [...projects].sort((a, b) => projectName(a.folderId).localeCompare(projectName(b.folderId)))
 
   return (
@@ -55,7 +55,7 @@ export default function ResourcesScreen() {
         <div className="resources-header">
           <h1 className="resources-title">Resources</h1>
           <Tabs label="Group by">
-            {([['people', 'People'], ['projects', 'Projects']] as const).map(([value, label]) => (
+            {([['people', 'People'], ['projects', 'Products']] as const).map(([value, label]) => (
               <Tab key={value} active={tab === value} onClick={() => setTab(value)} className="resources-tab">
                 {label}
               </Tab>
@@ -86,7 +86,7 @@ export default function ResourcesScreen() {
 
             {canManage && !isLoading && projectChoices.length === 0 && (
               <p className="resources-hint">
-                Allocating people needs a project. Create one on the <Link to="/space" className="resources-link">Projects page</Link> or make a folder a project from the sidebar.
+                Allocating people needs a product. Create one on the <Link to="/space" className="resources-link">Products page</Link> or make a folder a product from the sidebar.
               </p>
             )}
 
