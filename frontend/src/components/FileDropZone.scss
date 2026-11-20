@@ -18,4 +18,13 @@
     pointer-events: none;
     @include text('sm');
   }
+
+  // The project picker shown when files are dropped with no project open.
+  .file_drop_zone-field {
+    display: flex;
+    flex-direction: column;
+    gap: space(1);
+    color: color(muted-foreground);
+    @include text('xs');
+  }
 }
