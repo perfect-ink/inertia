@@ -1,0 +1,248 @@
+@use 'tokens' as *;
+@use 'file_manager' as fm;
+
+// Icons only: names, chevrons and section labels hide, rows center their icon.
+@mixin compact {
+  width: space(14);
+
+  .space_sidebar-name,
+  .space_sidebar-chevron,
+  .space_sidebar-label,
+  .space_sidebar-add,
+  .space_sidebar-more,
+  .workspace_switcher-text,
+  .workspace_switcher-icon {
+    display: none;
+  }
+
+  .space_sidebar-header {
+    flex-direction: column;
+  }
+
+  .space_sidebar-heading {
+    display: none;
+  }
+
+  .space_sidebar-row,
+  .space_sidebar-user,
+  .workspace_switcher-trigger {
+    justify-content: center;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .space_sidebar-list--pinned {
+    display: none;
+  }
+}
+
+@layer app.components {
+  // The primary sidebar (SpaceSidebar.tsx).
+  .ui-space_sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: space(56);
+    max-width: 85vw;
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    border-right-width: 1px;
+    background: color(muted, 0.6);
+    user-select: none;
+    @include transition(width);
+
+    &--collapsed {
+      @include compact;
+    }
+
+    // A phone's drawer holds this and the project sidebar side by side.
+    @media (width < 768px) {
+      &--beside_project {
+        @include compact;
+      }
+    }
+  }
+
+  .space_sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: space(1);
+    padding: space(1.5);
+
+    &--electron {
+      padding-top: space(8);
+    }
+
+    .ui-menu {
+      flex: 1 1 0%;
+      min-width: 0;
+    }
+  }
+
+  .space_sidebar-logo {
+    flex-shrink: 0;
+    @include icon-size(space(6));
+  }
+
+  .space_sidebar-toggle {
+    flex-shrink: 0;
+    padding: space(1.5);
+    -webkit-app-region: no-drag;
+
+    // A phone's drawer already closes by tapping outside it.
+    @media (width < 768px) {
+      display: none;
+    }
+  }
+
+  .space_sidebar-icon {
+    flex-shrink: 0;
+    @include icon-size(space(4));
+  }
+
+  .space_sidebar-body {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    min-height: 0;
+    padding: space(2) space(1.5);
+    overflow-y: auto;
+  }
+
+  .space_sidebar-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: space(1);
+    padding-left: space(2);
+  }
+
+  .space_sidebar-label {
+    @include text('xs');
+
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: color(muted-foreground);
+    @include transition(color);
+
+    &:hover,
+    &[aria-current='page'] {
+      color: color(foreground);
+    }
+
+    &--static {
+      margin: space(4) 0 space(1) space(2);
+
+      &:hover {
+        color: color(muted-foreground);
+      }
+    }
+  }
+
+  .space_sidebar-add {
+    padding: space(1);
+  }
+
+  .space_sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: space(0.5);
+  }
+
+  .space_sidebar-row {
+    @include fm.row;
+
+    position: relative;
+    gap: space(2);
+    min-height: space(9);
+    padding: space(1) space(2);
+    color: color(foreground);
+    @include transition(background-color);
+
+    &--active {
+      background: color(accent);
+      font-weight: 600;
+    }
+  }
+
+  .space_sidebar-name {
+    flex: 1 1 0%;
+    min-width: 0;
+    text-align: left;
+    @include truncate;
+  }
+
+  .space_sidebar-more {
+    @include muted-link;
+    @include text('xs');
+
+    margin: space(1) 0 0 space(2);
+  }
+
+  .space_sidebar-glyph {
+    position: relative;
+    margin-right: space(1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include icon-size(space(5));
+  }
+
+  // Unread count on the Inbox bell.
+  .space_sidebar-badge {
+    position: absolute;
+    top: -#{space(1.5)};
+    right: -#{space(2)};
+    min-width: space(4);
+    padding: 0 space(1);
+    border-radius: radius('full');
+    background: color(primary);
+    color: color(primary-foreground);
+    font-size: 0.625rem;
+    line-height: space(4);
+    text-align: center;
+  }
+
+  .space_sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: space(0.5);
+    padding: space(1.5);
+    border-top-width: 1px;
+
+    .ui-menu {
+      display: flex;
+    }
+  }
+
+  .space_sidebar-user {
+    display: flex;
+    flex: 1 1 0%;
+    align-items: center;
+    gap: space(2);
+    padding: space(1) space(2);
+    border-radius: radius('md');
+    @include text('sm');
+    @include transition(background-color);
+
+    &:hover,
+    &[aria-expanded='true'] {
+      background: color(accent);
+    }
+  }
+
+  .space_sidebar-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    @include icon-size(space(7));
+    border-radius: radius('full');
+    background: color(primary);
+    color: color(primary-foreground);
+    font-weight: 600;
+    @include text('xs');
+  }
+}

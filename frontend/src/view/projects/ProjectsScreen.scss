@@ -137,3 +137,23 @@
     }
   }
 }
+
+@layer view {
+  // Archived projects, shown from the header's Archived button.
+  .view-projects .projects-archived {
+    display: flex;
+    flex-direction: column;
+    gap: space(2);
+  }
+
+  .view-projects .projects-archived_row {
+    display: flex;
+    align-items: center;
+    gap: space(2);
+  }
+
+  .view-projects .projects-archived_name {
+    flex: 1 1 0%;
+    @include truncate;
+  }
+}

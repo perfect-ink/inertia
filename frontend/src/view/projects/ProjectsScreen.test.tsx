@@ -27,7 +27,13 @@ const mockWorkspace = {
 jest.mock('@/api/workspace', () => ({
   useWorkspace: () => ({ data: mockWorkspace, isLoading: false }),
 }))
-jest.mock('@/api/folders', () => ({ useCreateFolder: () => mockCreateFolder }))
+const mockUnarchive = jest.fn()
+jest.mock('@/api/folders', () => ({
+  useCreateFolder: () => mockCreateFolder,
+  useUpdateFolder: () => ({ mutate: mockUnarchive }),
+  useArchivedFolders: () => ({ data: [{ id: 8, name: 'Old site', kind: 'project', archived: true }] }),
+}))
+jest.mock('@/hooks/useSelectProject', () => ({ useSelectProject: () => jest.fn() }))
 
 test('lists each project with the docs inside it, including subfolders', () => {
   render(<ProjectsScreen />)
@@ -51,4 +57,19 @@ test('the Portfolio button opens the portfolio once there are projects', () => {
   render(<ProjectsScreen />)
   fireEvent.click(screen.getByRole('button', { name: /Portfolio/ }))
   expect(mockNavigate).toHaveBeenCalledWith('/portfolio')
+})
+
+test('archived projects show from the header and can be unarchived', () => {
+  render(<ProjectsScreen />)
+  expect(screen.queryByText('Old site')).toBeNull()
+  fireEvent.click(screen.getByRole('button', { name: 'Archived' }))
+  expect(screen.getByText('Old site')).toBeInTheDocument()
+  fireEvent.click(screen.getByRole('button', { name: 'Unarchive' }))
+  expect(mockUnarchive).toHaveBeenCalledWith({ id: 8, archived: false })
+})
+
+test('All files opens every file in the Space', () => {
+  render(<ProjectsScreen />)
+  fireEvent.click(screen.getByRole('button', { name: 'All files' }))
+  expect(mockNavigate).toHaveBeenCalledWith('/documents')
 })

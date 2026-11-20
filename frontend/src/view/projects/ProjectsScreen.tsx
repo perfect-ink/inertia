@@ -11,7 +11,8 @@ import ProjectIcon from '@/components/project/ProjectIcon'
 import ProjectIconDialog from '@/components/project/ProjectIconDialog'
 import type { Folder } from '@/types'
 import { useWorkspace } from '@/api/workspace'
-import { useCreateFolder } from '@/api/folders'
+import { useArchivedFolders, useCreateFolder, useUpdateFolder } from '@/api/folders'
+import { useSelectProject } from '@/hooks/useSelectProject'
 import { errorMessage } from '@/util/errorMessage'
 import { documentsIn, projectLastModified, projectsOf } from '@/data/folder'
 import { usePageTitle } from '@/hooks/usePageTitle'
@@ -33,6 +34,11 @@ export default function ProjectsScreen() {
   const nameRef = useRef('')
   const [iconFor, setIconFor] = useState<Folder | null>(null)
   const projects = projectsOf(workspace?.folders ?? [])
+  const selectProject = useSelectProject()
+  const updateFolder = useUpdateFolder()
+  const [showArchived, setShowArchived] = useState(false)
+  const { data: archived = [] } = useArchivedFolders()
+  const archivedProjects = archived.filter((f) => f.kind === 'project')
 
   function commitAdd() {
     const name = nameRef.current.trim()
@@ -48,6 +54,16 @@ export default function ProjectsScreen() {
       <div className="view-projects">
         <div className="projects-header">
           <h1 className="projects-title">Projects</h1>
+          {archivedProjects.length > 0 && (
+            <Button variant="secondary" aria-pressed={showArchived} onClick={() => setShowArchived((on) => !on)} className="projects-new">
+              Archived
+            </Button>
+          )}
+          {projects.length > 0 && (
+            <Button variant="secondary" onClick={() => { selectProject(null); navigate('/documents') }} className="projects-new">
+              All files
+            </Button>
+          )}
           {projects.length > 0 && (
             <Button variant="secondary" onClick={() => navigate('/portfolio')} className="projects-new">
               <Briefcase className="projects-icon" aria-hidden="true" />
@@ -63,6 +79,17 @@ export default function ProjectsScreen() {
         <div className="projects-body">
           <div className="projects-list">
             <FormError message={error} />
+            {showArchived && archivedProjects.length > 0 && (
+              <ul aria-label="Archived" className="projects-archived">
+                {archivedProjects.map((project) => (
+                  <li key={project.id} className="projects-archived_row">
+                    <ProjectIcon project={project} />
+                    <span className="projects-archived_name">{project.name}</span>
+                    <Button variant="secondary" onClick={() => updateFolder.mutate({ id: project.id, archived: false })}>Unarchive</Button>
+                  </li>
+                ))}
+              </ul>
+            )}
             {adding && (
               <Input
                 autoFocus

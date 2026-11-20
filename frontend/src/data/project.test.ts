@@ -1,4 +1,4 @@
-import { isActivePath, PORTFOLIO_COLUMNS, projectIconOf, sortPortfolio } from './project'
+import { isActivePath, PORTFOLIO_COLUMNS, projectIconOf, recentProjects, sortPortfolio } from './project'
 
 test('an image wins over an emoji; neither means the default icon', () => {
   expect(projectIconOf({ icon: '🚀', image_url: 'https://x.test/a.png' })).toEqual({ image: 'https://x.test/a.png' })
@@ -36,4 +36,16 @@ test('sortPortfolio orders by each column and leaves blanks last', () => {
 
 test('the portfolio columns are the sort keys, in table order', () => {
   expect(PORTFOLIO_COLUMNS.map((c) => c.key)).toEqual(['name', 'owner', 'status', 'target_date', 'percent'])
+})
+
+describe('recentProjects', () => {
+  const projects = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
+
+  test('puts the recently opened first, then the rest in order', () => {
+    expect(recentProjects(projects, [3, 1]).map((p) => p.id)).toEqual([3, 1, 2, 4])
+  })
+
+  test('skips ids of projects that are gone and stops at the limit', () => {
+    expect(recentProjects(projects, [9, 4], 2).map((p) => p.id)).toEqual([4, 1])
+  })
 })

@@ -2,24 +2,16 @@ import { flattenFolders } from '@/data/folder'
 import { quickAddTypesOf } from '@/data/projectFeature'
 import { useOpenProject } from '@/hooks/useOpenProject'
 import { itemAtPath } from '@/data/path'
-import { usePaths } from '@/hooks/usePaths'
-import { WorkspaceSwitcher } from '@/components/workspace/WorkspaceSwitcher'
 import { TransferHost } from '@/components/workspace/TransferDialog'
-import { Button, IconButton, Input, Select, DatePicker, Menu, Tab, Tabs } from '@/components/ui'
+import { Button, Input, Select, DatePicker, Tab, Tabs, type MenuItem } from '@/components/ui'
 import './Sidebar.scss'
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useSidebarStore } from '@/store/sidebar'
 import { useActiveOnboarding, useOnboardingStore } from '@/store/onboarding'
 import AppearanceDialog from '@/components/AppearanceDialog'
-import {
-  CheckSquare, FileText, Database,
-  Table as TableIcon, Pin, Folder, Loader2, CalendarDays,
-  Plus, Keyboard, Download, Settings, Sparkles, LogOut, ChevronsUpDown,
-} from 'lucide-react'
+import { CheckSquare, Loader2, CalendarDays, Keyboard, Download } from 'lucide-react'
 import { useWorkspace } from '@/api/workspace'
-import { usePinFolder } from '@/api/folders'
-import { usePinDocument } from '@/api/documents'
 import { useNewDocument } from '@/hooks/useNewDocument'
 import { useCreateTask } from '@/api/tasks'
 import { useCreateEvent } from '@/api/events'
@@ -30,13 +22,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/auth'
 import { useTabsStore } from '@/store/tabs'
 import { closeTab } from '@/lib/closeTab'
-import { ProjectNav } from './ProjectNav'
-import { SidebarRail } from './SidebarRail'
+import { ProjectSidebar } from './ProjectSidebar'
+import { SpaceSidebar } from './SpaceSidebar'
 import { useProjectStore } from '@/store/projects'
 import { authApi } from '@/api/auth'
-import logoMark from '@/assets/logo-mark.svg'
 import { todayISO } from '@/util/date'
-import { isElectron } from '@/util/platform'
 import { isShortcut, shortcutAvailable, shortcutKey, shortcutLabel, editorKeepsKey, inDocumentEditor } from '@/util/shortcuts'
 import { platformKeys } from '@/util/keyLabel'
 import { isMac } from '@/util/platform'
@@ -45,21 +35,14 @@ import { clashForAction, documentShortcutRows, EDITOR_COMMAND_EVENT } from '@/da
 import { KEYBOARD_SHORTCUTS } from '@/data/shortcut'
 import { styleShortcutRows } from '@/data/paragraphStyleShortcut'
 
-// The extra top padding/drag-region reserve room for macOS's traffic
-// lights, which only exist in the packaged Electron app's frameless
-// window — in a normal browser tab there's nothing to reserve space for,
-// so it just reads as unwanted empty padding.
-
 export default function Sidebar() {
   const navigate = useNavigate()
   const location = useLocation()
-  const paths = usePaths()
   // What quick add can make: the open project's turned-off Tasks or Events are left out.
-  const quickAddTypes = quickAddTypesOf(useOpenProject())
+  const openProject = useOpenProject()
+  const quickAddTypes = quickAddTypesOf(openProject)
   const { data: workspace } = useWorkspace()
   const newDocument = useNewDocument()
-  const pinDocument = usePinDocument()
-  const pinFolder = usePinFolder()
   const { user, logout } = useAuthStore()
   const drawerOpen = useSidebarStore((s) => s.open)
   const closeDrawer = useSidebarStore((s) => s.close)
@@ -101,10 +84,6 @@ export default function Sidebar() {
   quipImportOpenRef.current = quipImportOpen
   const drawerOpenRef = useRef(drawerOpen)
   drawerOpenRef.current = drawerOpen
-
-  const initials = user?.name
-    ? user.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
-    : '?'
 
   // Closes the mobile drawer after navigating anywhere — otherwise it stays
   // open over the page you just picked, which reads as broken on a phone.
@@ -242,11 +221,16 @@ export default function Sidebar() {
   function createNewDocument() { return createAtRoot('document') }
   function createNewSpreadsheet(type: 'spreadsheet' | 'table' = 'spreadsheet') { return createAtRoot(type) }
 
-  const allFolders = flattenFolders(workspace?.folders ?? [])
-  const allDocs = allFolders.flatMap((f) => f.documents ?? [])
-  const pinnedDocs = allDocs.filter((d) => d.pinned)
-  const pinnedFolders = allFolders.filter((f) => f.pinned)
-  const hasPinned = pinnedDocs.length > 0 || pinnedFolders.length > 0
+  const accountItems: MenuItem[] = [
+    ...(quickAddTypes.length > 0
+      ? [{ key: 'quick-add', label: 'Quick add', hint: platformKeys('⌘K', isMac), onSelect: openQuickAdd }]
+      : []),
+    { key: 'shortcuts', label: 'Keyboard shortcuts', hint: platformKeys('⌘/', isMac), onSelect: () => setShortcutsOpen(true) },
+    { key: 'settings', label: 'Settings', onSelect: () => setAppearanceOpen(true), separatorBefore: true },
+    { key: 'quip', label: 'Import from Quip', onSelect: () => setQuipImportOpen(true) },
+    ...(user && !onboardingVisible ? [{ key: 'onboarding', label: 'Show getting started', onSelect: () => { useOnboardingStore.getState().reopen(user.id); navigate('/space') } }] : []),
+    { key: 'sign-out', label: 'Sign out', onSelect: handleLogout, separatorBefore: true },
+  ]
 
   return (
     <>
@@ -254,114 +238,12 @@ export default function Sidebar() {
       {drawerOpen && (
         <div className="sidebar-backdrop" onClick={closeDrawer} />
       )}
-      <div
-        className={`view-sidebar${drawerOpen ? ' view-sidebar--open' : ''}`}
-      >
-      {/* The panel: the Space switcher, pinned items and the projects (the
-          open one lists its files and pages). */}
-      <aside
-        className="sidebar-panel"
-      >
-        <div
-          className={`sidebar-header sidebar-drag${isElectron ? ' sidebar-header--electron' : ''}`}
-        >
-          <WorkspaceSwitcher>
-            <img src={logoMark} alt="" className="sidebar-logo" />
-          </WorkspaceSwitcher>
-        </div>
-
-        <div className="sidebar-body">
-          {/* Pinned section */}
-          {hasPinned && (
-            <div>
-              <div className="sidebar-section_bar sidebar-section_bar--pinned">
-                <Pin className="sidebar-icon--xs sidebar-icon--muted" />
-                <span className="sidebar-section_label">Pinned</span>
-              </div>
-              {pinnedFolders.map((folder) => {
-                const firstDoc = folder.documents?.[0]
-                return (
-                  <Button
-                    key={folder.id}
-                    onClick={() => firstDoc && navigate(paths.document(firstDoc))}
-                    className="sidebar-pinned_item"
-                  >
-                    <Folder className="sidebar-icon--sm sidebar-icon--muted sidebar-icon--shrink" />
-                    <span className="sidebar-item_label">{folder.name}</span>
-                    <IconButton
-                      onClick={(e) => { e.stopPropagation(); pinFolder.mutate({ id: folder.id, pinned: false }) }}
-                      className="sidebar-unpin"
-                      title="Unpin"
-                      label="Unpin"
-                    >
-                      <Pin className="sidebar-icon--xs" />
-                    </IconButton>
-                  </Button>
-                )
-              })}
-              {pinnedDocs.map((doc) => {
-                const active = location.pathname === paths.document(doc)
-                return (
-                  <Button
-                    key={doc.id}
-                    onClick={() => navigate(paths.document(doc))}
-                    className={`sidebar-pinned_item${active ? ' sidebar-pinned_item--active' : ''}`}
-                  >
-                    {doc.doc_type === 'table'
-                      ? <Database className="sidebar-icon--sm sidebar-icon--muted sidebar-icon--shrink" />
-                      : doc.doc_type === 'spreadsheet'
-                      ? <TableIcon className="sidebar-icon--sm sidebar-icon--muted sidebar-icon--shrink" />
-                      : <FileText className="sidebar-icon--sm sidebar-icon--muted sidebar-icon--shrink" />
-                    }
-                    <span className="sidebar-item_label">{doc.title}</span>
-                    <IconButton
-                      onClick={(e) => { e.stopPropagation(); pinDocument.mutate({ id: doc.id, pinned: false }) }}
-                      className="sidebar-unpin"
-                      title="Unpin"
-                      label="Unpin"
-                    >
-                      <Pin className="sidebar-icon--xs" />
-                    </IconButton>
-                  </Button>
-                )
-              })}
-            </div>
-          )}
-
-          <ProjectNav />
-
-          {creationError && <p role="alert" className="sidebar-error">{creationError}</p>}
-        </div>
-
-        {/* The signed-in person, with the account menu */}
-        <div className="sidebar-footer">
-          <Menu
-            above
-            label={`Account: ${user?.name ?? 'not signed in'}`}
-            triggerClassName="sidebar-user"
-            items={[
-              ...(quickAddTypes.length > 0
-                ? [{ key: 'quick-add', label: 'Quick add', hint: platformKeys('⌘K', isMac), icon: <Plus className="sidebar-icon--sm" />, onSelect: openQuickAdd }]
-                : []),
-              { key: 'shortcuts', label: 'Keyboard shortcuts', hint: platformKeys('⌘/', isMac), icon: <Keyboard className="sidebar-icon--sm" />, onSelect: () => setShortcutsOpen(true) },
-              { key: 'settings', label: 'Settings', icon: <Settings className="sidebar-icon--sm" />, onSelect: () => setAppearanceOpen(true), separatorBefore: true },
-              { key: 'quip', label: 'Import from Quip', icon: <Download className="sidebar-icon--sm" />, onSelect: () => setQuipImportOpen(true) },
-              ...(user && !onboardingVisible ? [{ key: 'onboarding', label: 'Show getting started', icon: <Sparkles className="sidebar-icon--sm" />, onSelect: () => { useOnboardingStore.getState().reopen(user.id); navigate('/space') } }] : []),
-              { key: 'sign-out', label: 'Sign out', icon: <LogOut className="sidebar-icon--sm" />, onSelect: handleLogout, separatorBefore: true },
-            ]}
-          >
-            <span className="sidebar-avatar" aria-hidden="true">{initials}</span>
-            <span className="sidebar-identity">
-              <span className="sidebar-user_name">{user?.name ?? 'Not signed in'}</span>
-              <span className="sidebar-user_email">{user?.email}</span>
-            </span>
-            <ChevronsUpDown className="sidebar-icon--sm sidebar-icon--muted sidebar-icon--shrink" aria-hidden="true" />
-          </Menu>
-        </div>
-      </aside>
-
-      {/* The icon rail, to the right of the panel: a button for every page. */}
-      <SidebarRail onQuickAdd={openQuickAdd} onShortcuts={() => setShortcutsOpen(true)} />
+      {/* Two sidebars: the Space and its projects, then the open project's
+          tasks, documents and views. Side by side in the drawer on a phone. */}
+      <div className={`view-sidebar${drawerOpen ? ' view-sidebar--open' : ''}`}>
+        <SpaceSidebar accountItems={accountItems} />
+        {openProject && <ProjectSidebar project={openProject} />}
+        {creationError && <p role="alert" className="sidebar-error">{creationError}</p>}
       </div>
 
       {/* Import from Quip */}

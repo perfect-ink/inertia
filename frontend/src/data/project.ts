@@ -68,3 +68,13 @@ export function sortPortfolio<T extends { name: string; owner_name: string | nul
     }
   })
 }
+
+// The projects the primary sidebar lists: the ones opened most recently, then
+// the rest in their usual order, up to `limit`. Ids of projects that no longer
+// exist (or are in another Space) are skipped.
+export function recentProjects<T extends { id: number }>(projects: T[], recentIds: number[], limit = 5): T[] {
+  const byId = new Map(projects.map((p) => [p.id, p]))
+  const recent = recentIds.map((id) => byId.get(id)).filter((p): p is T => !!p)
+  const rest = projects.filter((p) => !recentIds.includes(p.id))
+  return [...recent, ...rest].slice(0, limit)
+}

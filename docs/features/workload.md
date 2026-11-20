@@ -1,7 +1,7 @@
 # Workload
 
 ## What it does
-`/workload` ("Workload" under Delivery on a project's icon rail, shown once other people can open the Space) shows estimated hours per person per week for the next eight weeks. Each open (not done) task's estimate is spread evenly over the weekdays between its start date (or its due date, if it has no start) and its due date, then summed per assignee per week. A "Hours per week" field (default 40) sets the capacity; a week over it is marked in the cell with "over by N h" and a warning icon (text, not colour alone). Tasks with nobody assigned form an "Unassigned" row at the bottom. Open tasks with no estimate or no due date are not counted; a line under the table says how many.
+`/workload` ("Workload" under Views in the project sidebar, shown once other people can open the Space) shows estimated hours per person per week for the next eight weeks. Each open (not done) task's estimate is spread evenly over the weekdays between its start date (or its due date, if it has no start) and its due date, then summed per assignee per week. A "Hours per week" field (default 40) sets the capacity; a week over it is marked in the cell with "over by N h" and a warning icon (text, not colour alone). Tasks with nobody assigned form an "Unassigned" row at the bottom. Open tasks with no estimate or no due date are not counted; a line under the table says how many.
 
 ## API and models
 None: it reads tasks (`estimate_hours` from `backlog/task-priority-effort-and-story-points`) and Space members. Logic: `workload`, `hoursByWeek`, `weekStart`, `weekRange` in `frontend/src/data/workload.ts`; screen `view/workload/WorkloadScreen.tsx`. Stacked on `backlog/task-priority-effort-and-story-points` (merge it first).

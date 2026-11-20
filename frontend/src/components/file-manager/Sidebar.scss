@@ -15,6 +15,9 @@ $shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     display: flex;
     flex-shrink: 0;
     height: 100dvh;
+
+    // Under the sidebars' tints, so the page never shows through the drawer.
+    background: color(background);
     transform: translateX(-100%);
     @include transition(transform);
 
@@ -23,7 +26,7 @@ $shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     }
 
     @include up(md) {
-      position: static;
+      position: relative;
       transform: translateX(0);
     }
 
@@ -76,182 +79,16 @@ $shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
       }
     }
 
-    /* ── Detail panel ─────────────────────────────────────────────────────────── */
-
-    @at-root .sidebar-panel {
-      display: flex;
-      flex-direction: column;
-      width: space(64);
-
-      // On a phone the drawer holds the panel and the rail, and leaves a strip
-      // of the page to tap to close it.
-      max-width: calc(85vw - #{space(14)});
-      height: 100dvh;
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-      border-right-width: 1px;
-
-      // A shade off the page, so the sidebar reads as its own surface.
-      background: color(muted, 0.6);
-    }
-
-    // Holds only the Space switcher, whose button fills the header.
-    @at-root .sidebar-header {
-      padding: space(1.5);
-
-      &--electron {
-        padding-top: space(8);
-      }
-    }
-
-    @at-root .sidebar-logo {
-      flex-shrink: 0;
-      @include icon-size(space(6));
-    }
-
-    @at-root .sidebar-workspace_name {
-      @include text('xs');
-      @include truncate;
-
-      color: color(muted-foreground);
-    }
-
-    @at-root .sidebar-body {
-      display: flex;
-      flex: 1 1 0%;
-      flex-direction: column;
-      gap: space(3);
-
-      // Without this the flex item grows to fit its content and never scrolls.
-      min-height: 0;
-      overflow-y: auto;
-      padding: 0 0 space(2);
-    }
-
-    @at-root .sidebar-footer {
-      display: flex;
-      align-items: center;
-      gap: space(1);
-      padding: space(1.5);
-      border-top-width: 1px;
-    }
-
-    @at-root .sidebar-footer .ui-menu {
-      flex: 1 1 0%;
-    }
-
-    @at-root .sidebar-user {
-      display: flex;
-      align-items: center;
-      gap: space(2);
-      width: 100%;
-      padding: space(1.5) space(2);
-      border-radius: radius('md');
-      text-align: left;
-      user-select: none;
-      @include transition(background-color);
-
-      &:hover,
-      &[aria-expanded='true'] {
-        background: color(accent);
-      }
-    }
-
-    @at-root .sidebar-section_bar {
-      display: flex;
-      align-items: center;
-      padding: 0 space(3);
-      margin-bottom: space(1);
-
-      &--pinned {
-        gap: space(1.5);
-      }
-    }
-
-    @at-root .sidebar-section_label {
-      @include text('xs');
-
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: color(muted-foreground);
-    }
-
-    @at-root .sidebar-pinned_item {
-      @include fm.row;
-
-      gap: space(1.5);
-      width: 100%;
-      padding: space(1) space(3);
-      text-align: left;
-
-      &--active {
-        background: color(accent);
-      }
-    }
-
-    @at-root .sidebar-item_label {
-      flex: 1 1 0%;
-      @include truncate;
-    }
-
-    // Hidden until the row is hovered or focused, and always shown on touch
-    // screens (design principles 1 and 7). It fades with opacity so the row
-    // keeps its size.
-    @at-root .sidebar-unpin {
-      display: flex;
-      flex-shrink: 0;
-      @include reveal-on-hover;
-    }
-
-    @at-root .sidebar-pinned_item:hover .sidebar-unpin {
-      opacity: 1;
-    }
-
+    // Shown under the sidebars when a keyboard shortcut couldn't create a document.
     @at-root .sidebar-error {
       @include fm.error_text;
-    }
 
-    @at-root .sidebar-note {
-      padding: space(2) space(3);
-      color: color(muted-foreground);
-      @include text('xs');
-    }
-
-    @at-root .sidebar-archived {
-      display: flex;
-      flex-direction: column;
-      gap: space(0.5);
-    }
-
-    @at-root .sidebar-archived_row {
-      display: flex;
-      align-items: center;
-      gap: space(1.5);
-      padding: space(1) space(3);
+      position: absolute;
+      bottom: space(16);
+      left: space(2);
+      max-width: space(52);
       border-radius: radius('md');
-      @include text('sm');
-    }
-
-    @at-root .sidebar-archived_open {
-      flex: 1 1 0%;
-      min-width: 0;
-      @include truncate;
-
-      text-align: left;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    @at-root .sidebar-unarchive {
-      flex-shrink: 0;
-      @include reveal-on-hover;
-    }
-
-    @at-root .sidebar-archived_row:hover .sidebar-unarchive {
-      opacity: 1;
+      background: color(background);
     }
 
     /* ── Dialogs (siblings of the drawer, see Sidebar.tsx) ────────────────────── */
@@ -298,41 +135,6 @@ $shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     @at-root .sidebar-dialog_heading {
       font-weight: 600;
       @include text('sm');
-    }
-
-    @at-root .sidebar-avatar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      @include icon-size(space(8));
-      border-radius: radius('full');
-      background: color(primary);
-      color: color(primary-foreground);
-      font-weight: 600;
-      @include text('xs');
-    }
-
-    @at-root .sidebar-identity {
-      display: flex;
-      flex: 1 1 0%;
-      flex-direction: column;
-      min-width: 0;
-      line-height: 1.25;
-    }
-
-    @at-root .sidebar-user_name {
-      @include text('sm');
-
-      font-weight: 600;
-      @include truncate;
-    }
-
-    @at-root .sidebar-user_email {
-      @include text('xs');
-      @include truncate;
-
-      color: color(muted-foreground);
     }
 
     @at-root .sidebar-hint {
@@ -459,7 +261,7 @@ $shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   /* ── Tinted sidebar ───────────────────────────────────────────────────────── */
 
   /* A colour theme that tints the sidebar (data/appearance.ts, set by
-     AppearanceEffect): the panel and rail take its deep colour, and the
+     AppearanceEffect): both sidebars take its deep colour, and the
      sidebar's tokens switch to light text on it. */
   :root[data-sidebar='tinted'] .view-sidebar {
     --foreground: var(--sidebar-foreground);
@@ -474,8 +276,8 @@ $shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
     color: color(foreground);
 
-    .sidebar-panel,
-    .sidebar-rail {
+    .ui-space_sidebar,
+    .ui-project_sidebar {
       background: var(--sidebar-background);
     }
 

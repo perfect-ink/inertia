@@ -1,0 +1,144 @@
+@use 'tokens' as *;
+@use 'file_manager' as fm;
+
+@layer app.components {
+  // The secondary sidebar (ProjectSidebar.tsx): the open project.
+  .ui-project_sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: space(64);
+
+    // On a phone it shares the drawer with the compact primary sidebar and
+    // leaves a strip of the page to tap to close it.
+    max-width: calc(85vw - #{space(14)});
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    border-right-width: 1px;
+    background: color(muted, 0.3);
+  }
+
+  .project_sidebar-header {
+    padding: space(1.5);
+
+    .ui-menu {
+      display: flex;
+    }
+  }
+
+  .project_sidebar-body {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    gap: space(3);
+    min-height: 0;
+    padding-bottom: space(2);
+    overflow-y: auto;
+  }
+
+  .project_sidebar-section {
+    display: flex;
+    flex-direction: column;
+    padding: 0 space(1);
+
+    &--grow {
+      flex: 1 0 auto;
+    }
+
+    &--views {
+      padding-top: space(2);
+      border-top-width: 1px;
+    }
+  }
+
+  .project_sidebar-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: space(1);
+    padding: 0 space(1) 0 space(2);
+  }
+
+  .project_sidebar-label {
+    @include text('xs');
+
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: color(muted-foreground);
+    user-select: none;
+    @include transition(color);
+
+    &:hover,
+    &[aria-current='page'] {
+      color: color(foreground);
+    }
+  }
+
+  .project_sidebar-toggle {
+    display: flex;
+    align-items: center;
+    gap: space(1);
+    min-height: space(8);
+    padding: 0 space(2);
+    text-align: left;
+  }
+
+  .project_sidebar-chevron {
+    @include icon-size(space(3.5));
+    @include transition(transform);
+
+    &--open {
+      transform: rotate(90deg);
+    }
+  }
+
+  .project_sidebar-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: space(1);
+    border-radius: radius('md');
+    color: color(muted-foreground);
+    @include transition(background-color, color);
+
+    &:hover,
+    &[aria-expanded='true'] {
+      background: color(accent);
+      color: color(foreground);
+    }
+  }
+
+  .project_sidebar-icon {
+    @include fm.icon(4, false);
+
+    flex-shrink: 0;
+  }
+
+  .project_sidebar-row {
+    @include fm.row;
+    @include truncate;
+
+    display: block;
+    min-height: space(8);
+    padding: space(1.5) space(2);
+    color: color(foreground);
+    @include transition(background-color);
+
+    &--active {
+      background: color(accent);
+      font-weight: 600;
+    }
+  }
+
+  .project_sidebar-new {
+    padding: 0 space(1) space(1);
+  }
+
+  .project_sidebar-note {
+    padding: space(1) space(2);
+    color: color(muted-foreground);
+    @include text('xs');
+  }
+}
