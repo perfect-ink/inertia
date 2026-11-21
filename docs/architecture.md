@@ -54,7 +54,7 @@ Pushing `main` is the only way to deploy; Coolify's Auto Deploy is off.
 
 ## Local development
 
-`docker-compose.yml` runs `backend` (port 3847), `frontend` (5174), `collab` (1234), PostgreSQL and Redis; the frontend calls the API directly at `API_URL`. `make dev-all` adds the native Mac app; `make dev-live` points the API at the live database (read [README.md](README.md#against-the-live-database) first).
+`docker-compose.yml` runs `backend` (port 3847), `frontend` (5174), `collab` (1234), PostgreSQL and Redis; the frontend calls the API directly at `API_URL`. `make dev-all` adds the native Mac app; `make native-up` runs the same stack as plain processes without Docker (see [features/mac_local_server.md](features/mac_local_server.md)); `make dev-live` points the API at the live database (read [README.md](README.md#against-the-live-database) first).
 
 ## Where code lives
 

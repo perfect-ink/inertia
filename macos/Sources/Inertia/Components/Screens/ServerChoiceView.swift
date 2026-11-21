@@ -13,7 +13,7 @@ struct ServerChoiceView: View {
                 Text("Where should Inertia run?").voltaFont(.twoXL, weight: .semibold).tracking(-0.6).foregroundStyle(Volta.foreground)
                 Text("You can change this later from the Inertia menu.").voltaFont(.sm).foregroundStyle(Volta.mutedForeground)
             }
-            choice("Local", detail: "Runs the server on this Mac. No sign-in. Needs Docker.", variant: .primary, value: .local)
+            choice("Local", detail: "Runs the server on this Mac, without Docker. No sign-in.", variant: .primary, value: .local)
             choice("Cloud", detail: "Uses inertia.it.com and needs you to sign in.", variant: .secondary, value: .cloud)
         }.voltaAuthCard()
     }

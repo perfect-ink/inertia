@@ -30,6 +30,17 @@ docker compose up --build
 | PostgreSQL | localhost:5432 |
 | Redis | localhost:6379 |
 
+### Without Docker
+
+```bash
+make native-up       # PostgreSQL (127.0.0.1:5433), API, collab server and web app as background processes
+make native-running  # what is up
+make native-logs     # tail build/native/log
+make native-down     # stop them
+```
+
+`scripts/native-server.sh` uses the Ruby 3.3+, PostgreSQL server and Node already on the Mac and keeps everything else under `build/native/`. The Mac app's **Local** choice runs `make native-up` itself. See [features/mac_local_server.md](features/mac_local_server.md).
+
 ### Against the live database
 
 `make dev-live` runs the same local stack, but the API uses the production database (`inertia_production` on shared-postgres). Because the database isn't public, `scripts/dev-live-db.sh` opens an SSH tunnel through the server (`ssh general`, which must be in the server's `docker` group), reads `DATABASE_URL` from the running production `api` container, and points the local backend at `host.docker.internal:15432`; `docker-compose.live-db.yml` is layered on top. Nothing is written to disk.

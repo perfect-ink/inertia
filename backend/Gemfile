@@ -22,7 +22,10 @@ gem "kaminari"
 # File uploads
 gem "image_processing", "~> 2.2"
 # image_processing 2 no longer installs a backend; Active Storage uses libvips.
-gem "ruby-vips", "~> 2.3"
+# Loaded by image_processing when a variant is made, not at boot, so a Mac
+# running the server without Docker (scripts/native-server.sh) can start
+# without libvips; it then only lacks image previews.
+gem "ruby-vips", "~> 2.3", require: false
 
 # JSON serialization
 gem "blueprinter"

@@ -6,7 +6,7 @@
         db-migrate db-rollback db-reset db-fake db-seed db-status \
         console routes shell-backend shell-frontend \
         typecheck test test-backend test-frontend test-collab test-fast lint-backend nuke hooks \
-        clean-electron \
+        clean-electron native-setup native-up native-down native-running native-logs \
         rules rules-check
 
 # GUI-launched processes on macOS (Dock, Spotlight, a task runner — anything
@@ -242,6 +242,28 @@ hooks: ## Install the git pre-commit hook (runs `test-fast` before every commit)
 
 nuke: ## Remove everything including built images (full reset)
 	$(COMPOSE) down -v --remove-orphans --rmi all
+
+# ── Local server without Docker ───────────────────────────────────────────────
+
+# scripts/native-server.sh runs the same stack as docker-compose.yml (PostgreSQL,
+# API, collab server, web app) as background processes on this Mac, using the
+# Ruby, PostgreSQL and Node already installed. The Mac app's "Local" choice runs
+# `make native-up` when nothing answers on /up.
+
+native-setup: ## Install the gems and npm packages the no-Docker local server needs (uses this Mac's Ruby, PostgreSQL and Node)
+	bash scripts/native-server.sh setup
+
+native-up: ## Start PostgreSQL, the API, the collab server and the web app on this Mac without Docker (in the background)
+	bash scripts/native-server.sh up
+
+native-down: ## Stop the no-Docker local server
+	bash scripts/native-server.sh down
+
+native-running: ## Check whether the no-Docker local server is running (exits non-zero when it is not)
+	@bash scripts/native-server.sh running
+
+native-logs: ## Tail the no-Docker local server's logs (build/native/log)
+	bash scripts/native-server.sh logs
 
 # ── Native Mac app ────────────────────────────────────────────────────────────
 

@@ -81,6 +81,7 @@ One file per implemented feature, written from the code (see `docs/rules/feature
 | Workboard swimlanes: organize by epic, with drag between lanes | [workboard_swimlanes.md](workboard_swimlanes.md) |
 | Backlinks: a document lists the documents that link to it | [document_backlinks.md](document_backlinks.md) |
 | Mac app sign-up: create an account from a native screen, inline validation messages | [mac_app_sign_up.md](mac_app_sign_up.md) |
+| Mac app local server without Docker: the Local choice runs PostgreSQL, the API, collab and web app as plain processes (`make native-up`) | [mac_local_server.md](mac_local_server.md) |
 | Native macOS Volta controls: Mac screens use the web theme, buttons, fields, selects and checkboxes | [native_mac_volta_controls.md](native_mac_volta_controls.md) |
 | Links to other documents: `[[` or `@` picker, live titles | [document_links.md](document_links.md) |
 | One lint command: ESLint, Stylelint, RuboCop, Swift warnings | [lint_entry_point.md](lint_entry_point.md) |

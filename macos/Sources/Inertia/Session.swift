@@ -22,13 +22,14 @@ import os
     /// `make logs-mac` streams these (subsystem com.inertia.native).
     private let log = Logger(subsystem: "com.inertia.native", category: "session")
     private var triedLocalSignIn = false
-    /// True while a development build starts the local servers (`make up-d`) and waits for the API.
+    /// True while a development build starts the local servers (`make native-up`) and waits for the API.
     @Published var startingServer = false
 
     /// Local has no authentication. Against a local API the app starts the servers if they are down, then opens
     /// the workspace with a placeholder session: the local API runs with BYPASS_AUTH (the dev default in
-    /// docker-compose.yml), which answers every request as the seeded user and ignores the token. Only the cloud
-    /// asks for a sign-in. Once per launch, so signing out still reaches the sign-in screen.
+    /// docker-compose.yml and scripts/native-server.sh), which answers every request as the seeded user and
+    /// ignores the token. Only the cloud asks for a sign-in. Once per launch, so signing out still reaches the
+    /// sign-in screen.
     func signInIfLocal() async {
         log.info("Local sign-in check: token \(self.token == nil ? "none" : "set", privacy: .public), tried \(self.triedLocalSignIn), needs choice \(self.needsServerChoice), api \(self.api.absoluteString, privacy: .public), bundle \(Bundle.main.bundlePath, privacy: .public)")
         guard token == nil, !triedLocalSignIn, !needsServerChoice, LocalEndpoint.isLocal(api) else { return }
@@ -36,7 +37,7 @@ import os
         _ = await startLocalServerIfDown()
         guard await apiIsUp() else {
             log.error("Local server did not answer at \(self.api.absoluteString, privacy: .public)/up")
-            error = "Couldn't reach the local server at \(api.absoluteString). Check that Docker is running (make up)."
+            error = "Couldn't reach the local server at \(api.absoluteString). Run `make native-up` in the checkout to see why (logs: `make native-logs`)."
             return
         }
         log.info("Local server is up; opening the workspace without sign-in")
@@ -68,17 +69,18 @@ import os
         return (response as? HTTPURLResponse)?.statusCode == 200
     }
 
-    /// A development build starts the local servers itself (`make up-d` in its checkout, which also starts
-    /// Docker) when nothing answers. Returns true when it had to. Installed builds never do this.
+    /// A development build starts the local servers itself when nothing answers: `make native-up` in its
+    /// checkout runs PostgreSQL, the API, the collab server and the web app as plain processes on this Mac,
+    /// with no Docker (scripts/native-server.sh). Returns true when it had to. Installed builds never do this.
     private func startLocalServerIfDown() async -> Bool {
         guard let root = LocalEndpoint.repositoryRoot(bundlePath: Bundle.main.bundlePath), !(await apiIsUp()) else { return false }
-        log.info("Local server is down; running make up-d in \(root, privacy: .public)")
+        log.info("Local server is down; running make native-up in \(root, privacy: .public)")
         startingServer = true
         defer { startingServer = false }
         let make = Process()
         make.executableURL = URL(fileURLWithPath: "/usr/bin/make")
-        make.arguments = ["-C", root, "up-d"]
-        // Apps opened from Finder get a minimal PATH that lacks Homebrew, where docker lives.
+        make.arguments = ["-C", root, "native-up"]
+        // Apps opened from Finder get a minimal PATH that lacks Homebrew, where ruby, node and postgres live.
         var environment = ProcessInfo.processInfo.environment
         environment["PATH"] = "/opt/homebrew/bin:/usr/local/bin:" + (environment["PATH"] ?? "/usr/bin:/bin")
         make.environment = environment
@@ -93,7 +95,7 @@ import os
         make.standardError = output
         await withCheckedContinuation { (done: CheckedContinuation<Void, Never>) in
             make.terminationHandler = { process in
-                logger.info("make up-d exited with status \(process.terminationStatus)")
+                logger.info("make native-up exited with status \(process.terminationStatus)")
                 done.resume()
             }
             do { try make.run() } catch {

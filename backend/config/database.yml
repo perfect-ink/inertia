@@ -1,5 +1,6 @@
 # PostgreSQL. Development and test use the `postgres` service from
-# docker-compose.yml (or any local server via the DATABASE_* variables).
+# docker-compose.yml, or any local server via the DATABASE_* variables
+# (scripts/native-server.sh runs one on this Mac on port 5433, no Docker).
 #
 # Production uses the shared PostgreSQL in Coolify's "Shared Infrastructure"
 # project: DATABASE_URL (set in Coolify's Environment Variables tab) holds
@@ -10,6 +11,7 @@ default: &default
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: <%= ENV.fetch("DATABASE_HOST", "postgres") %>
+  port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
   username: <%= ENV.fetch("DATABASE_USERNAME", "postgres") %>
   password: <%= ENV.fetch("DATABASE_PASSWORD", "password") %>
 

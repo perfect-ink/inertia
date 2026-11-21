@@ -19,7 +19,7 @@ make test    # every test suite
 make help    # every command, grouped
 ```
 
-Needs Docker. `make dev` uses a local PostgreSQL; `make dev-live` is the one command that points at the live database (see [docs/README.md](docs/README.md#against-the-live-database)).
+Needs Docker (`make native-up` runs the same stack without it, using the Ruby, PostgreSQL and Node on the Mac; see [docs/features/mac_local_server.md](docs/features/mac_local_server.md)). `make dev` uses a local PostgreSQL; `make dev-live` is the one command that points at the live database (see [docs/README.md](docs/README.md#against-the-live-database)).
 
 ## Documentation
 
