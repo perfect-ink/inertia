@@ -12,7 +12,7 @@ public enum LocalEndpoint {
         bundlePath.hasSuffix("/build/Inertia.app")
     }
 
-    /// The checkout a development build was made in (`<root>/build/Inertia.app`), where `make up-d` starts the servers.
+    /// The checkout a development build was made in (`<root>/build/Inertia.app`), where `make native-up` starts the servers.
     public static func repositoryRoot(bundlePath: String) -> String? {
         guard isDevelopmentBuild(bundlePath: bundlePath) else { return nil }
         let root = String(bundlePath.dropLast("/build/Inertia.app".count))
@@ -24,7 +24,7 @@ public enum LocalEndpoint {
 }
 
 /// Where a development build talks to, asked once on first launch and remembered. A local choice runs the
-/// servers on this Mac (the app starts them); cloud is the hosted app.
+/// servers on this Mac without Docker (the app starts them with `make native-up`); cloud is the hosted app.
 public enum ServerChoice: String, CaseIterable {
     case local, cloud
 

@@ -2,9 +2,10 @@
 
 First stage of the gradual SwiftUI migration, requiring macOS 14+ and Xcode's Swift toolchain.
 
-- `make dev-all` builds and starts the local API and web services, builds and opens `build/Inertia.app` with local endpoints, and streams service logs until the app closes.
+- `make dev-all` builds and starts the local API and web services in Docker, builds and opens `build/Inertia.app` with local endpoints, and streams service logs until the app closes.
 - `make mac-build` stops all running instances of this checkout's `build/Inertia.app` and rebuilds it. API and web services keep running. The app gets five seconds to quit normally before being force-stopped. Reopen the app to use the new binary; for local endpoints, use `open -n --env INERTIA_API_URL=http://localhost:3847 --env INERTIA_WEB_URL=http://localhost:5174 build/Inertia.app`.
 - `make dev-native-mac` builds and opens the native app with its default production endpoints.
+- A development build (`build/Inertia.app`) asks **Local** or **Cloud** on first launch. Local runs the server on this Mac without Docker: when nothing answers on `/up`, the app runs `make native-up` in its checkout, which starts PostgreSQL, the API, the collab server and the web app as background processes using the Ruby, PostgreSQL and Node already installed (see [the feature doc](../docs/features/mac_local_server.md)). `make native-down` stops them, `make native-logs` tails their logs.
 - `make test-native-mac` runs the native regression tests.
 - Open `macos/Package.swift` in Xcode to debug, or `swift run --package-path macos`.
 
