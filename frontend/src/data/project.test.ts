@@ -1,16 +1,10 @@
 import { isActivePath, PORTFOLIO_COLUMNS, projectIconOf, recentProjects, sortPortfolio } from './project'
 
-test('an image wins over an icon; neither means the default icon', () => {
+test('an image wins over an icon or emoji; neither means the default icon', () => {
   expect(projectIconOf({ icon: 'rocket', image_url: 'https://x.test/a.png' })).toEqual({ image: 'https://x.test/a.png' })
   expect(projectIconOf({ icon: ' bug ' })).toEqual({ icon: 'bug' })
+  expect(projectIconOf({ icon: ' \u{1F680} ' })).toEqual({ emoji: '\u{1F680}' })
   expect(projectIconOf({ icon: '  ', image_url: null })).toBeNull()
-  expect(projectIconOf({ icon: 'not-an-icon' })).toBeNull()
-})
-
-test('an emoji chosen before icons shows the matching icon, never the emoji', () => {
-  expect(projectIconOf({ icon: '\u{1F680}' })).toEqual({ icon: 'rocket' })
-  expect(projectIconOf({ icon: '\u{1F6E0}\u{FE0F}' })).toEqual({ icon: 'wrench' })
-  expect(projectIconOf({ icon: '\u{1F984}' })).toBeNull()
 })
 
 test('a link is the active page when its path matches, whatever its query', () => {

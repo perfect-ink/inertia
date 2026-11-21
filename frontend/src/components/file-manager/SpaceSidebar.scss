@@ -48,7 +48,7 @@
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     border-right-width: 1px;
-    background: color(muted, 0.6);
+    background: color(nav-primary);
     user-select: none;
     @include transition(width);
 

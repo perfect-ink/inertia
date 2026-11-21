@@ -40,3 +40,4 @@ Below 768px both sidebars are one drawer, opened from the top bar's menu button.
 ## History
 
 - Implemented 2026-11-20 (Alex: the UI had too much text and too many icons). Replaced the icon rail (`SidebarRail`) and the single panel (`ProjectNav`). Jest, ESLint (no errors) and Stylelint pass; checked in Chromium at 1280px (expanded and collapsed) and 375px against a stubbed API, not against a running backend. Not deployed (deploys are manual).
+- 2026-11-21: the two sidebars have their own background colours (`--nav-primary` and `--nav-secondary` in `styles/_theme.scss`, light and dark): the Space sidebar is the deepest, the product sidebar sits between it and the page. With a tinted colour theme the product sidebar is a shade lighter than the Space sidebar.

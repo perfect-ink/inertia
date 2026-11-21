@@ -15,13 +15,13 @@
     @include text('sm');
   }
 
-  .ui-project_icon_dialog-icons {
+  .ui-project_icon_dialog-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(space(10), 1fr));
     gap: space(1);
   }
 
-  .ui-project_icon_dialog-icon {
+  .ui-project_icon_dialog-choice {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,6 +39,17 @@
       border-color: color(primary);
       background: color(accent);
     }
+  }
+
+  .ui-project_icon_dialog-emoji {
+    font-size: 1.25rem;
+  }
+
+  .ui-project_icon_dialog-field {
+    display: flex;
+    flex-direction: column;
+    gap: space(1.5);
+    @include text('sm');
   }
 
   .ui-project_icon_dialog-glyph {

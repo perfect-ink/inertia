@@ -26,6 +26,11 @@
   // Inertia colors Volta has no token for.
   --accent-foreground: hsl(217deg 72% 20%);
   --card: hsl(0deg 0% 100%);
+
+  // The two sidebars, each a step off the page so they read as separate
+  // layers: the Space sidebar deepest, the product sidebar between it and the page.
+  --nav-primary: hsl(217deg 16% 88%);
+  --nav-secondary: hsl(217deg 16% 92%);
 }
 
 @include volta.dark-scheme {
@@ -42,6 +47,8 @@
   --v-color-trim-subtle: hsl(220deg 12% 68%);
   --accent-foreground: hsl(217deg 60% 75%);
   --card: hsl(220deg 11% 14%);
+  --nav-primary: hsl(220deg 12% 7%);
+  --nav-secondary: hsl(220deg 12% 9%);
 }
 
 // Status colors: task statuses, health, deadlines, errors, overdue. Inertia sits

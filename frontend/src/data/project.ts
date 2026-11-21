@@ -4,8 +4,9 @@
 export const PERSONAL_PROJECT_NAME = 'Personal Product'
 export const PERSONAL_PROJECT_NAMES = [PERSONAL_PROJECT_NAME, 'Personal Project']
 
-// Icons a project can show, by name (stored in `folders.icon`). Monochrome
-// line icons only: emojis are never used as icons (design principle 13).
+// What a product shows as its icon is the person's choice: a monochrome line
+// icon by name, an emoji, or an uploaded image. (Design principle 13 keeps
+// emojis out of the app's own icons; a product's icon is the person's content.)
 export const PROJECT_ICONS = [
   { name: 'rocket', label: 'Rocket' },
   { name: 'folder', label: 'Folder' },
@@ -35,23 +36,23 @@ export const PROJECT_ICONS = [
 
 export type ProjectIconName = (typeof PROJECT_ICONS)[number]['name']
 
-// Projects that chose an emoji before icons replaced them show the matching icon.
-const LEGACY_EMOJIS: Record<string, ProjectIconName> = {
-  '🚀': 'rocket', '📁': 'folder', '📌': 'pin', '🎯': 'target', '💡': 'lightbulb', '🛠️': 'wrench', '🛠': 'wrench', '📈': 'trending-up',
-  '🧪': 'flask', '🎨': 'palette', '🎵': 'music', '📚': 'book', '🏠': 'house', '🌱': 'sprout', '⭐': 'star', '🔥': 'flame',
-  '💬': 'message', '🧭': 'compass', '📦': 'package', '🗓️': 'calendar', '🗓': 'calendar', '✅': 'check', '🐞': 'bug', '🔒': 'lock',
-  '🌍': 'globe', '💼': 'briefcase',
-}
+// Emojis offered when choosing a product's icon; any other emoji can be typed.
+export const PROJECT_EMOJIS = [
+  '🚀', '📁', '📌', '🎯', '💡', '🛠️', '📈', '🧪',
+  '🎨', '🎵', '📚', '🏠', '🌱', '⭐', '🔥', '💬',
+  '🧭', '📦', '🗓️', '✅', '🐞', '🔒', '🌍', '💼',
+]
 
-// What a project shows as its icon: an uploaded image wins over a named icon;
-// neither (or an emoji with no matching icon) means the default project icon.
-export type ProjectIconKind = { image: string } | { icon: ProjectIconName } | null
+// An uploaded image wins; then a named icon; any other text is an emoji;
+// nothing means the default product icon.
+export type ProjectIconKind = { image: string } | { icon: ProjectIconName } | { emoji: string } | null
 
 export function projectIconOf(project: { icon?: string | null; image_url?: string | null }): ProjectIconKind {
   if (project.image_url) return { image: project.image_url }
   const value = project.icon?.trim() ?? ''
-  const named = PROJECT_ICONS.find((i) => i.name === value)?.name ?? LEGACY_EMOJIS[value]
-  return named ? { icon: named } : null
+  if (!value) return null
+  const named = PROJECT_ICONS.find((i) => i.name === value)?.name
+  return named ? { icon: named } : { emoji: value }
 }
 
 // Whether the page at `pathname` is the one a navigation link opens. A link

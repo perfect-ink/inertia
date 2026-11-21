@@ -276,9 +276,13 @@ $shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
     color: color(foreground);
 
-    .ui-space_sidebar,
-    .ui-project_sidebar {
+    .ui-space_sidebar {
       background: var(--sidebar-background);
+    }
+
+    // A shade lighter, so the two sidebars stay apart on the theme's colour.
+    .ui-project_sidebar {
+      background: color-mix(in srgb, var(--sidebar-background) 92%, white);
     }
 
     /* Menus that open inside the sidebar keep the page's colours. */
